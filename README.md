@@ -2,8 +2,8 @@
 
 Students:
 
-* López, Alba
+* Surname_1, First_name_1
 
-* Amorín, Miquel
+* Surname_2, First_name_2
 
-Your deployed webapp at Fly.io|Heroku|... (task #6): https://waslab04asw.fly.dev
+Your deployed webapp at Fly.io|Heroku|... (task #6): <https://*********.***.***/>
