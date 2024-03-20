@@ -1,17 +1,14 @@
-<div id="<%= dom_id post %>">
-  <p>
-    <strong>Title:</strong>
-    <%= post.title %>
-  </p>
+<div class="postitem" id=post.id style="border: 2px solid #dfcaca;
+  margin: 20px auto;
+  padding: 1em;
+  width: 90%;
+  background-color: #ffffff;display:block;font-family: Arial, Helvetica, sans-serif;
+  color: #444;
+  font-size: 12pt;padding-bottom:0px">
 
-  <p>
-    <strong>Body:</strong>
-    <%= post.body %>
-  </p>
-
-  <p>
-    <strong>Url:</strong>
-    <%= post.url %>
-  </p>
-
+  <div class="item" style="border-left: 2px solid #dfcaca;margin-left: 115px;padding-left: 1.1em;display:block ">
+    <h3><%= link_to post.title, post %></h3>
+    <p><%= post.body %></p>
+    <h4>dummy_author, Created at: <%= post.created_at.strftime("%H:%M") %></h4>
+  </div>
 </div>
