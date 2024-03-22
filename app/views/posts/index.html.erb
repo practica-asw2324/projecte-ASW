@@ -1,8 +1,5 @@
-<div class="main">
-  <div id="posts" class="posts">
+<div id="posts" class="posts">
     <% @posts.order(created_at: :desc).each do |post| %>
       <%= render post %>
     <% end %>
-  </div>
-  <%= render 'posts/magazine' %>
 </div>
