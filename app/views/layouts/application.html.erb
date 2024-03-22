@@ -1,15 +1,33 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Waslab04</title>
+    <title>Tuiter</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-RE8f1eGsGaaZVzTqrqIh+/fGBccgb4RWo1LxEs5r+57D+9x1DiVdd5TIvJB28an" crossorigin="anonymous">
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   </head>
 
   <body>
+  <div class="navbar-container">
+    <div class="navbar">
+      <%= link_to "Tuiter", root_path, :class=>'navbar-logo'%>
+      <ul class="navbar-menu">
+        <li><%= link_to "Threads", root_path%></li>
+        <li><a href="#">Microblog</a></li>
+        <li><a href="#">All Content</a></li>
+        <li><a href="#">People</a></li>
+        <li><a href="#">Magazines</a></li>
+        <li><a href="#">Collections</a></li>
+      </ul>
+      <div class="navbar-buttons">
+        <%= link_to "+", new_post_path, :class=>'navbar-button' %>
+        <a href="#" class="navbar-button">Profile</a>
+      </div>
+    </div>
+  </div>
     <%= yield %>
+
   </body>
 </html>

@@ -1,14 +1,29 @@
-<p style="color: green"><%= notice %></p>
-
-<h1>Posts</h1>
-
-<div id="posts">
-  <% @posts.each do |post| %>
-    <%= render post %>
-    <p>
-      <%= link_to "Show this post", post %>
-    </p>
-  <% end %>
+<body>
+<div class="main">
+  <div id="posts" class="posts">
+    <% @posts.order(created_at: :desc).each do |post| %>
+      <%= render post %>
+    <% end %>
+  </div>
+  <div class="magazine">
+    <h5 style="color:grey; padding-left: 20px">ACTIVE PEOPLE</h5>
+    <div class="grid-container">
+      <!-- Primera fila -->
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 1"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 2"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 3"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 4"></div>
+      <!-- Segunda fila -->
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 5"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 6"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 7"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 8"></div>
+      <!-- Tercera fila -->
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 9"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 10"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 11"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 12"></div>
+    </div>
+  </div>
 </div>
-
-<%= link_to "New link", new_post_path %>
+</body>

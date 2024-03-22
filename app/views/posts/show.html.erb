@@ -1,10 +1,7 @@
-<p style="color: green"><%= notice %></p>
-
-<%= render @post %>
-
-<div>
-  <%= link_to "Edit this post", edit_post_path(@post) %> |
-  <%= link_to "Back to posts", posts_path %>
-
-  <%= button_to "Destroy this post", @post, method: :delete %>
+<div class="postitem" id=post.id>
+  <div class="item">
+    <h3><a class="link" href="<%= @post.url %>"> <%= @post.title %></a></h3>
+    <h4>dummy_author, Created at: <%= @post.created_at.strftime("%H:%M") %></h4>
+    <p><%= @post.body %></p>
+  </div>
 </div>
