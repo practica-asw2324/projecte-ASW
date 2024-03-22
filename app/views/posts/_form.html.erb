@@ -5,7 +5,6 @@
     <% if post.errors.any? %>
       <div id="form" style="align-items: center">
         <div style="color: red;">
-          <h2><%= pluralize(post.errors.count, "error") %> prohibited this post from being saved:</h2>
           <ul>
             <% post.errors.each do |error| %>
               <li><%= error.full_message %></li>
@@ -29,12 +28,12 @@
       <%= form.text_area :body, placeholder: "Body", style: "width: 100%; height: 100%; font-family: Helvetica;" %>
     </div>
 
-    <div style="margin: 20px;">
-      <%= form.submit %>
+    <div style="margin: 15px;">
+      <%= form.submit "Create", style: "width: 100%; padding: 10px 20px; background-color: #28a745; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;" %>
     </div>
 
-    <div> <!-- Agregado el div para centrar el enlace -->
-      <%= link_to "Back to home", posts_path %>
+    <div style="margin: 15px;"> <!-- Agregado el div para centrar el enlace -->
+      <%= link_to "Back to home", posts_path, style: "width: 100%; padding: 10px 20px; background-color: #0f0142; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; text-decoration: none;" %>
     </div>
   </div>
   </body>
