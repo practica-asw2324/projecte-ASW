@@ -1,7 +1,7 @@
 <%= form_with(model: post) do |form| %>
   <body style="font-family: Helvetica">
   <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;"> <!-- Aplicar el estilo al contenedor principal y establecer la fuente -->
-    <h1>New link</h1> <!-- Movido dentro del contenedor principal -->
+    <h1>New link</h1>
     <% if post.errors.any? %>
       <div id="form" style="align-items: center">
         <div style="color: red;">
@@ -15,12 +15,12 @@
       </div>
     <% end %>
 
-    <div style="width: 40%; height: 50px; margin: 20px 0;"> <!-- Aplicar el ancho al campo de entrada y el margen vertical -->
+    <div style="width: 40%; height: 50px; margin: 20px 0;">
       <%= form.label :url, "URL", style: "display: block; font-family: Helvetica;" %>
       <%= form.text_field :url, style: "width: 100%; height: 100%; font-family: Helvetica;" %>
     </div>
 
-    <div style="width: 40%; height: 50px; margin: 20px 0;"> <!-- Aplicar el ancho al campo de entrada y el margen vertical -->
+    <div style="width: 40%; height: 50px; margin: 20px 0;">
       <%= form.label :title, "Title", style: "display: block; font-family: Helvetica;" %>
       <%= form.text_area :title, style: "width: 100%; height: 100%; font-family: Helvetica;" %>
     </div>
@@ -29,10 +29,9 @@
       <%= form.text_area :body, placeholder: "Body", style: "width: 100%; height: 100%; font-family: Helvetica;" %>
     </div>
 
-    <div style="margin: 20px;"> <!-- Agregar margen vertical al botón de enviar -->
+    <div style="margin: 20px;">
       <%= form.submit %>
     </div>
-
 
     <div> <!-- Agregado el div para centrar el enlace -->
       <%= link_to "Back to home", posts_path %>
