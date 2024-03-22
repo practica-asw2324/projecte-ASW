@@ -1,5 +1,6 @@
 <%= form_with(model: post) do |form| %>
-  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: Helvetica;"> <!-- Aplicar el estilo al contenedor principal y establecer la fuente -->
+  <body style="font-family: Helvetica">
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;"> <!-- Aplicar el estilo al contenedor principal y establecer la fuente -->
     <h1>New link</h1> <!-- Movido dentro del contenedor principal -->
     <% if post.errors.any? %>
       <div id="form" style="align-items: center">
@@ -15,17 +16,17 @@
     <% end %>
 
     <div style="width: 40%; height: 50px; margin: 20px 0;"> <!-- Aplicar el ancho al campo de entrada y el margen vertical -->
-      <%= form.label :url, "URL", style: "display: block;" %>
-      <%= form.text_field :url, style: "width: 100%; height: 100%;" %>
+      <%= form.label :url, "URL", style: "display: block; font-family: Helvetica;" %>
+      <%= form.text_field :url, style: "width: 100%; height: 100%; font-family: Helvetica;" %>
     </div>
 
     <div style="width: 40%; height: 50px; margin: 20px 0;"> <!-- Aplicar el ancho al campo de entrada y el margen vertical -->
-      <%= form.label :tittle, "Title", style: "display: block;" %>
-      <%= form.text_area :tittle, style: "width: 100%; height: 100%;" %>
+      <%= form.label :title, "Title", style: "display: block; font-family: Helvetica;" %>
+      <%= form.text_area :title, style: "width: 100%; height: 100%; font-family: Helvetica;" %>
     </div>
 
     <div style="width: 40%; height: 50px; margin: 20px 0;">
-      <%= form.text_area :body, placeholder: "Body", style: "width: 100%; height: 100%;" %>
+      <%= form.text_area :body, placeholder: "Body", style: "width: 100%; height: 100%; font-family: Helvetica;" %>
     </div>
 
     <div style="margin: 20px;"> <!-- Agregar margen vertical al botón de enviar -->
@@ -37,4 +38,5 @@
       <%= link_to "Back to home", posts_path %>
     </div>
   </div>
+  </body>
 <% end %>
