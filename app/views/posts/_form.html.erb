@@ -1,3 +1,5 @@
+<div class='main'>
+<div id='form'>
 <%= form_with(model: post) do |form| %>
   <body style="font-family: Helvetica">
   <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;"> <!-- Aplicar el estilo al contenedor principal y establecer la fuente -->
@@ -36,5 +38,8 @@
       <%= link_to "Back to home", posts_path, style: "width: 100%; padding: 10px 20px; background-color: #0f0142; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; text-decoration: none;" %>
     </div>
   </div>
-  </body>
+  
+</div>
+<%= render 'posts/magazine' %>
+</div>
 <% end %>
