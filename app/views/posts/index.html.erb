@@ -1,11 +1,4 @@
-<p style="color: green"><%= notice %></p>
-
-<div class="row">
-  <!--<img class="col" style="height: 30px;" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQs6y0aZ9fF6uOKBng7LB80rVRbDky9mgMbSTI9NExq9Fy8MWghmIls7svDWw2IUxP_7Mc&usqp=CAU"/>-->
-  <h1 class="col">ASW Posts</h1>
-  <button class="col"><%= link_to "+", new_post_path %></button>
-</div>
-
+<body>
 <div class="main">
   <div id="posts" class="posts">
     <% @posts.order(created_at: :desc).each do |post| %>
@@ -13,32 +6,24 @@
     <% end %>
   </div>
   <div class="magazine">
-    <div style="border: 2px solid #dfcaca; width: 100%; height: 100%; margin-top: 20px"></div>
+    <h5 style="color:grey; padding-left: 20px">ACTIVE PEOPLE</h5>
+    <div class="grid-container">
+      <!-- Primera fila -->
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 1"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 2"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 3"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 4"></div>
+      <!-- Segunda fila -->
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 5"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 6"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 7"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 8"></div>
+      <!-- Tercera fila -->
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 9"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 10"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 11"></div>
+      <div class="grid-item"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Logo_UPC.svg/2048px-Logo_UPC.svg.png" alt="Imagen 12"></div>
+    </div>
   </div>
 </div>
-
-<style>
-.row {
-    display: table;
-    border-spacing: 10px;
-    background-color: #dfcaca;
-}
-.col {
-    display: table-cell;
-    width: 100%;
-}
-.posts{
-    grid-area: main;
-    padding: 0 0.5rem;
-    position: relative;
-}
-.main {
-    display: grid;
-    grid-template-areas: "main sidebar";
-    grid-template-columns: 3fr 1fr;
-}
-.magazine {
-    grid-area: sidebar;
-    padding: 0 0.5rem;
-}
-</style>
+</body>

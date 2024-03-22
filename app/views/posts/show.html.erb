@@ -1,31 +1,7 @@
-<p style="color: green"><%= notice %></p>
-
-<div class="row">
-  <img class="col" style="height: 30px;" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQs6y0aZ9fF6uOKBng7LB80rVRbDky9mgMbSTI9NExq9Fy8MWghmIls7svDWw2IUxP_7Mc&usqp=CAU"/>
-  <h1 class="col">ASW Posts</h1>
-</div>
-
-<div class="postitem" id=post.id style="border: 2px solid #dfcaca;
-  margin: 20px auto;
-  padding: 1em;
-  width: 90%;
-  background-color: #ffffff;display:block;font-family: Arial, Helvetica, sans-serif;
-  color: #444;
-  font-size: 12pt;padding-bottom:0px">
-
-  <div class="item" style="border-left: 2px solid #dfcaca;margin-left: 115px;padding-left: 1.1em;display:block ">
-    <h3><a href="<%= @post.url %>"> <%= @post.title %></a></h3>
+<div class="postitem" id=post.id>
+  <div class="item">
+    <h3><a class="link" href="<%= @post.url %>"> <%= @post.title %></a></h3>
     <h4>dummy_author, Created at: <%= @post.created_at.strftime("%H:%M") %></h4>
     <p><%= @post.body %></p>
   </div>
 </div>
-
-<style>
-    .row {
-        display: table;
-        border-spacing: 10px;
-    }
-    .col {
-        display: table-cell;
-    }
-</style>
