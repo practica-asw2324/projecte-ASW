@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_22_124551) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_23_184836) do
   create_table "comments", force: :cascade do |t|
     t.string "body"
     t.integer "user_id", null: false
@@ -29,7 +29,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_22_124551) do
     t.string "description"
     t.string "rules"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "updated_at"
     t.integer "user_id", null: false
     t.index ["user_id"], name: "index_magazines_on_user_id"
   end
@@ -39,7 +39,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_22_124551) do
     t.string "body"
     t.string "url"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "updated_at"
     t.integer "magazine_id", null: false
     t.integer "user_id", null: false
     t.index ["magazine_id"], name: "index_posts_on_magazine_id"
@@ -50,7 +50,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_22_124551) do
     t.string "name"
     t.string "username"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "updated_at"
   end
 
   add_foreign_key "comments", "comments"
