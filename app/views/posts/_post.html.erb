@@ -1,25 +1,109 @@
 <div class="postitem" id=post.id>
   <div class="vote">
-      <button type="button" onclick="likePost()"><%= post.likes %> ↑</button>  
-      <button type="button" onclick="dislikePost()"><%= post.dislikes %> ↓</button>  
+      <button type="button" onclick="likePost()" id="likeButton"></button>  
+      <button type="button" onclick="dislikePost()" id="dislikeButton"></button>  
   </div>
+
   <div class="item">
     <h3><%= link_to post.title, post, :class=>'link' %> <span class="domain"> (<%= post.url %>)</span></h3>
-    <h4><%= post.user_id %>, Created at: <%= post.created_at.strftime("%H:%M") %></h4>
-    <p>3 comments boost more</p>
+    
+    <h5><span id="userName"></span>, <span class="domain" id="createdAt"></span> to <span id="magazineName"> <%= post.magazine_id %> </span></h4>
+
+    <h3><%= link_to "hola", magazine_path(post.magazine), :class=>'link' %></h3>
+
+    <p id="comments"></p>
   </div>
 </div>
 
+
 <script>
-  var liked = false;
-  var disliked = false;
 
-  function likePost() {
-    #liked
-    liked = true;
-  }
+function getDynamicValue() {
+  
+  var time = new Date();
+  var datecreated = new Date('<%= post.created_at %>');
 
-  function dislikePost() {
-    disliked = true;
+  var diff = time - datecreated;
+  
+  const seconds = Math.floor(diff / 1000);
+      const minutes = Math.floor(seconds / 60);
+      const hours = Math.floor(minutes / 60);
+      const days = Math.floor(hours / 24);
+
+      if (days > 0) {
+        return days + " days ago";
+      } else if (hours > 0) {
+        return hours + " hours ago";
+      } else if (minutes > 0) {
+        return minutes + " minutes ago";
+      } else {
+        return seconds + " seconds ago";
+      }
+}
+
+function getUserName() {
+  return "Miquel";
+}
+
+function getMagazineName() {
+  return "Prova";
+}
+
+function getComments() {
+  return 3 + " comments";
+}
+
+document.getElementById("createdAt").innerHTML = getDynamicValue();
+document.getElementById("magazineName").innerHTML = getMagazineName();
+document.getElementById("userName").innerHTML = getUserName();
+document.getElementById("comments").innerHTML = getComments();
+
+var liked = false;
+var disliked = false;
+var post = {likes: <%=post.likes%>, dislikes: <%=post.dislikes%>};
+
+document.getElementById("likeButton").innerHTML = post.likes + " ↑";
+document.getElementById("dislikeButton").innerHTML = post.dislikes + " ↓";
+
+function likePost() {
+  if (liked) {
+    post.likes -= 1;
+    document.getElementById("likeButton").style.color = "black";
+    document.getElementById("likeButton").innerHTML = post.likes + " ↑";
+    liked = false;
+    return;
   }
+  else if (disliked) {
+    post.dislikes -= 1;
+    document.getElementById("dislikeButton").style.color = "black";
+    document.getElementById("dislikeButton").innerHTML = post.dislikes + " ↓";
+    disliked = false;
+  }
+  post.likes += 1;
+  document.getElementById("likeButton").style.color = "green";
+  document.getElementById("likeButton").innerHTML = post.likes + " ↑";
+  liked = true;
+}
+
+function dislikePost() {
+  if (disliked) {
+    post.dislikes -= 1;
+    document.getElementById("dislikeButton").style.color = "black";
+    document.getElementById("dislikeButton").innerHTML = post.dislikes + " ↓";
+    disliked = false;
+    return;
+  }
+  else if (liked) {
+    post.likes -= 1;
+    document.getElementById("likeButton").style.color = "black";
+    document.getElementById("likeButton").innerHTML = post.likes + " ↑";
+    liked = false;
+  }
+  post.dislikes += 1;
+  document.getElementById("dislikeButton").style.color = "green";
+  document.getElementById("dislikeButton").innerHTML = post.dislikes + " ↓";
+  disliked = true;
+}
+
 </script>
+
