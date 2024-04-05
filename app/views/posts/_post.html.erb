@@ -1,18 +1,23 @@
 <div class="postitem" id=post.id>
   <div class="vote">
-      <button type="button" onclick="likePost()" id="likeButton"></button>  
-      <button type="button" onclick="dislikePost()" id="dislikeButton"></button>  
+    <br>
+    <button type="button" class="likeButton">
+      <i class="fas fa-arrow-up"></i><span> </span><span class="likesCount"><%= post.likes %></span>
+    </button>  
+
+    <button type="button" class="dislikeButton">
+    <i class="fas fa-arrow-down"></i><span> </span></i><span class="dislikesCount"><%= post.dislikes %></span>
+    </button>  
   </div>
 
   <div class="item">
     <h3><%= link_to post.title, post, :class=>'link' %> <span class="domain"> (<%= post.url %>)</span></h3>
-    
-    <h5><span id="userName"></span>, <span class="domain" id="createdAt"></span> to <span id="magazineName"> <%= post.magazine_id %> </span></h4>
 
-    <h3><%= link_to "hola", magazine_path(post.magazine), :class=>'link' %></h3>
+    <h5><span><%= post.user.name %></span>, <span class="domain createdAt" data-created-at="<%= post.created_at %>"></span> <span class="domain">to </span> <span> <%= post.magazine.name %> </span></h4>
 
-    <p id="comments"></p>
+    <p><%= post.comments.count %> comments</p>
   </div>
+  
 </div>
 
 
@@ -41,69 +46,96 @@ function getDynamicValue() {
       }
 }
 
-function getUserName() {
-  return "Miquel";
+document.querySelectorAll(".createdAt").forEach(function(element) {
+  element.textContent = getDynamicValue(element.getAttribute('data-created-at'));
+});
+
+document.querySelectorAll(".postitem").forEach(function(post) {
+  var likeButton = post.querySelector(".vote .likeButton");
+  var dislikeButton = post.querySelector(".vote .dislikeButton");
+  var likesCount = parseInt(post.querySelector(".likesCount").textContent);
+  var dislikesCount = parseInt(post.querySelector(".dislikesCount").textContent);
+  
+  var liked = false;
+  var disliked = false;
+  
+  likeButton.addEventListener("click", function() {
+    if (!liked) {
+      likesCount++;
+      likeButton.querySelector(".likesCount").textContent = likesCount;
+      likeButton.querySelector(".likesCount").style.color = "#0f0142";
+      liked = true;
+
+      if (disliked) {
+        dislikesCount--;
+        dislikeButton.querySelector(".dislikesCount").textContent = dislikesCount;
+        dislikeButton.querySelector(".dislikesCount").style.color = "#8a8a8a";
+        disliked = false;
+      }
+    } else {
+      likesCount--;
+      likeButton.querySelector(".likesCount").textContent = likesCount;
+      likeButton.querySelector(".likesCount").style.color = "#8a8a8a";
+      liked = false;
+    }
+    sendReaction('<%= post.id %>', likesCount, dislikesCount);
+    
+  });
+  
+  dislikeButton.addEventListener("click", function() {
+    if (!disliked) {
+      dislikesCount++;
+      dislikeButton.querySelector(".dislikesCount").textContent = dislikesCount;
+      dislikeButton.querySelector(".dislikesCount").style.color = "#0f0142";
+      disliked = true;
+      
+      if (liked) {
+        likesCount--;
+        likeButton.querySelector(".likesCount").textContent = likesCount;
+        likeButton.querySelector(".likesCount").style.color = "#8a8a8a";
+        liked = false;
+      }
+    } else {
+      dislikesCount--;
+      dislikeButton.querySelector(".dislikesCount").textContent = dislikesCount;
+      dislikeButton.querySelector(".dislikesCount").style.color = "#8a8a8a";
+      disliked = false;
+    }
+    sendReaction(postId, likesCount, dislikesCount);
+  });
+});
+
+function sendReaction(postId, likesCount, dislikesCount) {
+  var url = "/posts/" + postId + "/react";
+  var data = {
+    likes: likesCount,
+    dislikes: dislikesCount
+  };
+
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
+  })
+  .then(data => {
+    // Update UI with new likes and dislikes counts
+    post.querySelector(".likesCount").textContent = data.likes;
+    post.querySelector(".dislikesCount").textContent = data.dislikes;
+  })
+  .catch(error => {
+    console.error("There was a problem with the fetch operation:", error);
+  });
 }
 
-function getMagazineName() {
-  return "Prova";
-}
-
-function getComments() {
-  return 3 + " comments";
-}
-
-document.getElementById("createdAt").innerHTML = getDynamicValue();
-document.getElementById("magazineName").innerHTML = getMagazineName();
-document.getElementById("userName").innerHTML = getUserName();
-document.getElementById("comments").innerHTML = getComments();
-
-var liked = false;
-var disliked = false;
-var post = {likes: <%=post.likes%>, dislikes: <%=post.dislikes%>};
-
-document.getElementById("likeButton").innerHTML = post.likes + " ↑";
-document.getElementById("dislikeButton").innerHTML = post.dislikes + " ↓";
-
-function likePost() {
-  if (liked) {
-    post.likes -= 1;
-    document.getElementById("likeButton").style.color = "black";
-    document.getElementById("likeButton").innerHTML = post.likes + " ↑";
-    liked = false;
-    return;
-  }
-  else if (disliked) {
-    post.dislikes -= 1;
-    document.getElementById("dislikeButton").style.color = "black";
-    document.getElementById("dislikeButton").innerHTML = post.dislikes + " ↓";
-    disliked = false;
-  }
-  post.likes += 1;
-  document.getElementById("likeButton").style.color = "green";
-  document.getElementById("likeButton").innerHTML = post.likes + " ↑";
-  liked = true;
-}
-
-function dislikePost() {
-  if (disliked) {
-    post.dislikes -= 1;
-    document.getElementById("dislikeButton").style.color = "black";
-    document.getElementById("dislikeButton").innerHTML = post.dislikes + " ↓";
-    disliked = false;
-    return;
-  }
-  else if (liked) {
-    post.likes -= 1;
-    document.getElementById("likeButton").style.color = "black";
-    document.getElementById("likeButton").innerHTML = post.likes + " ↑";
-    liked = false;
-  }
-  post.dislikes += 1;
-  document.getElementById("dislikeButton").style.color = "green";
-  document.getElementById("dislikeButton").innerHTML = post.dislikes + " ↓";
-  disliked = true;
-}
 
 </script>
 

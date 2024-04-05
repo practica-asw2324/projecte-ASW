@@ -20,8 +20,11 @@
         <li><a href="#">Magazines</a></li>
         <li><a href="#">Collections</a></li>
       </ul>
-      <div class="navbar-buttons">
-        <%= link_to "+", new_post_path, :class=>'navbar-button' %>
+      <div class="navbar-buttons">        
+        <%= link_to new_post_path, class: 'navbar-button' do %>
+          <i class="fas fa-plus"></i>
+        <% end %>
+
         <a href="#" class="navbar-button">Profile</a>
       </div>
     </div>
