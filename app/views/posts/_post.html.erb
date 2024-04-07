@@ -13,7 +13,7 @@
   <div class="item">
     <h3><%= link_to post.title, post, :class=>'link' %> <span class="domain"> (<%= post.url %>)</span></h3>
 
-    <h5><span><%= post.user.name %></span>, <span class="domain createdAt" data-created-at="<%= post.created_at %>"></span> <span class="domain">to </span> <span> <%= post.magazine.name %> </span></h4>
+    <h4><span><%= post.user.name %></span>, <span class="domain createdAt" data-created-at="<%= post.created_at %>"></span> <span class="domain">to </span> <span> <%= post.magazine.name %> </span></h4>
 
     <p><%= post.comments.count %> comments</p>
   </div>

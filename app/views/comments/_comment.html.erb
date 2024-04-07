@@ -1,12 +1,35 @@
 <div id="<%= dom_id comment %>">
-  <p>
-    <strong>Body:</strong>
-    <%= comment.body %>
-  </p>
-
-  <p>
-    <strong>User:</strong>
-    <%= comment.user_id %>
-  </p>
-
+  <div class="commentitem">
+    <div class="commentHeader">
+      <h4><span><%= comment.user.name %></span>, <span class="domain createdAt" data-created-at="<%= comment.created_at %>"></span> </h4>
+      <div class="buttonContainer-comments">
+        <button type="button" class="comment-likeButton">
+          <i class="fas fa-arrow-up"></i><span> </span><span class="likesCount"><%= @post.likes %></span>
+        </button>
+        <button type="button" class="comment-dislikeButton">
+          <i class="fas fa-arrow-down"></i><span> </span></i><span class="dislikesCount"><%= @post.dislikes %></span>
+        </button>
+      </div>
+    </div>
+    <p class="comment-content"><%= comment.body %></p>
+    <%= link_to 'reply', '#', class: 'reply-link', data: { comment_id: comment.id } %>
+    <br>
+    <!-- Reply form here -->
+  </div>
 </div>
+
+<script>
+
+  document.addEventListener('DOMContentLoaded', function() {
+      const replyLinks = document.querySelectorAll('.reply-link');
+      replyLinks.forEach(function(link) {
+          link.addEventListener('click', function(event) {
+              event.preventDefault();
+              const commentId = this.dataset.commentId;
+              const form = document.getElementById(`reply-form-${commentId}`);
+              form.style.display = 'block';
+          });
+      });
+  });
+
+</script>

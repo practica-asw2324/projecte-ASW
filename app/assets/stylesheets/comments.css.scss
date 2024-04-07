@@ -1,0 +1,100 @@
+.commentitem {
+  margin: 20px auto;
+  padding: 1em;
+  width: 95%;
+  border-radius: 15px;
+  background-color: #e7e4f5;
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12pt;
+}
+
+.commentitem textarea {
+  width: calc(100% - 20px);
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12pt;
+  margin-bottom: 10px;
+}
+
+.commentitem-button {
+  margin-left: auto;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12pt;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #0f0142;
+}
+
+.comment-content {
+  font-size: 16px;
+  line-height: 1.4;
+  color: #333;
+  margin-top: 0;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.comment-likeButton, .comment-dislikeButton {
+  background-color: #9692af;
+  font-weight: bold;
+  border: none;
+  width: 60px;
+  margin: 0 5px 10px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+}
+.comment-likeButton span:last-child, .comment-dislikeButton span:last-child {
+  margin-left: 5px;
+}
+
+.comment-dislikeButton:hover, .comment-likeButton:hover {
+  color: #0f0142;
+}
+
+.buttonContainer-comments {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.commentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reply-link {
+  text-decoration: none;
+  color: grey;
+}
+
+.reply-link:hover {
+  color: black;
+}
+
+.reply-form {
+  display: none;
+  align-items: center;
+  flex-direction: column;
+  padding: 1em;
+  border-radius: 15px;
+}
+
+
