@@ -1,13 +1,29 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: %i[ show edit update destroy ]
+  before_action :set_post, only: %i[ show edit update destroy like ]
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.all
+    @posts = Post.includes(:user, :magazine, :comments).all
   end
 
   # GET /posts/1 or /posts/1.json
   def show
+  end
+
+  # POST /posts/:id/react
+  def react
+    
+    @post = Post.find(params[:id])
+    
+
+    @post.likes = params[:likes].to_i
+    @post.dislikes = params[:dislikes].to_i
+
+    if @post.save
+      render json: { likes: @post.likes, dislikes: @post.dislikes }
+    else
+      render json: { error: @post.errors.full_messages.join(", ") }, status: :unprocessable_entity
+    end
   end
 
   # GET /posts/new
