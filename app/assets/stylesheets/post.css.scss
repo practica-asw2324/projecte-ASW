@@ -1,0 +1,80 @@
+@import "font-awesome";
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+body{
+    background: #e7e4f5;
+}
+.domain{
+    font-size: .7em;
+    color: #7a7a7a
+}
+.vote{
+    display: block;
+    position: absolute;
+    width: 50px;
+    left: 6%;
+}
+.likeButton{
+    background-color: #e7e4f5;
+    color: #8a8a8a;
+    font-weight: bold;
+    font-size: large;
+    border: none;
+    width: 60px;
+    padding: 10px 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none; 
+}
+.likeButton:hover{
+    color: #0f0142;
+}
+.dislikeButton{
+    background-color: #e7e4f5;
+    color: #8a8a8a;
+    font-weight: bold;
+    font-size: large;
+    border: none;
+    width: 60px;
+    padding: 10px 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+.dislikeButton:hover{
+    color: #0f0142;
+}
+.post{
+    margin: 20px auto;
+    padding: 1em;
+    width: 90%;
+    border-radius: 15px;
+    background-color: #ffffff;display:block;font-family: Arial, Helvetica, sans-serif;
+    color: #444;
+    font-size: 12pt;
+    padding-bottom: 10px;
+    display: block;
+}
+.postinfo{
+    border-left: 2px solid #0f0142;
+    margin-left: 115px;
+    padding-left: 1.1em;
+    display:block
+}
