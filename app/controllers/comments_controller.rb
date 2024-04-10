@@ -26,7 +26,7 @@ class CommentsController < ApplicationController
 
     respond_to do |format|
       if @comment.save
-        format.html { redirect_to comment_url(@comment), notice: "Comment was successfully created." }
+        format.html { redirect_to post_url(@comment.post_id), notice: "Comment was successfully created." }
         format.json { render :show, status: :created, location: @comment }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -50,11 +50,16 @@ class CommentsController < ApplicationController
 
   # DELETE /comments/1 or /comments/1.json
   def destroy
-    @comment.destroy
-
-    respond_to do |format|
-      format.html { redirect_to comments_url, notice: "Comment was successfully destroyed." }
-      format.json { head :no_content }
+    @comment = Comment.find(params[:id])
+    if @comment.user_id == 1 # Assuming user with ID 1 is the hardcoded user
+      @comment.destroy
+      respond_to do |format|
+        format.json { render json: { success: true } }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: { success: false }, status: :unauthorized }
+      end
     end
   end
 
@@ -66,6 +71,6 @@ class CommentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def comment_params
-      params.require(:comment).permit(:body, :user_id)
+      params.require(:comment).permit(:body, :user_id, :post_id)
     end
 end

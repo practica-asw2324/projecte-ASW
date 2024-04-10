@@ -12,23 +12,109 @@
       </div>
     </div>
     <p class="comment-content"><%= comment.body %></p>
-    <%= link_to 'reply', '#', class: 'reply-link', data: { comment_id: comment.id } %>
     <br>
-    <!-- Reply form here -->
+    <div class="link-container">
+      <%= link_to 'reply', '#', class: 'reply-link', data: { comment_id: comment.id } %>
+      <!--coses pel reply form -->
+
+      <div class="dropdown">
+        <%= link_to 'more', '#', class: 'more-link', data: { comment_id: comment.id } %>
+        <div class="dropdown-content">
+          <a href="#">edit</a>
+          <a href="#" class="delete-comment" data-comment-id="<%= comment.id %>">delete</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    <p>Are you sure you want to delete this comment?</p>
+    <button id="modalYes" class="modal-button">Yes</button>
+    <button id="modalNo" class="modal-button">No</button>
   </div>
 </div>
 
 <script>
 
+    document.addEventListener('DOMContentLoaded', function() {
+        const replyLinks = document.querySelectorAll('.reply-link');
+        replyLinks.forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                const commentId = this.dataset.commentId;
+                const form = document.getElementById(`reply-form-${commentId}`);
+                form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            });
+        });
+    });
+
   document.addEventListener('DOMContentLoaded', function() {
-      const replyLinks = document.querySelectorAll('.reply-link');
-      replyLinks.forEach(function(link) {
+      const deleteLinks = document.querySelectorAll('.delete-comment');
+      deleteLinks.forEach(function(link) {
           link.addEventListener('click', function(event) {
               event.preventDefault();
               const commentId = this.dataset.commentId;
-              const form = document.getElementById(`reply-form-${commentId}`);
-              form.style.display = 'block';
+              fetch(`/comments/${commentId}`, {
+                  method: 'DELETE',
+                  headers: {
+                      'X-Requested-With': 'XMLHttpRequest',
+                      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                  },
+                  credentials: 'same-origin'
+              })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const commentElement = document.getElementById(`comment_${commentId}`);
+                        commentElement.parentNode.removeChild(commentElement);
+                    } else {
+                        alert('You are not authorized to delete this comment.');
+                    }
+                });
           });
+      });
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+      const deleteLinks = document.querySelectorAll('.delete-comment');
+      const modal = document.getElementById('myModal');
+      const yesButton = document.getElementById('modalYes');
+      const noButton = document.getElementById('modalNo');
+      let commentId;
+
+      deleteLinks.forEach(function(link) {
+          link.addEventListener('click', function(event) {
+              event.preventDefault();
+              commentId = this.dataset.commentId;
+              modal.style.display = 'block';
+          });
+      });
+
+      yesButton.addEventListener('click', function() {
+          modal.style.display = 'none';
+          fetch(`/comments/${commentId}`, {
+              method: 'DELETE',
+              headers: {
+                  'X-Requested-With': 'XMLHttpRequest',
+                  'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+              },
+              credentials: 'same-origin'
+          })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      const commentElement = document.getElementById(`comment_${commentId}`);
+                      commentElement.parentNode.removeChild(commentElement);
+                  } else {
+                      alert('You are not authorized to delete this comment.');
+                  }
+              });
+      });
+
+      noButton.addEventListener('click', function() {
+          modal.style.display = 'none';
       });
   });
 

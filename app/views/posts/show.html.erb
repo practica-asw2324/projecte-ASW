@@ -28,11 +28,7 @@
 
 <div class="commentitem">
   <h4>Write your comment here</h4>
-  <%= form_with(model: @comment, url: comments_path, method: "post", id: "new-comment-form", class: "new-comment-form") do |form| %>
-    <%= form.text_area :body, id: "newCommentText", rows: "4", cols: "50" %>
-    <%= form.hidden_field :user_id, value: 1 %> <!-- Set the user_id to the ID of the hardcoded user -->
-    <%= form.submit "Add Comment!", class: "commentitem-button" %>
-  <% end %>
+  <%= render 'comments/form', comment: @comment %>
 </div>
 
 <div id="comments" class="comments">
@@ -43,10 +39,10 @@
 
 <script>
 
-    function getDynamicValue() {
+    function getDynamicValue(created_at) {
 
         var time = new Date();
-        var datecreated = new Date('<%= @post.created_at %>');
+        var datecreated = new Date(created_at);
 
         var diff = time - datecreated;
 
@@ -54,8 +50,14 @@
         const minutes = Math.floor(seconds / 60);
         const hours = Math.floor(minutes / 60);
         const days = Math.floor(hours / 24);
+        const months = Math.floor(days / 30);
+        const years = Math.floor(months / 12);
 
-        if (days > 0) {
+        if (years > 0) {
+            return years + " years ago";
+        } else if (months > 0) {
+            return months + " months ago";
+        } else if (days > 0) {
             return days + " days ago";
         } else if (hours > 0) {
             return hours + " hours ago";
@@ -140,21 +142,20 @@
             },
             body: JSON.stringify(data)
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Update UI with new likes and dislikes counts
-                post.querySelector(".likesCount").textContent = data.likes;
-                post.querySelector(".dislikesCount").textContent = data.dislikes;
-            })
-            .catch(error => {
-                console.error("There was a problem with the fetch operation:", error);
-            });
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error("Network response was not ok");
+              }
+              return response.json();
+          })
+          .then(data => {
+              // Update UI with new likes and dislikes counts
+              post.querySelector(".likesCount").textContent = data.likes;
+              post.querySelector(".dislikesCount").textContent = data.dislikes;
+          })
+          .catch(error => {
+              console.error("There was a problem with the fetch operation:", error);
+          });
     }
-
 
 </script>
