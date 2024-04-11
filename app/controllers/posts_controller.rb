@@ -76,6 +76,21 @@ class PostsController < ApplicationController
     end
   end
 
+  def sort_comments
+    @post = Post.find(params[:id])
+    @comments = @post.comments
+    @comment = Comment.new
+    case params[:sort]
+    when 'top'
+      @comments = @comments.order(likes: :desc)
+    when 'newest'
+      @comments = @comments.order(created_at: :desc)
+    when 'old'
+      @comments = @comments.order(created_at: :asc)
+    end
+    render 'show'
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post

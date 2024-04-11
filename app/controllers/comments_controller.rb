@@ -4,6 +4,14 @@ class CommentsController < ApplicationController
   # GET /comments or /comments.json
   def index
     @comments = Comment.all
+    case params[:sort]
+    when 'top'
+      @comments = @comments.order(likes: :desc)
+    when 'newest'
+      @comments = @comments.order(created_at: :desc)
+    when 'old'
+      @comments = @comments.order(created_at: :asc)
+    end
   end
 
   # GET /comments/1 or /comments/1.json
@@ -50,16 +58,10 @@ class CommentsController < ApplicationController
 
   # DELETE /comments/1 or /comments/1.json
   def destroy
-    @comment = Comment.find(params[:id])
-    if @comment.user_id == 1 # Assuming user with ID 1 is the hardcoded user
-      @comment.destroy
-      respond_to do |format|
-        format.json { render json: { success: true } }
-      end
-    else
-      respond_to do |format|
-        format.json { render json: { success: false }, status: :unauthorized }
-      end
+    @comment.destroy
+    respond_to do |format|
+      format.html { redirect_to post_url(@comment.post_id), notice: "Comment was successfully destroyed." }
+      format.json { head :no_content }
     end
   end
 

@@ -31,6 +31,12 @@
   <%= render 'comments/form', comment: @comment %>
 </div>
 
+<ul class="filteritem">
+  <li><%= link_to 'top', sort_comments_post_path(@post, sort: 'top') %></li>
+  <li><%= link_to 'newest', sort_comments_post_path(@post, sort: 'newest') %></li>
+  <li><%= link_to 'oldest', sort_comments_post_path(@post, sort: 'old') %></li>
+</ul>
+
 <div id="comments" class="comments">
   <% @comments.each do |comment| %>
     <%= render 'comments/comment', comment: comment %>
