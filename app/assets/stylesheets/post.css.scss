@@ -14,13 +14,6 @@
  *= require_tree .
  *= require_self
  */
-body{
-    background: #e7e4f5;
-}
-.domain{
-    font-size: .7em;
-    color: #7a7a7a
-}
 .vote{
     display: block;
     position: absolute;
@@ -31,7 +24,7 @@ body{
     background-color: #e7e4f5;
     color: #8a8a8a;
     font-weight: bold;
-    font-size: large;
+    font-size: medium;
     border: none;
     width: 60px;
     padding: 10px 10px;
@@ -48,7 +41,7 @@ body{
     background-color: #e7e4f5;
     color: #8a8a8a;
     font-weight: bold;
-    font-size: large;
+    font-size: medium;
     border: none;
     width: 60px;
     padding: 10px 10px;
@@ -61,7 +54,7 @@ body{
 .dislikeButton:hover{
     color: #0f0142;
 }
-.post{
+.postitem{
     margin: 20px auto;
     padding: 1em;
     width: 90%;

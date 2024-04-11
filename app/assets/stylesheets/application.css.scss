@@ -22,6 +22,29 @@ body{
     font-size: .7em;
     color: #7a7a7a
 }
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columnas */
+    grid-gap: 20px; /* Espacio entre las imágenes */
+    margin: 20px;
+}
+
+.grid-item img {
+    width: 100%; /* Ajustar el tamaño de la imagen al contenedor */
+    height: auto; /* Mantener la proporción de aspecto */
+}
+.posts{
+    grid-area: main;
+    padding: 0 0.5rem;
+    position: relative;
+}
+.magazine {
+    grid-area: sidebar;
+    margin-right: 60px;
+    background: #ffffff;
+
+    width: 500px; height: 450px; margin-top: 20px;
+}
 body {
     font-family: Arial, sans-serif;
     margin: 0;

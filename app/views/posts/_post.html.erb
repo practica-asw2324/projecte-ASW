@@ -1,4 +1,4 @@
-<div class="post" id=post.id>
+<div class="postitem" id=post.id>
   <div class="vote">
     <br>
     <button type="button" class="likeButton">
@@ -13,7 +13,7 @@
   <div class="postinfo">
     <h3><%= link_to post.title, post, :class=>'link' %> <span class="domain"> (<%= post.url %>)</span></h3>
 
-    <h5><span><%= post.user.name %></span>, <span class="domain createdAt" data-created-at="<%= post.created_at %>"></span> <span class="domain">to </span> <span> <%= post.magazine.name %> </span></h4>
+    <h4><span><%= post.user.name %></span>, <span class="domain createdAt" data-created-at="<%= post.created_at %>"></span> <span class="domain">to </span> <span> <%= post.magazine.name %> </span></h4>
 
     <p><%= post.comments.count %> comments</p>
   </div>
@@ -51,6 +51,7 @@ function getDynamicValue(created_at) {
         return seconds + " seconds ago";
       }
 }
+
 
 document.querySelectorAll(".createdAt").forEach(function(element) {
   element.textContent = getDynamicValue(element.getAttribute('data-created-at'));
@@ -107,7 +108,7 @@ document.querySelectorAll(".postitem").forEach(function(post) {
       dislikeButton.querySelector(".dislikesCount").style.color = "#8a8a8a";
       disliked = false;
     }
-    //sendReaction(postId, likesCount, dislikesCount);
+    sendReaction(postId, likesCount, dislikesCount);
   });
 });
 
@@ -144,4 +145,5 @@ function sendReaction(postId, likesCount, dislikesCount) {
 
 
 </script>
+
 
