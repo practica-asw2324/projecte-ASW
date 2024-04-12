@@ -8,4 +8,6 @@ class Post < ApplicationRecord
   has_many :likers, through: :likes, source: :user
   has_many :dislikes
   has_many :dislikers, through: :dislikes, source: :user
+  has_many :boosts
+  has_many :boosters, through: :boosts, source: :user
 end
