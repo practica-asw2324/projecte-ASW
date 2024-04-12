@@ -14,38 +14,54 @@ class PostsController < ApplicationController
    def like
     @post = Post.find(params[:id])
     userproves = User.find(id = 1)
-    @like = @post.likes.build(user: userproves) 
-
-    # If the user has disliked the post, remove the dislike
-    if userproves.disliked_post?(@post)
-      @post.dislikes.find_by(user: userproves).destroy
-    end
-
-    if @like.save
-      redirect_to root_path
+    
+    # If the user has already liked the post, remove the like
+    if userproves.liked_post?(@post)
+      @post.likes.find_by(user: userproves).destroy
+      flash[:notice] = "You've unliked this post."
     else
-      flash[:error] = "You've already liked this post."
-    redirect_to root_path
+      @like = @post.likes.build(user: userproves)
+
+      # If the user has disliked the post, remove the dislike
+      if userproves.disliked_post?(@post)
+        @post.dislikes.find_by(user: userproves).destroy
+      end
+
+      if @like.save
+        flash[:notice] = "You've liked this post."
+      else
+        flash[:error] = "There was an error liking this post."
+      end
     end
+
+    redirect_to root_path
   end
 
-  # PUT /posts/:id/dislike
+    # PUT /posts/:id/dislike
   def dislike
     @post = Post.find(params[:id])
     userproves = User.find(id = 1)
-    @dislike = @post.dislikes.build(user: userproves)
 
-    # If the user has liked the post, remove the like
-    if userproves.liked_post?(@post)
-      @post.likes.find_by(user: userproves).destroy
-    end
-
-    if @dislike.save
-      redirect_to root_path
+    # If the user has already disliked the post, remove the dislike
+    if userproves.disliked_post?(@post)
+      @post.dislikes.find_by(user: userproves).destroy
+      flash[:notice] = "You've undisliked this post."
     else
-      flash[:error] = "You've already disliked this post."
-    redirect_to root_path
+      @dislike = @post.dislikes.build(user: userproves)
+
+      # If the user has liked the post, remove the like
+      if userproves.liked_post?(@post)
+        @post.likes.find_by(user: userproves).destroy
+      end
+
+      if @dislike.save
+        flash[:notice] = "You've disliked this post."
+      else
+        flash[:error] = "There was an error disliking this post."
+      end
     end
+
+    redirect_to root_path
   end
 
   # GET /posts/new

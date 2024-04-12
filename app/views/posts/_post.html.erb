@@ -1,12 +1,12 @@
 <div class="postitem" id=post.id>
   <div class="vote">
     <br>
-    <%= button_to like_post_path(post), method: :put, class:"likeButton #{'liked' if User.find(id=1).liked_post?(post)}" do %>
-      <i class="fas fa-arrow-up"></i><span> </span><span class="likesCount"><%= post.likes.count %></span>
+    <%= button_to like_post_path(post), method: :put, class:"voteButton #{'voted' if User.find(id=1).liked_post?(post)}" do %>
+      <i class="fas fa-arrow-up"></i><span> </span><%= post.likes.count %>
     <% end %>
 
-    <%= button_to dislike_post_path(post), method: :put, class:"dislikeButton #{'disliked' if User.find(id=1).disliked_post?(post)}" do %>
-      <i class="fas fa-arrow-down"></i><span> </span><span class="dislikesCount"><%= post.dislikes.count %></span>
+    <%= button_to dislike_post_path(post), method: :put, class:"voteButton #{'voted' if User.find(id=1).disliked_post?(post)}" do %>
+      <i class="fas fa-arrow-down"></i><span> </span><%= post.dislikes.count %>
     <% end %>
   </div>
 
