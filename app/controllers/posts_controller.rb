@@ -3,11 +3,28 @@ class PostsController < ApplicationController
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.includes(:user, :magazine, :comments).all
+    case params[:sort]
+    when 'top'
+      @posts = Post.includes(:user, :magazine, :comments).sort_by { |post| post.likes.count }.reverse   
+    when 'newest'
+      @posts = Post.includes(:user, :magazine, :comments).order(created_at: :desc)
+    when 'commented'
+      @posts = Post.includes(:user, :magazine, :comments).sort_by { |post| post.comments.count }.reverse    
+    else
+      @posts = Post.includes(:user, :magazine, :comments).all
+    end
+  end
+
+  def sort_posts
+    
+    
+    
+    render 'index'
   end
 
   # GET /posts/1 or /posts/1.json
   def show
+    @post = Post.find(params[:id])
   end
 
    # PUT /posts/:id/like
@@ -119,6 +136,6 @@ class PostsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def post_params
-      params.require(:post).permit(:title, :body, :url)
+      params.require(:post).permit(:title, :body, :user_id, :magazine_id)
     end
 end
