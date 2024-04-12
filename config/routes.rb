@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   resources :posts do
     post 'react', on: :member
     get 'sort_comments', on: :member
+    put 'like', on: :member
+    put 'dislike', on: :member
+    put 'boost', on: :member
   end
 
   root 'posts#index'

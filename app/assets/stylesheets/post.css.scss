@@ -1,0 +1,148 @@
+@import "font-awesome";
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+.vote{
+    display: block;
+    position: absolute;
+    width: 50px;
+    left: 3.5%;
+}
+.link {
+    color: #0f0142;
+  }
+  
+.link:visited {
+    color: grey;
+}
+.voteButton{
+    background-color: #e7e4f5;
+    color: #8a8a8a;
+    font-weight: bold;
+    font-size: medium;
+    border: none;
+    width: 60px;
+    height: auto;
+    padding: 10px 10px ;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+.voteButton.voted {
+    color: #0f0142;
+}
+.voteButton:hover{
+    color: #ffffff;
+    background-color: #0f0142;
+}
+.postitem{
+    margin: 20px auto;
+    padding: 1em;
+    width: 96%;
+    border-radius: 15px;
+    background-color: #ffffff;display:block;font-family: Arial, Helvetica, sans-serif;
+    color: #444;
+    font-size: 12pt;
+    padding-bottom: 20px;
+    display: block;
+}
+.postinfo{
+    border-left: 2px solid #0f0142;
+    margin-left: 115px;
+    padding-left: 1.1em;
+    display:block
+}
+.filterposts {
+    margin: 20px auto;
+    padding: 1em;
+    width: 95%;
+    border-radius: 15px;
+    background-color: #ffffff;
+    list-style-type: none;
+    display: flex;
+}
+.filterposts li {
+    margin-right: 20px;
+}
+
+.filterposts li a {
+    text-decoration: none;
+    padding-left: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: grey;
+    font-size: 12pt;
+}
+
+.filterposts li a:hover {
+    color: #0f0142;
+}
+.boostButton{
+    background-color: white;
+    color: black;
+    border: none;
+    color: grey;
+    font-size: medium;
+    margin-right: 10px;
+    cursor: pointer;
+    text-decoration: none;
+}
+.boostButton:hover{
+    color: #0f0142;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 11pt;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .dropdown-content a:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  .delete-button {
+    display: inline;
+    color: black; /* color de enlace predeterminado */
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    text-decoration: none;
+    font-size: 11pt;
+    font-family: Arial, Helvetica, sans-serif;
+    cursor: pointer;
+  }  

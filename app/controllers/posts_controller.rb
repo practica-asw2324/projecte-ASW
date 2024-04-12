@@ -3,8 +3,37 @@ class PostsController < ApplicationController
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.includes(:user, :magazine, :comments).all
+    case params[:sort]
+    when 'top'
+      @posts = Post.includes(:user, :magazine, :comments).left_joins(:likes).group(:id).order('COUNT(likes.id) DESC')
+    when 'commented'
+      @posts = Post.includes(:user, :magazine, :comments).left_joins(:comments).group(:id).order('COUNT(comments.id) DESC')
+    when 'links'
+      @posts = Post.includes(:user, :magazine, :comments).where.not(url: [nil, '']).order(created_at: :desc)
+    when 'threads'
+      @posts = Post.includes(:user, :magazine, :comments).where(url: [nil, '']).order(created_at: :desc)
+    else
+      @posts = Post.includes(:user, :magazine, :comments).order(created_at: :desc)
+    end
   end
+
+  # PUT /posts/:id/boost
+def boost
+  @post = Post.find(params[:id])
+  user = User.find(id = 1)
+
+  # If the user has already boosted the post, remove the boost
+  if user.boosted_post?(@post)
+    @post.boosts.find_by(user: user).destroy
+    flash[:notice] = "You've unboosted this post."
+  else
+    # If the user hasn't boosted the post yet, create a new boost
+    @post.boosts.create(user: user)
+    flash[:notice] = "You've boosted this post."
+  end
+
+  redirect_to root_path
+end
 
   # GET /posts/1 or /posts/1.json
   def show
@@ -17,16 +46,60 @@ class PostsController < ApplicationController
   def react
     
     @post = Post.find(params[:id])
-    
+  end
 
-    @post.likes = params[:likes].to_i
-    @post.dislikes = params[:dislikes].to_i
+   # PUT /posts/:id/like
+   def like
+    @post = Post.find(params[:id])
+    userproves = User.find(id = 1)
 
-    if @post.save
-      render json: { likes: @post.likes, dislikes: @post.dislikes }
+    # If the user has already liked the post, remove the like
+    if userproves.liked_post?(@post)
+      @post.likes.find_by(user: userproves).destroy
+      flash[:notice] = "You've unliked this post."
     else
-      render json: { error: @post.errors.full_messages.join(", ") }, status: :unprocessable_entity
+      @like = @post.likes.build(user: userproves)
+
+      # If the user has disliked the post, remove the dislike
+      if userproves.disliked_post?(@post)
+        @post.dislikes.find_by(user: userproves).destroy
+      end
+
+      if @like.save
+        flash[:notice] = "You've liked this post."
+      else
+        flash[:error] = "There was an error liking this post."
+      end
     end
+
+    redirect_to root_path
+  end
+
+    # PUT /posts/:id/dislike
+  def dislike
+    @post = Post.find(params[:id])
+    userproves = User.find(id = 1)
+
+    # If the user has already disliked the post, remove the dislike
+    if userproves.disliked_post?(@post)
+      @post.dislikes.find_by(user: userproves).destroy
+      flash[:notice] = "You've undisliked this post."
+    else
+      @dislike = @post.dislikes.build(user: userproves)
+
+      # If the user has liked the post, remove the like
+      if userproves.liked_post?(@post)
+        @post.likes.find_by(user: userproves).destroy
+      end
+
+      if @dislike.save
+        flash[:notice] = "You've disliked this post."
+      else
+        flash[:error] = "There was an error disliking this post."
+      end
+    end
+
+    redirect_to root_path
   end
 
   # GET /posts/new
