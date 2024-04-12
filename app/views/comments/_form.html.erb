@@ -1,6 +1,8 @@
-<%= form_with(model: comment, url: comments_path, method: "post", id: "reply-form-#{comment.id}", class: "new-comment-form") do |form| %>
+<%= form_with(model: comment, url: comment.new_record? ? comments_path : comment_path(comment),
+              method: comment.new_record? ? "post" : "patch", id: "reply-form-#{comment.id}",
+              class: "new-comment-form") do |form| %>
   <%= form.text_area :body, id: "newCommentText", rows: "4", cols: "50" %>
   <%= form.hidden_field :user_id, value: 1 %>
   <%= form.hidden_field :post_id, value: @post.id %>
-  <%= form.submit "Add Comment!", class: "commentitem-button" %>
+  <%= form.submit comment.new_record? ? 'Add Comment' : 'Update Comment', class: 'commentitem-button' %>
 <% end %>
