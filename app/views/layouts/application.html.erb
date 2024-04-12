@@ -1,27 +1,3 @@
-<style>
-.dropdown-toggle {
-  display: none;
-}
-
-.dropdown-menu {
-  display: none;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-#.dropdown:hover .dropdown-menu { display: block;}
-
-.dropdown-toggle:checked + .dropdown-menu{
-  display: block;
-}
-
-.dropdown-label {
-  cursor: pointer;
-}
-</style>
-
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -53,15 +29,22 @@
 
         <div class="dropdown">
           <label for="dropdown-toggle" class="dropdown-label">+</label>
-          <input type="checkbox" id="dropdown-toggle" class="dropdown-toggle">
-          <ul class="dropdown-menu">
-            <%= link_to "Add new link", new_post_path %><br>
-            <%= link_to "Add new thread", new_tweet_path %><br>
+          <div class="dropdown-content">
+            <%= link_to "Add new link", new_post_path %>
+            <%= link_to "Add new thread", new_tweet_path %>
             <%= link_to "Create new magazine", new_magazine_path %>
-          </ul>
+          </div>
         </div>
 
-        <a href="#" class="navbar-button">user.username</a>
+        <div class="dropdown">
+          <label for="dropdown-toggle" class="dropdown-label">Username</label>
+          <div class="dropdown-content">
+            <%= link_to "Profile", new_post_path %>
+            <%= link_to "Logout", new_post_path %>
+          </div>
+        </div>
+        <a href="#" class="navbar-button">Login</a>
+
       </div>
     </div>
   </div>
