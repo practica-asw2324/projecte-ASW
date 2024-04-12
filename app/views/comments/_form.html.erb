@@ -4,5 +4,6 @@
   <%= form.text_area :body, id: "newCommentText", rows: "4", cols: "50" %>
   <%= form.hidden_field :user_id, value: 1 %>
   <%= form.hidden_field :post_id, value: @post.id %>
+  <%= form.hidden_field :comment_id, value: comment.id %>
   <%= form.submit comment.new_record? ? 'Add Comment' : 'Update Comment', class: 'commentitem-button' %>
 <% end %>

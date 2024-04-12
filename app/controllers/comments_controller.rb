@@ -4,18 +4,12 @@ class CommentsController < ApplicationController
   # GET /comments or /comments.json
   def index
     @comments = Comment.all
-    case params[:sort]
-    when 'top'
-      @comments = @comments.order(likes: :desc)
-    when 'newest'
-      @comments = @comments.order(created_at: :desc)
-    when 'old'
-      @comments = @comments.order(created_at: :asc)
-    end
+
   end
 
   # GET /comments/1 or /comments/1.json
   def show
+
   end
 
   # GET /comments/new
@@ -72,6 +66,6 @@ class CommentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def comment_params
-      params.require(:comment).permit(:body, :user_id, :post_id)
+      params.require(:comment).permit(:body, :user_id, :post_id, :comment_id)
     end
 end

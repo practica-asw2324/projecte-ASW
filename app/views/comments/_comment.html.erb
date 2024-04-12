@@ -16,7 +16,7 @@
     <div class="link-container">
       <%= link_to 'reply', '#', class: 'reply-link', data: { comment_id: comment.id } %>
       <div class="dropdown">
-        <%= link_to 'more', '#', class: 'more-link', data: { comment_id: comment.id } %>
+        <span class="more-link">more</span>
         <div class="dropdown-content">
           <%= link_to 'edit', '#', class: 'edit-link', data: { comment_id: comment.id } %>
           <a>
@@ -34,6 +34,7 @@
   </div>
 </div>
 
+
 <script>
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -42,7 +43,9 @@
             link.addEventListener('click', function(e) {
                 e.preventDefault();
                 var commentId = this.dataset.commentId;
+                var repliesContainer = document.getElementById('replies-container-' + commentId);
                 var form = document.querySelector('#comment_' + commentId + ' .reply-form');
+                form.querySelector('input[name="comment[comment_id]"]').value = commentId;
                 form.style.display = 'block';
             });
         });
