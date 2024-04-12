@@ -5,13 +5,11 @@ class PostsController < ApplicationController
   def index
     case params[:sort]
     when 'top'
-      @posts = Post.includes(:user, :magazine, :comments).sort_by { |post| post.likes.count }.reverse   
-    when 'newest'
-      @posts = Post.includes(:user, :magazine, :comments).order(created_at: :desc)
+      @posts = Post.includes(:user, :magazine, :comments).left_joins(:likes).group(:id).order('COUNT(likes.id) DESC')
     when 'commented'
-      @posts = Post.includes(:user, :magazine, :comments).sort_by { |post| post.comments.count }.reverse    
+      @posts = Post.includes(:user, :magazine, :comments).left_joins(:comments).group(:id).order('COUNT(comments.id) DESC')
     else
-      @posts = Post.includes(:user, :magazine, :comments).all
+      @posts = Post.includes(:user, :magazine, :comments).order(created_at: :desc)
     end
   end
 

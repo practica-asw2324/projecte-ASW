@@ -18,7 +18,14 @@
     display: block;
     position: absolute;
     width: 50px;
-    left: 6%;
+    left: 3.5%;
+}
+.link {
+    color: #0f0142;
+  }
+  
+.link:visited {
+    color: grey;
 }
 .voteButton{
     background-color: #e7e4f5;
@@ -28,7 +35,7 @@
     border: none;
     width: 60px;
     height: auto;
-    padding: 10px 10px;
+    padding: 10px 10px ;
     margin-left: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
@@ -45,12 +52,12 @@
 .postitem{
     margin: 20px auto;
     padding: 1em;
-    width: 90%;
+    width: 96%;
     border-radius: 15px;
     background-color: #ffffff;display:block;font-family: Arial, Helvetica, sans-serif;
     color: #444;
     font-size: 12pt;
-    padding-bottom: 10px;
+    padding-bottom: 20px;
     display: block;
 }
 .postinfo{
@@ -59,3 +66,27 @@
     padding-left: 1.1em;
     display:block
 }
+.filterposts {
+    margin: 20px auto;
+    padding: 1em;
+    width: 95%;
+    border-radius: 15px;
+    background-color: #ffffff;
+    list-style-type: none;
+    display: flex;
+  }
+  .filterposts li {
+    margin-right: 20px;
+  }
+  
+  .filterposts li a {
+    text-decoration: none;
+    padding-left: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: grey;
+    font-size: 12pt;
+  }
+  
+  .filterposts li a:hover {
+    color: #0f0142;
+  }

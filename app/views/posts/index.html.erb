@@ -1,11 +1,11 @@
 <ul class="filterposts">
   <li><%= link_to 'top', posts_path(sort: 'top') %></li>
   <li><%= link_to 'newest', posts_path(sort: 'newest') %></li>
-  <li><%= link_to 'oldest', posts_path(sort: 'commented') %></li>
+  <li><%= link_to 'commented', posts_path(sort: 'commented') %></li>
 </ul>
 
 <div id="posts" class="posts">
-    <% @posts.order(created_at: :desc).each do |post| %>
+    <% @posts.each do |post| %>
       <%= render post %>
     <% end %>
 </div>
