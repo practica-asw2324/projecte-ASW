@@ -27,15 +27,20 @@
     font-size: medium;
     border: none;
     width: 60px;
+    height: auto;
     padding: 10px 10px;
     margin-left: 10px;
     margin-bottom: 10px;
     border-radius: 5px;
     cursor: pointer;
-    text-decoration: none; 
+    text-decoration: none;
+}
+.likeButton.liked {
+    color: #0f0142;
 }
 .likeButton:hover{
-    color: #0f0142;
+    color: #ffffff;
+    background-color: #0f0142;
 }
 .dislikeButton{
     background-color: #e7e4f5;
@@ -51,8 +56,12 @@
     cursor: pointer;
     text-decoration: none;
 }
-.dislikeButton:hover{
+.likeButton.disliked {
     color: #0f0142;
+}
+.dislikeButton:hover{
+    color: #ffffff;
+    background-color: #0f0142;
 }
 .postitem{
     margin: 20px auto;

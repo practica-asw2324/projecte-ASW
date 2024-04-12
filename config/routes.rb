@@ -5,7 +5,8 @@ Rails.application.routes.draw do
   resources :users
 
   resources :posts do
-    post 'react', on: :member
+    put 'like', on: :member
+    put 'dislike', on: :member
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

@@ -10,19 +10,41 @@ class PostsController < ApplicationController
   def show
   end
 
-  # POST /posts/:id/react
-  def react
-    
+   # PUT /posts/:id/like
+   def like
     @post = Post.find(params[:id])
-    
+    userproves = User.find(id = 1)
+    @like = @post.likes.build(user: userproves) 
 
-    @post.likes = params[:likes].to_i
-    @post.dislikes = params[:dislikes].to_i
+    # If the user has disliked the post, remove the dislike
+    if userproves.disliked_post?(@post)
+      @post.dislikes.find_by(user: userproves).destroy
+    end
 
-    if @post.save
-      render json: { likes: @post.likes, dislikes: @post.dislikes }
+    if @like.save
+      redirect_to root_path
     else
-      render json: { error: @post.errors.full_messages.join(", ") }, status: :unprocessable_entity
+      flash[:error] = "You've already liked this post."
+    redirect_to root_path
+    end
+  end
+
+  # PUT /posts/:id/dislike
+  def dislike
+    @post = Post.find(params[:id])
+    userproves = User.find(id = 1)
+    @dislike = @post.dislikes.build(user: userproves)
+
+    # If the user has liked the post, remove the like
+    if userproves.liked_post?(@post)
+      @post.likes.find_by(user: userproves).destroy
+    end
+
+    if @dislike.save
+      redirect_to root_path
+    else
+      flash[:error] = "You've already disliked this post."
+    redirect_to root_path
     end
   end
 
