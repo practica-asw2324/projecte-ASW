@@ -11,11 +11,12 @@
   </div>
 
   <div class="postinfo">
-    <h3><%= link_to post.title, post, :class=>'link' %> <span class="domain"> (<%= post.url %>)</span></h3>
+    <h3><%= link_to post.title, post, :class=>'link' %> <a href="http://<%= post.url %>" target="_blank" class="domain">(<%= post.url %>)</a>
 
     <h4><span><%= post.user.name %></span>, <span class="domain createdAt" data-created-at="<%= post.created_at %>"></span> <span class="domain">to </span> <span> <%= post.magazine.name %> </span></h4>
 
-    <p><%= post.comments.count %> comments</p>
+    <%= link_to post.comments.count.to_s + ' comments', post, class: 'link' %>
+
   </div>
   
 </div>
