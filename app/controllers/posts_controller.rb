@@ -32,7 +32,7 @@ def boost
     flash[:notice] = "You've boosted this post."
   end
 
-  redirect_to root_path
+  redirect_back(fallback_location: root_path)
 end
 
   # GET /posts/1 or /posts/1.json
@@ -72,7 +72,7 @@ end
       end
     end
 
-    redirect_to root_path
+    redirect_back(fallback_location: root_path)
   end
 
     # PUT /posts/:id/dislike
@@ -98,8 +98,8 @@ end
         flash[:error] = "There was an error disliking this post."
       end
     end
+    redirect_back(fallback_location: root_path)
 
-    redirect_to root_path
   end
 
   # GET /posts/new

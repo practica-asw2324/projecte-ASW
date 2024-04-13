@@ -52,14 +52,14 @@
   font-weight: bold;
   border: none;
   width: 60px;
+  align-items: center;
   margin: 0 5px 10px 10px;
   border-radius: 5px;
   cursor: pointer;
   text-decoration: none;
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 5px 10px;
+  padding: 5px 10px
 }
 .comment-likeButton span:last-child, .comment-dislikeButton span:last-child {
   margin-left: 5px;
@@ -77,6 +77,11 @@
 .commentHeader {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding-top: 0;
+}
+.commentActions, .commentInfo {
+  display: flex;
   align-items: center;
 }
 
