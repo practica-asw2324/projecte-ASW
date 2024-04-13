@@ -76,9 +76,10 @@
 <div id="comments" class="comments">
   <% @comments.each do |comment| %>
     <%= render 'comments/comment', comment: comment %>
+    <div style="height: 10px; border-top: 1px solid gray; margin-left: 23px; margin-right: 23px;"></div>
   <% end %>
 </div>
-
+<div style="height: 100px;"></div>
 <script>
 
     function getDynamicValue(created_at) {
