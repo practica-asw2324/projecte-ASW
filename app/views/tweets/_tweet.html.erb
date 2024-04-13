@@ -1,0 +1,40 @@
+ <div class="tweetitem" id=tweet.id style="border: 2px solid #dfcaca;
+    margin: 20px auto;
+    padding: 1em;
+    width: 90%;
+    background-color: #ffffff;display:block;font-family: Arial, Helvetica, sans-serif;
+    color: #444;
+    font-size: 12pt;padding-bottom:35px">
+    <div class="likes" style="float: left;
+    width: 95px;
+    margin-top: 0.5em;
+    text-align: center;">
+      <span class="numlikes" style="font-weight: bold;
+    color: #c71585;
+    font-size: 1.5em;" id="showLikes_<%= tweet.id %>"><%= tweet.like %></span>
+      <br>
+      <span class="smallfont" style="font-size: 9pt;">
+        people like this
+        <span>
+          <br>
+          <% if session[:created_ids].nil? || !session[:created_ids].include?(tweet.id)%>
+          <br>
+              <%= button_to 'like', like_tweet_path(tweet), method: :put %>
+        <% else %>
+            <p class="destroy" >
+            <%= button_to 'destroy', tweet, method: :delete, data: { confirm: 'Are you sure?' } %>
+      </p>
+      <% end %>
+          </span>
+        </span>
+
+      </div>
+      <div class="item" style="border-left: 2px solid #dfcaca;margin-left: 115px;padding-left: 1.1em;display:block ">
+        <h4>
+          <em><%= tweet.author %></em>
+           @ <%= tweet.created_at.strftime("%H:%M") %>
+        </h4>
+        <em><%= tweet.content %></em>
+    </div>
+  </div>
+</div>

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-RE8f1eGsGaaZVzTqrqIh+/fGBccgb4RWo1LxEs5r+57D+9x1DiVdd5TIvJB28an" crossorigin="anonymous">
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   </head>
 
@@ -17,19 +18,38 @@
         <li><a href="#">Microblog</a></li>
         <li><a href="#">All Content</a></li>
         <li><a href="#">People</a></li>
-        <li><a href="#">Magazines</a></li>
+        <li><a href="<%= magazines_path %>">Magazines</a></li>
         <li><a href="#">Collections</a></li>
       </ul>
-      <div class="navbar-buttons">        
-        <%= link_to new_post_path, class: 'navbar-button' do %>
-          <i class="fas fa-plus"></i>
-        <% end %>
 
-        <a href="#" class="navbar-button">Profile</a>
+      <div class="navbar-buttons">
+        <a href="#" class="navbar-button">
+          <i class="fas fa-search"></i>
+        </a>
+
+        <div class="dropdown">
+          <label for="dropdown-toggle" class="dropdown-label">+</label>
+          <div class="dropdown-content">
+            <%= link_to "Add new link", new_post_path %>
+            <%= link_to "Add new thread", new_tweet_path %>
+            <%= link_to "Create new magazine", new_magazine_path %>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <label for="dropdown-toggle" class="dropdown-label">Username</label>
+          <div class="dropdown-content">
+            <%= link_to "Profile", new_post_path %>
+            <%= link_to "Logout", new_post_path %>
+          </div>
+        </div>
+        <a href="#" class="navbar-button">Login</a>
+
       </div>
     </div>
   </div>
-    <%= yield %>
+
+  <%= yield %>
 
   </body>
 </html>

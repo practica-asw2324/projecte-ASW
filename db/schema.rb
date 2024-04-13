@@ -64,6 +64,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_12_074152) do
     t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
+  create_table "tweets", force: :cascade do |t|
+    t.string "author"
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "like", default: 0
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "username"
