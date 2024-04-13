@@ -74,19 +74,75 @@
     background-color: #ffffff;
     list-style-type: none;
     display: flex;
-  }
-  .filterposts li {
+}
+.filterposts li {
     margin-right: 20px;
-  }
-  
-  .filterposts li a {
+}
+
+.filterposts li a {
     text-decoration: none;
     padding-left: 10px;
     font-family: Arial, Helvetica, sans-serif;
     color: grey;
     font-size: 12pt;
+}
+
+.filterposts li a:hover {
+    color: #0f0142;
+}
+.boostButton{
+    background-color: white;
+    color: black;
+    border: none;
+    color: grey;
+    font-size: medium;
+    margin-right: 10px;
+    cursor: pointer;
+    text-decoration: none;
+}
+.boostButton:hover{
+    color: #0f0142;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
   }
   
-  .filterposts li a:hover {
-    color: #0f0142;
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
   }
+  
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 11pt;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .dropdown-content a:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  .delete-button {
+    display: inline;
+    color: black; /* color de enlace predeterminado */
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    text-decoration: none;
+    font-size: 11pt;
+    font-family: Arial, Helvetica, sans-serif;
+    cursor: pointer;
+  }  

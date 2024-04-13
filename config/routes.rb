@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   resources :posts do
     put 'like', on: :member
     put 'dislike', on: :member
-    get 'sort', on: :collection
+    put 'boost', on: :member
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
