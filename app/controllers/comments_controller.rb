@@ -59,7 +59,58 @@ class CommentsController < ApplicationController
     end
   end
 
+  # PUT /comments/:id/likes
+  def like
+    @comment = Comment.find(params[:id])
+    userproves = User.find(id = 1)
 
+    # If the user has already liked the comment, remove the like
+    if userproves.liked_comment?(@comment)
+      @comment.likes_comments.find_by(user: userproves).destroy
+      flash[:notice] = "You've unliked this comment."
+    else
+      @like = @comment.likes_comments.build(user: userproves)
+
+      # If the user has disliked the comment, remove the dislike
+      if userproves.disliked_comment?(@comment)
+        @comment.dislikes_comments.find_by(user: userproves).destroy
+      end
+
+      if @like.save
+        flash[:notice] = "You've liked this comment."
+      else
+        flash[:error] = "There was an error liking this comment."
+      end
+    end
+
+    redirect_back(fallback_location: root_path)
+  end
+
+  # PUT /comments/:id/dislike
+  def dislike
+    @comment = Comment.find(params[:id])
+    userproves = User.find(id = 1)
+
+    # If the user has already disliked the comment, remove the dislike
+    if userproves.disliked_comment?(@comment)
+      @comment.dislikes_comments.find_by(user: userproves).destroy
+      flash[:notice] = "You've undisliked this comment."
+    else
+      @dislike = @comment.dislikes_comments.build(user: userproves)
+
+      # If the user has liked the comment, remove the like
+      if userproves.liked_comment?(@comment)
+        @comment.likes_comments.find_by(user: userproves).destroy
+      end
+
+      if @dislike.save
+        flash[:notice] = "You've disliked this comment."
+      else
+        flash[:error] = "There was an error disliking this comment."
+      end
+    end
+    redirect_back(fallback_location: root_path)
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.

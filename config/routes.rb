@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :comments
+  resources :comments do
+    put 'like', on: :member
+    put 'dislike', on: :member
+  end
+
   resources :magazines
   resources :users
 
@@ -9,6 +13,7 @@ Rails.application.routes.draw do
     put 'like', on: :member
     put 'dislike', on: :member
     put 'boost', on: :member
+
   end
 
   root 'posts#index'

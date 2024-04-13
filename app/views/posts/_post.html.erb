@@ -1,112 +1,85 @@
 <div class="postitem" id=post.id>
   <div class="vote">
     <br>
-    <%= button_to like_post_path(post), method: :put, class:"voteButton #{'voted' if User.find(id=1).liked_post?(post)}" do %>
+    <%= button_to like_post_path(post), method: :put, class: "voteButton #{'voted' if User.find(id = 1).liked_post?(post)}" do %>
       <i class="fas fa-arrow-up"></i><span> </span><%= post.likes.count %>
     <% end %>
 
-    <%= button_to dislike_post_path(post), method: :put, class:"voteButton #{'voted' if User.find(id=1).disliked_post?(post)}" do %>
+    <%= button_to dislike_post_path(post), method: :put, class: "voteButton #{'voted' if User.find(id = 1).disliked_post?(post)}" do %>
       <i class="fas fa-arrow-down"></i><span> </span><%= post.dislikes.count %>
     <% end %>
   </div>
 
   <div class="postinfo">
-    <h3><%= link_to post.title, post, :class=>'link' %> <% if post.url.present? %> <a href="http://<%= post.url %>" target="_blank" class="domain">(<%= post.url %>)</a> <% end %></h3>
+    <h3><%= link_to post.title, post, :class => 'link' %>
+      <% if post.url.present? %> <a href="http://<%= post.url %>" target="_blank" class="domain">(<%= post.url %>)</a>
+      <% end %></h3>
 
-    <h4><span><%= post.user.name %></span>, <span class="domain createdAt" data-created-at="<%= post.created_at %>"></span> <span class="domain">to </span> <span> <%= post.magazine.name %> </span></h4>
+    <h4><span><%= post.user.name %></span>,
+      <span class="domain createdAt" data-created-at="<%= post.created_at %>"></span> <span class="domain">to </span>
+      <span> <%= post.magazine.name %> </span></h4>
 
     <div style="display :flex">
-    <%= link_to post.comments.count.to_s + ' comments', post, class:"boostButton" %>
+      <%= link_to post.comments.count.to_s + ' comments', post, class: "boostButton" %>
 
-    <%= button_to boost_post_path(post), method: :put, class:"boostButton" do %>
-      <%= 'boost (' + post.boosts.count.to_s + ')' %>
-    <% end %>
+      <%= button_to boost_post_path(post), method: :put, class: "boostButton" do %>
+        <%= 'boost (' + post.boosts.count.to_s + ')' %>
+      <% end %>
 
-    <% if post.user == User.find(id=1) %>
-    <div class="dropdown">
-    <button class="boostButton">more</button>
-      <div class="dropdown-content">
-      <%= link_to 'edit', edit_post_path(post), class:"boostButton" %>
-      <a>
-            <%= button_to 'delete', post, method: :delete, data: { confirm: 'Are you sure?' }, class: 'delete-button' %>
-      </a>
-      </div>
-      </div>
-    <% end %>
+      <% if post.user == User.find(id = 1) %>
+        <div class="dropdown">
+          <button class="boostButton">more</button>
+          <div class="dropdown-content">
+            <%= link_to 'edit', edit_post_path(post), class: "boostButton" %>
+            <a>
+              <%= button_to 'delete', post, method: :delete, data: { confirm: 'Are you sure?' }, class: 'delete-button' %>
+            </a>
+          </div>
+        </div>
+      <% end %>
 
     </div>
 
   </div>
-  
+
 </div>
 
 
 <script>
 
-function formatData(created_at) {
-  
-  var time = new Date();
-  var datecreated = new Date(created_at);
+    function formatData(created_at) {
 
-  var diff = time - datecreated;
-  
-  const seconds = Math.floor(diff / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-  const months = Math.floor(days / 30);
-  const years = Math.floor(months / 12);
+        var time = new Date();
+        var datecreated = new Date(created_at);
 
-  if (years > 0) {
-    return years + " years ago";
-  } else if (months > 0) {
-    return months + " months ago";
-  } else if (days > 0) {
-    return days + " days ago";
-  } else if (hours > 0) {
-    return hours + " hours ago";
-  } else if (minutes > 0) {
-    return minutes + " minutes ago";
-  } else {
-    return seconds + " seconds ago";
-  }
-}
+        var diff = time - datecreated;
 
+        const seconds = Math.floor(diff / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+        const months = Math.floor(days / 30);
+        const years = Math.floor(months / 12);
 
-document.querySelectorAll(".createdAt").forEach(function(element) {
-  element.textContent = formatData(element.getAttribute('data-created-at'));
-});
-
-function sendReaction(postId, likesCount, dislikesCount) {
-  var url = "/posts/" + postId + "/react";
-  var data = {
-    likes: likesCount,
-    dislikes: dislikesCount
-  };
-
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-    },
-    body: JSON.stringify(data)
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
+        if (years > 0) {
+            return years + " years ago";
+        } else if (months > 0) {
+            return months + " months ago";
+        } else if (days > 0) {
+            return days + " days ago";
+        } else if (hours > 0) {
+            return hours + " hours ago";
+        } else if (minutes > 0) {
+            return minutes + " minutes ago";
+        } else {
+            return seconds + " seconds ago";
+        }
     }
-    return response.json();
-  })
-  .then(data => {
-    // Update UI with new likes and dislikes counts
-    post.querySelector(".likesCount").textContent = data.likes;
-    post.querySelector(".dislikesCount").textContent = data.dislikes;
-  })
-  .catch(error => {
-    console.error("There was a problem with the fetch operation:", error);
-  });
-}
+
+
+    document.querySelectorAll(".createdAt").forEach(function (element) {
+        element.textContent = formatData(element.getAttribute('data-created-at'));
+    });
 
 
 </script>

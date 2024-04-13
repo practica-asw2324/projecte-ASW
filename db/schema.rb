@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_12_105448) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_13_134313) do
   create_table "boosts", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "post_id", null: false
@@ -41,6 +41,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_12_105448) do
     t.index ["user_id"], name: "index_dislikes_on_user_id"
   end
 
+  create_table "dislikes_comments", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "comment_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["comment_id"], name: "index_dislikes_comments_on_comment_id"
+    t.index ["user_id"], name: "index_dislikes_comments_on_user_id"
+  end
+
   create_table "likes", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "post_id", null: false
@@ -48,6 +57,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_12_105448) do
     t.datetime "updated_at", null: false
     t.index ["post_id"], name: "index_likes_on_post_id"
     t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
+  create_table "likes_comments", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "comment_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["comment_id"], name: "index_likes_comments_on_comment_id"
+    t.index ["user_id"], name: "index_likes_comments_on_user_id"
   end
 
   create_table "magazines", force: :cascade do |t|
@@ -87,8 +105,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_12_105448) do
   add_foreign_key "comments", "users"
   add_foreign_key "dislikes", "posts"
   add_foreign_key "dislikes", "users"
+  add_foreign_key "dislikes_comments", "comments"
+  add_foreign_key "dislikes_comments", "users"
   add_foreign_key "likes", "posts"
   add_foreign_key "likes", "users"
+  add_foreign_key "likes_comments", "comments"
+  add_foreign_key "likes_comments", "users"
   add_foreign_key "magazines", "users"
   add_foreign_key "posts", "magazines"
   add_foreign_key "posts", "users"

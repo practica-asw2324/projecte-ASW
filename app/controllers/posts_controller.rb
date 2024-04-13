@@ -18,38 +18,50 @@ class PostsController < ApplicationController
   end
 
   # PUT /posts/:id/boost
-def boost
-  @post = Post.find(params[:id])
-  user = User.find(id = 1)
+  def boost
+    @post = Post.find(params[:id])
+    user = User.find(id = 1)
 
-  # If the user has already boosted the post, remove the boost
-  if user.boosted_post?(@post)
-    @post.boosts.find_by(user: user).destroy
-    flash[:notice] = "You've unboosted this post."
-  else
-    # If the user hasn't boosted the post yet, create a new boost
-    @post.boosts.create(user: user)
-    flash[:notice] = "You've boosted this post."
+    # If the user has already boosted the post, remove the boost
+    if user.boosted_post?(@post)
+      @post.boosts.find_by(user: user).destroy
+      flash[:notice] = "You've unboosted this post."
+    else
+      # If the user hasn't boosted the post yet, create a new boost
+      @post.boosts.create(user: user)
+      flash[:notice] = "You've boosted this post."
+    end
+
+    redirect_back(fallback_location: root_path)
   end
-
-  redirect_back(fallback_location: root_path)
-end
 
   # GET /posts/1 or /posts/1.json
   def show
     @post = Post.find(params[:id])
-    @comments = @post.comments.order(created_at: :desc)
     @comment = Comment.new
+    @selected_filter = params[:sort] || 'top'
+    case @selected_filter
+    when 'top'
+      @comments = @post.comments.left_joins(:likes_comments)
+                       .group('comments.id')
+                       .order('COUNT(likes_comments.id) DESC')
+    when 'newest'
+      @comments = @post.comments.order(created_at: :desc)
+    when 'old'
+      @comments = @post.comments.order(created_at: :asc)
+    else
+      @comments = @post.comments.order(created_at: :desc)
+    end
   end
 
   # POST /posts/:id/react
   def react
-    
+
     @post = Post.find(params[:id])
   end
 
-   # PUT /posts/:id/like
-   def like
+  # PUT /posts/:id/like
+  def like
     @post = Post.find(params[:id])
     userproves = User.find(id = 1)
 
@@ -75,7 +87,7 @@ end
     redirect_back(fallback_location: root_path)
   end
 
-    # PUT /posts/:id/dislike
+  # PUT /posts/:id/dislike
   def dislike
     @post = Post.find(params[:id])
     userproves = User.find(id = 1)
@@ -151,27 +163,33 @@ end
 
   def sort_comments
     @post = Post.find(params[:id])
-    @comments = @post.comments
     @comment = Comment.new
+    @selected_filter = params[:sort] || 'top'
+
     case params[:sort]
     when 'top'
-      @comments = @comments.order(likes: :desc)
+      @comments = @post.comments.left_joins(:likes_comments)
+                       .group('comments.id')
+                       .order('COUNT(likes_comments.id) DESC')
     when 'newest'
-      @comments = @comments.order(created_at: :desc)
+      @comments = @post.comments.order(created_at: :desc)
     when 'old'
-      @comments = @comments.order(created_at: :asc)
+      @comments = @post.comments.order(created_at: :asc)
+    else
+      @comments = @post.comments.order(created_at: :desc)
     end
     render 'show'
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_post
-      @post = Post.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def post_params
-      params.require(:post).permit(:title, :body, :url)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_post
+    @post = Post.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def post_params
+    params.require(:post).permit(:title, :body, :url)
+  end
 end

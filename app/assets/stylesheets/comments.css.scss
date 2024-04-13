@@ -48,7 +48,8 @@
 }
 
 .comment-likeButton, .comment-dislikeButton {
-  background-color: #9692af;
+  background-color: #bdbbd2;
+  color: grey;
   font-weight: bold;
   border: none;
   width: 60px;
@@ -61,12 +62,23 @@
   justify-content: center;
   padding: 5px 10px
 }
+
 .comment-likeButton span:last-child, .comment-dislikeButton span:last-child {
   margin-left: 5px;
 }
 
 .comment-dislikeButton:hover, .comment-likeButton:hover {
+  color: white;
+  background-color: #0f0142;
+}
+
+.comment-likeButton.voted i, .comment-likeButton.voted span, .comment-dislikeButton.voted i, .comment-dislikeButton.voted span {
   color: #0f0142;
+}
+
+.comment-likeButton.voted:hover i, .comment-likeButton.voted:hover span, .comment-dislikeButton.voted:hover i,
+.comment-dislikeButton.voted:hover span {
+  color: white;
 }
 
 .buttonContainer-comments {
@@ -112,7 +124,7 @@
   position: absolute;
   background-color: #ffffff;
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
   z-index: 1;
 }
 
@@ -159,6 +171,10 @@
   color: black;
 }
 
+.filteritem li a.selected {
+  color: #0f0142;
+}
+
 .reply-form, .edit-form {
   padding-top: 12px;
   display: none;
@@ -166,7 +182,7 @@
 
 .delete-button {
   display: inline;
-  color: black; /* color de enlace predeterminado */
+  color: black;
   background-color: transparent;
   padding: 0;
   border: none;

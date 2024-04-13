@@ -11,11 +11,11 @@
 <div class="postitem" id=post.id>
   <div class="vote">
     <br>
-    <%= button_to like_post_path(@post), method: :put, class:"voteButton #{'voted' if User.find(id=1).liked_post?(@post)}" do %>
+    <%= button_to like_post_path(@post), method: :put, class: "voteButton #{'voted' if User.find(id = 1).liked_post?(@post)}" do %>
       <i class="fas fa-arrow-up"></i><span> </span><%= @post.likes.count %>
     <% end %>
 
-    <%= button_to dislike_post_path(@post), method: :put, class:"voteButton #{'voted' if User.find(id=1).disliked_post?(@post)}" do %>
+    <%= button_to dislike_post_path(@post), method: :put, class: "voteButton #{'voted' if User.find(id = 1).disliked_post?(@post)}" do %>
       <i class="fas fa-arrow-down"></i><span> </span><%= @post.dislikes.count %>
     <% end %>
   </div>
@@ -29,20 +29,21 @@
         <%= @post.title %>
       <% end %>
     </h3>
-    <h4><span><%= @post.user.name %></span>, <span class="domain createdAt" data-created-at="<%= @post.created_at %>"></span></h4>
+    <h4><span><%= @post.user.name %></span>,
+      <span class="domain createdAt" data-created-at="<%= @post.created_at %>"></span></h4>
 
     <div style="display :flex">
-      <%= link_to @post.comments.count.to_s + ' comments', '#comments', class:"boostButton" %>
+      <%= link_to @post.comments.count.to_s + ' comments', '#comments', class: "boostButton" %>
 
-      <%= button_to boost_post_path(@post), method: :put, class:"boostButton" do %>
+      <%= button_to boost_post_path(@post), method: :put, class: "boostButton" do %>
         <%= 'boost (' + @post.boosts.count.to_s + ')' %>
       <% end %>
 
-      <% if @post.user == User.find(id=1) %>
+      <% if @post.user == User.find(id = 1) %>
         <div class="dropdown">
           <button class="boostButton">more</button>
           <div class="dropdown-content">
-            <%= link_to 'edit', edit_post_path(@post), class:"boostButton" %>
+            <%= link_to 'edit', edit_post_path(@post), class: "boostButton" %>
             <a>
               <%= button_to 'delete', @post, method: :delete, data: { confirm: 'Are you sure?' }, class: 'delete-button' %>
             </a>
@@ -54,7 +55,7 @@
 
     <div>
       <br>
-        <%=@post.body %>
+      <%= @post.body %>
     </div>
 
   </div>
@@ -67,9 +68,9 @@
 </div>
 
 <ul class="filteritem">
-  <li><%= link_to 'top', sort_comments_post_path(@post, sort: 'top') %></li>
-  <li><%= link_to 'newest', sort_comments_post_path(@post, sort: 'newest') %></li>
-  <li><%= link_to 'oldest', sort_comments_post_path(@post, sort: 'old') %></li>
+  <li><%= link_to 'top', sort_comments_post_path(@post, sort: 'top'), class: "#{'selected' if @selected_filter == 'top'}" %></li>
+  <li><%= link_to 'newest', sort_comments_post_path(@post, sort: 'newest'), class: "#{'selected' if @selected_filter == 'newest'}" %></li>
+  <li><%= link_to 'oldest', sort_comments_post_path(@post, sort: 'old'), class: "#{'selected' if @selected_filter == 'old'}" %></li>
 </ul>
 
 <div id="comments" class="comments">
@@ -109,94 +110,8 @@
         }
     }
 
-    document.querySelectorAll(".createdAt").forEach(function(element) {
+    document.querySelectorAll(".createdAt").forEach(function (element) {
         element.textContent = getDynamicValue(element.getAttribute('data-created-at'));
     });
-
-    document.querySelectorAll(".postitem").forEach(function(post) {
-        var likeButton = post.querySelector(".vote .likeButton");
-        var dislikeButton = post.querySelector(".vote .dislikeButton");
-        var likesCount = parseInt(post.querySelector(".likesCount").textContent);
-        var dislikesCount = parseInt(post.querySelector(".dislikesCount").textContent);
-
-        var liked = false;
-        var disliked = false;
-
-        likeButton.addEventListener("click", function() {
-            if (!liked) {
-                likesCount++;
-                likeButton.querySelector(".likesCount").textContent = likesCount;
-                likeButton.querySelector(".likesCount").style.color = "#0f0142";
-                liked = true;
-
-                if (disliked) {
-                    dislikesCount--;
-                    dislikeButton.querySelector(".dislikesCount").textContent = dislikesCount;
-                    dislikeButton.querySelector(".dislikesCount").style.color = "#8a8a8a";
-                    disliked = false;
-                }
-            } else {
-                likesCount--;
-                likeButton.querySelector(".likesCount").textContent = likesCount;
-                likeButton.querySelector(".likesCount").style.color = "#8a8a8a";
-                liked = false;
-            }
-            sendReaction('<%= @post.id %>', likesCount, dislikesCount);
-
-        });
-
-        dislikeButton.addEventListener("click", function() {
-            if (!disliked) {
-                dislikesCount++;
-                dislikeButton.querySelector(".dislikesCount").textContent = dislikesCount;
-                dislikeButton.querySelector(".dislikesCount").style.color = "#0f0142";
-                disliked = true;
-
-                if (liked) {
-                    likesCount--;
-                    likeButton.querySelector(".likesCount").textContent = likesCount;
-                    likeButton.querySelector(".likesCount").style.color = "#8a8a8a";
-                    liked = false;
-                }
-            } else {
-                dislikesCount--;
-                dislikeButton.querySelector(".dislikesCount").textContent = dislikesCount;
-                dislikeButton.querySelector(".dislikesCount").style.color = "#8a8a8a";
-                disliked = false;
-            }
-            sendReaction(postId, likesCount, dislikesCount);
-        });
-    });
-
-    function sendReaction(postId, likesCount, dislikesCount) {
-        var url = "/posts/" + postId + "/react";
-        var data = {
-            likes: likesCount,
-            dislikes: dislikesCount
-        };
-
-        fetch(url, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify(data)
-        })
-          .then(response => {
-              if (!response.ok) {
-                  throw new Error("Network response was not ok");
-              }
-              return response.json();
-          })
-          .then(data => {
-              // Update UI with new likes and dislikes counts
-              post.querySelector(".likesCount").textContent = data.likes;
-              post.querySelector(".dislikesCount").textContent = data.dislikes;
-          })
-          .catch(error => {
-              console.error("There was a problem with the fetch operation:", error);
-          });
-    }
 
 </script>
