@@ -1,4 +1,4 @@
-<div id="<%= dom_id comment %>">
+<div id="<%= dom_id comment %>" style="margin-left: <%= 20 * comment.depth %>px;">
   <div class="commentitem">
     <div class="commentHeader">
       <div class="commentInfo">
@@ -36,6 +36,9 @@
       <%= render 'comments/form', comment: comment %>
     </div>
   </div>
+  <% comment.replies.each do |reply| %>
+    <%= render 'comments/comment', comment: reply %>
+  <% end %>
 </div>
 
 

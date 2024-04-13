@@ -39,24 +39,24 @@ class PostsController < ApplicationController
   def show
     @post = Post.find(params[:id])
     @comment = Comment.new
+    @comments = @post.comments.where(comment_id: nil)
     @selected_filter = params[:sort] || 'top'
     case @selected_filter
     when 'top'
-      @comments = @post.comments.left_joins(:likes_comments)
+      @comments = @comments.left_joins(:likes_comments)
                        .group('comments.id')
                        .order('COUNT(likes_comments.id) DESC')
     when 'newest'
-      @comments = @post.comments.order(created_at: :desc)
+      @comments = @comments.order(created_at: :desc)
     when 'old'
-      @comments = @post.comments.order(created_at: :asc)
+      @comments = @comments.order(created_at: :asc)
     else
-      @comments = @post.comments.order(created_at: :desc)
+      @comments = @comments.order(created_at: :desc)
     end
   end
 
   # POST /posts/:id/react
   def react
-
     @post = Post.find(params[:id])
   end
 
@@ -164,19 +164,20 @@ class PostsController < ApplicationController
   def sort_comments
     @post = Post.find(params[:id])
     @comment = Comment.new
+    @comments = @post.comments.where(comment_id: nil)
     @selected_filter = params[:sort] || 'top'
 
     case params[:sort]
     when 'top'
-      @comments = @post.comments.left_joins(:likes_comments)
+      @comments = @comments.left_joins(:likes_comments)
                        .group('comments.id')
                        .order('COUNT(likes_comments.id) DESC')
     when 'newest'
-      @comments = @post.comments.order(created_at: :desc)
+      @comments = @comments.order(created_at: :desc)
     when 'old'
-      @comments = @post.comments.order(created_at: :asc)
+      @comments = @comments.order(created_at: :asc)
     else
-      @comments = @post.comments.order(created_at: :desc)
+      @comments = @comments.order(created_at: :desc)
     end
     render 'show'
   end
@@ -192,4 +193,14 @@ class PostsController < ApplicationController
   def post_params
     params.require(:post).permit(:title, :body, :url)
   end
+
+  def nested_comments(comments)
+    comments_arr = []
+    comments.each do |comment|
+      comments_arr << comment
+      comments_arr << nested_comments(comment.replies)
+    end
+    comments_arr.flatten
+  end
+
 end
