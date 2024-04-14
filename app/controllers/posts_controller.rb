@@ -8,17 +8,32 @@ class PostsController < ApplicationController
       @posts = Post.includes(:user, :magazine, :comments).left_joins(:likes).group(:id).order('COUNT(likes.id) DESC')
     when 'commented'
       @posts = Post.includes(:user, :magazine, :comments).left_joins(:comments).group(:id).order('COUNT(comments.id) DESC')
+    when 'links'
+      @posts = Post.includes(:user, :magazine, :comments).where.not(url: [nil, '']).order(created_at: :desc)
+    when 'threads'
+      @posts = Post.includes(:user, :magazine, :comments).where(url: [nil, '']).order(created_at: :desc)
     else
       @posts = Post.includes(:user, :magazine, :comments).order(created_at: :desc)
     end
   end
 
-  def sort_posts
-    
-    
-    
-    render 'index'
+  # PUT /posts/:id/boost
+def boost
+  @post = Post.find(params[:id])
+  user = User.find(id = 1)
+  
+  # If the user has already boosted the post, remove the boost
+  if user.boosted_post?(@post)
+    @post.boosts.find_by(user: user).destroy
+    flash[:notice] = "You've unboosted this post."
+  else
+    # If the user hasn't boosted the post yet, create a new boost
+    @post.boosts.create(user: user)
+    flash[:notice] = "You've boosted this post."
   end
+  
+  redirect_to root_path
+end
 
   # GET /posts/1 or /posts/1.json
   def show

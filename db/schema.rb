@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_12_074152) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_13_133909) do
+  create_table "boosts", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "post_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_boosts_on_post_id"
+    t.index ["user_id"], name: "index_boosts_on_user_id"
+  end
+
   create_table "comments", force: :cascade do |t|
     t.string "body"
     t.integer "user_id", null: false
@@ -72,6 +81,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_12_074152) do
     t.integer "like", default: 0
   end
 
+  create_table "subscriptions", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "magazine_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["magazine_id"], name: "index_subscriptions_on_magazine_id"
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "username"
@@ -79,6 +97,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_12_074152) do
     t.datetime "updated_at"
   end
 
+  add_foreign_key "boosts", "posts"
+  add_foreign_key "boosts", "users"
   add_foreign_key "comments", "comments"
   add_foreign_key "comments", "posts"
   add_foreign_key "comments", "users"
@@ -89,4 +109,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_12_074152) do
   add_foreign_key "magazines", "users"
   add_foreign_key "posts", "magazines"
   add_foreign_key "posts", "users"
+  add_foreign_key "subscriptions", "magazines"
+  add_foreign_key "subscriptions", "users"
 end

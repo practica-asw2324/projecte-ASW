@@ -5,10 +5,17 @@ Rails.application.routes.draw do
   resources :users
   resources :tweets
 
+  resources :magazines do
+    member do
+      post 'subscribe'
+      post 'unsubscribe'
+    end
+  end
+
   resources :posts do
     put 'like', on: :member
     put 'dislike', on: :member
-    get 'sort', on: :collection
+    put 'boost', on: :member
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   
