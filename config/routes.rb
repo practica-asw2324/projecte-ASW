@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :posts
   resources :users
   resources :tweets
+  resources :search, only: [:index]
 
   resources :magazines do
     member do
@@ -18,6 +19,6 @@ Rails.application.routes.draw do
     put 'boost', on: :member
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  
+  get 'search', to: 'search#index'
   root 'posts#index'
 end
