@@ -146,3 +146,8 @@
     font-family: Arial, Helvetica, sans-serif;
     cursor: pointer;
   }  
+
+  .filterposts li a.selected {
+    color: #0f0142;
+    font-weight: bold;
+  }

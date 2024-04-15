@@ -7,6 +7,13 @@ Rails.application.routes.draw do
   resources :magazines
   resources :users
 
+  resources :magazines do
+    member do
+      post 'subscribe'
+      post 'unsubscribe'
+    end
+  end
+
   resources :posts do
     post 'react', on: :member
     get 'sort_comments', on: :member

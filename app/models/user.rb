@@ -4,6 +4,8 @@ class User < ApplicationRecord
     has_many :liked_posts, through: :likes, source: :post
     has_many :dislikes
     has_many :disliked_posts, through: :dislikes, source: :post
+    has_many :subscriptions
+    has_many :magazines, through: :subscriptions
     has_many :boosts
     has_many :boosted_posts, through: :boosts, source: :post
     has_many :likes_comments
