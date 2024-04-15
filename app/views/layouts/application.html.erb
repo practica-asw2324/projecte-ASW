@@ -13,7 +13,7 @@
   <div class="navbar-container">
     <div class="navbar">
       <%= link_to "Tuiter", root_path, :class=>'navbar-logo'%>
-      <ul class="navbar-menu">
+      <ul class="navbar-menu centered-menu">
         <li><%= link_to "Threads", root_path%></li>
         <li><a href="#">Microblog</a></li>
         <li><a href="#">All Content</a></li>
@@ -26,24 +26,28 @@
         <a href="#" class="navbar-button">
           <i class="fas fa-search"></i>
         </a>
+        
 
         <div class="dropdown">
-          <label for="dropdown-toggle" class="dropdown-label">+</label>
+          <label for="dropdown-toggle" class="dropdown-label"><i class="fas fa-plus plusbutton"></i></label>
           <div class="dropdown-content">
-            <%= link_to "Add new link", new_post_path %>
-            <%= link_to "Add new thread", new_tweet_path %>
+            <%= link_to "Add new link", new_post_path(link: true) %>
+            <%= link_to "Add new thread", new_post_path(link: false) %>
             <%= link_to "Create new magazine", new_magazine_path %>
           </div>
         </div>
 
+        <% if User.find(id=1) %>
         <div class="dropdown">
-          <label for="dropdown-toggle" class="dropdown-label">Username</label>
+          <label for="dropdown-toggle" class="dropdown-label"><%=User.find(id=1).username %></label>
           <div class="dropdown-content">
             <%= link_to "Profile", new_post_path %>
             <%= link_to "Logout", new_post_path %>
           </div>
         </div>
+        <% else %>
         <a href="#" class="navbar-button">Login</a>
+        <% end %>
 
       </div>
     </div>

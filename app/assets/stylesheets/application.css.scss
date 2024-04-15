@@ -134,3 +134,18 @@ body {
   .dropdown-label {
     margin-right: 10px;
   }
+
+  .plusbutton{
+    margin-right: 20px;
+    margin-left: 10px;
+  }
+  .centered-menu {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding-left: 80px;
+  }
+  
+  .centered-menu li {
+    margin: 0 10px;
+  }

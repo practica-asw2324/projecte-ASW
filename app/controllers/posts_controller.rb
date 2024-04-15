@@ -124,6 +124,7 @@ class PostsController < ApplicationController
 
   # GET /posts/new
   def new
+    hola = params[:link]
     @post = Post.new
   end
 

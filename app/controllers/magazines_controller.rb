@@ -13,7 +13,7 @@ class MagazinesController < ApplicationController
     else
       @magazines = Magazine.all
     end
-    @magazines.reverse!
+    @magazines = @magazines.to_a.reverse!
     @magazines = @magazines.map do |magazine|
       {
         magazine: magazine,
