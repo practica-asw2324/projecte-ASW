@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
-  resources :comments
+  resources :comments do
+    put 'like', on: :member
+    put 'dislike', on: :member
+  end
+
   resources :magazines
-  resources :posts
   resources :users
 
   resources :magazines do
@@ -12,11 +15,13 @@ Rails.application.routes.draw do
   end
 
   resources :posts do
+    post 'react', on: :member
+    get 'sort_comments', on: :member
     put 'like', on: :member
     put 'dislike', on: :member
     put 'boost', on: :member
+
   end
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   root 'posts#index'
 end

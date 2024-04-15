@@ -26,33 +26,53 @@ class PostsController < ApplicationController
   end
 
   # PUT /posts/:id/boost
-def boost
-  @post = Post.find(params[:id])
-  user = User.find(id = 1)
-  
-  # If the user has already boosted the post, remove the boost
-  if user.boosted_post?(@post)
-    @post.boosts.find_by(user: user).destroy
-    flash[:notice] = "You've unboosted this post."
-  else
-    # If the user hasn't boosted the post yet, create a new boost
-    @post.boosts.create(user: user)
-    flash[:notice] = "You've boosted this post."
+  def boost
+    @post = Post.find(params[:id])
+    user = User.find(id = 1)
+
+    # If the user has already boosted the post, remove the boost
+    if user.boosted_post?(@post)
+      @post.boosts.find_by(user: user).destroy
+      flash[:notice] = "You've unboosted this post."
+    else
+      # If the user hasn't boosted the post yet, create a new boost
+      @post.boosts.create(user: user)
+      flash[:notice] = "You've boosted this post."
+    end
+
+    redirect_back(fallback_location: root_path)
   end
-  
-  redirect_to root_path
-end
 
   # GET /posts/1 or /posts/1.json
   def show
     @post = Post.find(params[:id])
+    @comment = Comment.new
+    @comments = @post.comments.where(comment_id: nil)
+    @selected_filter = params[:sort] || 'top'
+    case @selected_filter
+    when 'top'
+      @comments = @comments.left_joins(:likes_comments)
+                       .group('comments.id')
+                       .order('COUNT(likes_comments.id) DESC')
+    when 'newest'
+      @comments = @comments.order(created_at: :desc)
+    when 'old'
+      @comments = @comments.order(created_at: :asc)
+    else
+      @comments = @comments.order(created_at: :desc)
+    end
   end
 
-   # PUT /posts/:id/like
-   def like
+  # POST /posts/:id/react
+  def react
+    @post = Post.find(params[:id])
+  end
+
+  # PUT /posts/:id/like
+  def like
     @post = Post.find(params[:id])
     userproves = User.find(id = 1)
-    
+
     # If the user has already liked the post, remove the like
     if userproves.liked_post?(@post)
       @post.likes.find_by(user: userproves).destroy
@@ -72,10 +92,10 @@ end
       end
     end
 
-    redirect_to root_path
+    redirect_back(fallback_location: root_path)
   end
 
-    # PUT /posts/:id/dislike
+  # PUT /posts/:id/dislike
   def dislike
     @post = Post.find(params[:id])
     userproves = User.find(id = 1)
@@ -98,8 +118,8 @@ end
         flash[:error] = "There was an error disliking this post."
       end
     end
+    redirect_back(fallback_location: root_path)
 
-    redirect_to root_path
   end
 
   # GET /posts/new
@@ -149,14 +169,46 @@ end
     end
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_post
-      @post = Post.find(params[:id])
-    end
+  def sort_comments
+    @post = Post.find(params[:id])
+    @comment = Comment.new
+    @comments = @post.comments.where(comment_id: nil)
+    @selected_filter = params[:sort] || 'top'
 
-    # Only allow a list of trusted parameters through.
-    def post_params
-      params.require(:post).permit(:title, :body, :user_id, :magazine_id)
+    case params[:sort]
+    when 'top'
+      @comments = @comments.left_joins(:likes_comments)
+                       .group('comments.id')
+                       .order('COUNT(likes_comments.id) DESC')
+    when 'newest'
+      @comments = @comments.order(created_at: :desc)
+    when 'old'
+      @comments = @comments.order(created_at: :asc)
+    else
+      @comments = @comments.order(created_at: :desc)
     end
+    render 'show'
+  end
+
+  private
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_post
+    @post = Post.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def post_params
+    params.require(:post).permit(:title, :body, :url)
+  end
+
+  def nested_comments(comments)
+    comments_arr = []
+    comments.each do |comment|
+      comments_arr << comment
+      comments_arr << nested_comments(comment.replies)
+    end
+    comments_arr.flatten
+  end
+
 end
