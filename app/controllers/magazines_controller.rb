@@ -3,7 +3,39 @@ class MagazinesController < ApplicationController
 
   # GET /magazines or /magazines.json
   def index
-    @magazines = Magazine.all
+    case params[:sort]
+    when 'posts'
+      @magazines = Magazine.all.sort_by { |magazine| magazine.posts.count }
+    when 'comments'
+      @magazines = Magazine.all.sort_by { |magazine| magazine.posts.sum { |post| post.comments.count } }
+    when 'subscriptions'
+      @magazines = Magazine.all.sort_by { |magazine| magazine.users.count }
+    else
+      @magazines = Magazine.all
+    end
+    @magazines.reverse!
+    @magazines = @magazines.map do |magazine|
+      {
+        magazine: magazine,
+        posts_count: magazine.posts.count,
+        comments_count: magazine.posts.sum { |post| post.comments.count },
+        subscribers_count: magazine.users.count
+      }
+    end
+  end
+
+  def subscribe
+    current_user = User.find(id=1)
+    @magazine = Magazine.find(params[:id])
+    current_user.magazines << @magazine unless current_user.magazines.include?(@magazine)
+    redirect_to request.referrer || root_path
+  end
+
+  def unsubscribe
+    current_user = User.find(id=1)
+    @magazine = Magazine.find(params[:id])
+    current_user.magazines.delete(@magazine)
+    redirect_to request.referrer || root_path
   end
 
   # GET /magazines/1 or /magazines/1.json

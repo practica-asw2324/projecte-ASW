@@ -1,4 +1,7 @@
 @import "font-awesome";
+@import "comments";
+@import "post";
+@import "magazines";
 /*
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
@@ -20,63 +23,6 @@ body{
 .domain{
     font-size: .7em;
     color: #7a7a7a
-}
-.vote{
-    display: block;
-    position: absolute;
-    width: 50px;
-    left: 6%;
-}
-.likeButton{
-    background-color: #e7e4f5;
-    color: #8a8a8a;
-    font-weight: bold;
-    font-size: large;
-    border: none;
-    width: 60px;
-    padding: 10px 10px;
-    margin-left: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none; 
-}
-.likeButton:hover{
-    color: #0f0142;
-}
-.dislikeButton{
-    background-color: #e7e4f5;
-    color: #8a8a8a;
-    font-weight: bold;
-    font-size: large;
-    border: none;
-    width: 60px;
-    padding: 10px 10px;
-    margin-left: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none;
-}
-.dislikeButton:hover{
-    color: #0f0142;
-}
-.postitem{
-    margin: 20px auto;
-    padding: 1em;
-    width: 90%;
-    border-radius: 15px;
-    background-color: #ffffff;display:block;font-family: Arial, Helvetica, sans-serif;
-    color: #444;
-    font-size: 12pt;
-    padding-bottom: 10px;
-    display: block;
-}
-.item{
-    border-left: 2px solid #0f0142;
-    margin-left: 115px;
-    padding-left: 1.1em;
-    display:block
 }
 .grid-container {
     display: grid;

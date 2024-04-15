@@ -1,5 +1,19 @@
+<ul class="filterposts" style="justify-content: space-between;">
+  <div style="display:flex">
+    <li><%= link_to 'top', posts_path(sort: 'top', type: params[:type]), class: ('selected' if params[:sort] == 'top') %></li>
+    <li><%= link_to 'newest', posts_path(sort: 'newest', type: params[:type]), class: ('selected' if params[:sort] == 'newest') %></li>
+    <li><%= link_to 'commented', posts_path(sort: 'commented', type: params[:type]), class: ('selected' if params[:sort] == 'commented') %></li>
+  </div>
+
+  <div style="display:flex">
+    <li><%= link_to 'all', posts_path(type: 'all', sort: params[:sort]), class: ('selected' if params[:type] == 'all') %></li>
+    <li><%= link_to 'links', posts_path(type: 'links', sort: params[:sort]), class: ('selected' if params[:type] == 'links') %></li>
+    <li><%= link_to 'threads', posts_path(type: 'threads', sort: params[:sort]), class: ('selected' if params[:type] == 'threads') %></li>
+  </div>
+</ul>
+
 <div id="posts" class="posts">
-    <% @posts.order(created_at: :desc).each do |post| %>
+    <% @posts.each do |post| %>
       <%= render post %>
     <% end %>
 </div>

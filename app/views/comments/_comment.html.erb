@@ -1,12 +1,73 @@
-<div id="<%= dom_id comment %>">
-  <p>
-    <strong>Body:</strong>
-    <%= comment.body %>
-  </p>
+<div id="<%= dom_id comment %>" style="margin-left: <%= 20 * comment.depth %>px;">
+  <div class="commentitem">
+    <div class="commentHeader">
+      <div class="commentInfo">
+        <h4><span><%= comment.user.name %></span>,
+          <span class="domain createdAt" data-created-at="<%= comment.created_at %>"></span></h4>
+      </div>
+      <div class="commentActions">
+        <%= button_to like_comment_path(comment), method: :put, class: "comment-likeButton #{'voted' if User.find(id = 1).liked_comment?(comment)}" do %>
+          <span class="#{'voted' if User.find(id = 1).liked_comment?(comment)}"><i class="fas fa-arrow-up"></i><span> </span><%= comment.likes_comments.count %></span>
+        <% end %>
 
-  <p>
-    <strong>User:</strong>
-    <%= comment.user_id %>
-  </p>
-
+        <%= button_to dislike_comment_path(comment), method: :put, class: "comment-dislikeButton #{'voted' if User.find(id = 1).disliked_comment?(comment)}" do %>
+          <span class="#{'voted' if User.find(id = 1).disliked_comment?(comment)}"><i class="fas fa-arrow-down"></i><span> </span><%= comment.dislikes_comments.count %></span>
+        <% end %>
+      </div>
+    </div>
+    <p class="comment-content"><%= comment.body %></p>
+    <br>
+    <div class="link-container">
+      <%= link_to 'reply', '#', class: 'reply-link', data: { comment_id: comment.id } %>
+      <div class="dropdown">
+        <span class="more-link">more</span>
+        <div class="dropdown-content">
+          <%= link_to 'edit', '#', class: 'edit-link', data: { comment_id: comment.id } %>
+          <a>
+            <%= button_to 'delete', comment, method: :delete, data: { confirm: 'Are you sure?' }, class: 'delete-button' %>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="reply-form">
+      <%= render 'comments/form', comment: @comment %>
+    </div>
+    <div class="edit-form" id="edit-form-<%= comment.id %>">
+      <%= render 'comments/form', comment: comment %>
+    </div>
+  </div>
+  <% comment.replies.each do |reply| %>
+    <%= render 'comments/comment', comment: reply %>
+  <% end %>
 </div>
+
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var replyLinks = document.querySelectorAll('.reply-link');
+        replyLinks.forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                var commentId = this.dataset.commentId;
+                var repliesContainer = document.getElementById('replies-container-' + commentId);
+                var form = document.querySelector('#comment_' + commentId + ' .reply-form');
+                form.querySelector('input[name="comment[comment_id]"]').value = commentId;
+                form.style.display = 'block';
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var editLinks = document.querySelectorAll('.edit-link');
+        editLinks.forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                var commentId = this.dataset.commentId;
+                var form = document.querySelector('#edit-form-' + commentId);
+                form.style.display = 'block';
+            });
+        });
+    });
+
+</script>
