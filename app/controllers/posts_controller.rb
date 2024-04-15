@@ -3,18 +3,26 @@ class PostsController < ApplicationController
 
   # GET /posts or /posts.json
   def index
-    case params[:sort]
-    when 'top'
-      @posts = Post.includes(:user, :magazine, :comments).left_joins(:likes).group(:id).order('COUNT(likes.id) DESC')
-    when 'commented'
-      @posts = Post.includes(:user, :magazine, :comments).left_joins(:comments).group(:id).order('COUNT(comments.id) DESC')
-    when 'links'
-      @posts = Post.includes(:user, :magazine, :comments).where.not(url: [nil, '']).order(created_at: :desc)
-    when 'threads'
-      @posts = Post.includes(:user, :magazine, :comments).where(url: [nil, '']).order(created_at: :desc)
-    else
-      @posts = Post.includes(:user, :magazine, :comments).order(created_at: :desc)
-    end
+      params[:sort] ||= 'newest'
+      params[:type] ||= 'all'
+      
+      @posts = Post.includes(:user, :magazine, :comments)
+    
+      case params[:sort]
+      when 'top'
+        @posts = @posts.left_joins(:likes).group(:id).order('COUNT(likes.id) DESC')
+      when 'commented'
+        @posts = @posts.left_joins(:comments).group(:id).order('COUNT(comments.id) DESC')
+      when 'newest'
+        @posts = @posts.order(created_at: :desc)
+      end
+    
+      case params[:type]
+      when 'links'
+        @posts = @posts.where.not(url: [nil, ''])
+      when 'threads'
+        @posts = @posts.where(url: [nil, ''])
+      end
   end
 
   # PUT /posts/:id/boost
