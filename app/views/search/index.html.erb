@@ -1,4 +1,4 @@
-<ul class="filterposts" style="justify-content: space-between;">
+<ul class="filtersearch">
   <%= form_tag(search_index_path, method: "get") do %>
     <%= text_field_tag :search, nil, placeholder: "Write search term" %>
     <%= button_tag(type: 'submit') do %>
