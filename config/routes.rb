@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   resources :magazines
   resources :users
+  resources :tweets
 
   resources :magazines do
     member do
@@ -22,6 +23,6 @@ Rails.application.routes.draw do
     put 'boost', on: :member
 
   end
-
+  
   root 'posts#index'
 end
