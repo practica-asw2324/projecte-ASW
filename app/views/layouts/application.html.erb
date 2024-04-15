@@ -41,8 +41,8 @@
         <div class="dropdown">
           <label for="dropdown-toggle" class="dropdown-label"><%=User.find(id=1).username %></label>
           <div class="dropdown-content">
-            <%= link_to "Profile", new_post_path %>
-            <%= link_to "Logout", new_post_path %>
+            <%= link_to "Profile", user_path(1) %>
+            <%= link_to "Logout", user_path(1) %>
           </div>
         </div>
         <% else %>
