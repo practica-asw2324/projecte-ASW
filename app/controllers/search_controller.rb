@@ -1,6 +1,9 @@
 class SearchController < ApplicationController
   def index
-    @search_term = params[:search]
-    @results = Post.where("title LIKE ?", "%#{@search_term}%")
+    if params[:search].present?
+      @results = Post.where("title LIKE ? OR body LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%")
+    else
+      @results = nil
+    end
   end
 end
