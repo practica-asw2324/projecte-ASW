@@ -6,14 +6,11 @@ class PostsController < ApplicationController
       params[:sort] ||= 'newest'
       params[:type] ||= 'all'
 
-      if params[:search].present?
-        @results = Post.where("title LIKE ? OR body LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%")
-        @posts = @results
+      if params[:search]
+        @posts = Post.where("title LIKE ? OR body LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%")
       else
-        @results = nil
         @posts = Post.includes(:user, :magazine, :comments)
       end
-
 
       case params[:sort]
       when 'top'

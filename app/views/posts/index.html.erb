@@ -13,9 +13,9 @@
 <% unless params[:from_nav_button] %>
   <ul class="filterposts" style="justify-content: space-between;">
     <div style="display:flex">
-      <li><%=  link_to 'top', posts_path(sort: 'top', type: params[:type]), class: ('selected' if params[:sort] == 'top') %></li>
-      <li><%=  link_to 'newest', posts_path(sort: 'newest', type: params[:type]), class: ('selected' if params[:sort] == 'newest')  %></li>
-      <li><%=  link_to 'commented', posts_path(sort: 'commented', type: params[:type]), class: ('selected' if params[:sort] == 'commented') %></li>
+      <li><%=  link_to 'top', posts_path(sort: 'top', type: params[:type]), search: params[:search], class: ('selected' if params[:sort] == 'top') %></li>
+      <li><%=  link_to 'newest', posts_path(sort: 'newest', type: params[:type]), search: params[:search], class: ('selected' if params[:sort] == 'newest')  %></li>
+      <li><%=  link_to 'commented', posts_path(sort: 'commented', type: params[:type]), search: params[:search], class: ('selected' if params[:sort] == 'commented') %></li>
     </div>
 
     <div style="display:flex">
@@ -31,9 +31,9 @@
     <%  end  %>
   </div>
 
-  <% if @results %>
-    <%  unless @results.present? %>
+  <% if @posts %>
+    <% unless @posts.present? %>
       <p class="no-results">No results were found</p>
-    <%   end  %>
-  <%  end  %>
-<%  end %>
+    <% end %>
+  <% end %>
+<% end %>
