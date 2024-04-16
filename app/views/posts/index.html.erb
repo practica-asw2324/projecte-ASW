@@ -1,7 +1,6 @@
 <%if params[:from_nav_button] or params[:search] == session[:last_search] %>
   <ul class="filtersearch">
     <%= form_tag(posts_path, method: "get") do %>
-      <%= hidden_field_tag :from_search_form, true %>
       <%= text_field_tag :search, params[:search], placeholder: "Write search term" %>
       <%= button_tag(type: 'submit') do %>
         <i class="fas fa-search"></i>
