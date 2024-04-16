@@ -13,42 +13,22 @@
           <%= content_tag :span, 'URL', style: 'text-transform: uppercase;' %>
         <% end %>
         <%= f.text_field :url, required: true %>
-        <% if @post.errors[:url].any? %>
-          <div class="error-message">
-            <%= @post.errors[:url].join(", ") %>
-          </div>
-        <% end %>
       </div>
     <% end %>
 
     <div>
       <%= f.label :title %>
       <%= f.text_area :title, required: true, oninput: 'autoResize(this)' %>
-      <% if @post.errors[:title].any? %>
-        <div class="error-message">
-          <%= @post.errors[:title].join(", ") %>
-        </div>
-      <% end %>
     </div>
 
     <div>
       <%= f.label :body %>
       <%= f.text_area :body, class: 'body-textarea', oninput: 'autoResize(this)' %>
-      <% if @post.errors[:body].any? %>
-        <div class="error-message">
-          <%= @post.errors[:body].join(", ") %>
-        </div>
-      <% end %>
     </div>
 
     <div>
       <%= f.label :magazine %>
       <%= f.collection_select :magazine_id, @magazines, :id, :name, {prompt: 'Select a magazine'}, {required: true} %>
-      <% if @post.errors[:magazine_id].any? %>
-        <div class="error-message">
-          <%= @post.errors[:magazine_id].join(", ") %>
-        </div>
-      <% end %>
     </div>
 
     <div class="button-container">
