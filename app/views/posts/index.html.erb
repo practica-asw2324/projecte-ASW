@@ -17,3 +17,29 @@
       <%= render post %>
     <% end %>
 </div>
+
+
+<!-- Search form -->
+<ul class="filtersearch">
+  <%= form_tag(posts_path, method: "get") do %>
+    <%= text_field_tag :search, params[:search], placeholder: "Write search term" %>
+    <%= button_tag(type: 'submit') do %>
+      <i class="fas fa-search"></i>
+    <% end %>
+  <% end %>
+</ul>
+
+<%if @results %>
+  <div id="search-results">
+    <% if @results.present? %>
+      <h2>Resultados de la búsqueda:</h2>
+      <% @results.each do |post| %>
+        <div class="post">
+          <h3><%= post.title %></h3>
+        </div>
+      <% end %>
+    <% else %>
+      <p>No results were found.</p>
+    <% end %>
+  </div>
+<% end %>

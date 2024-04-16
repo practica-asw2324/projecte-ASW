@@ -151,3 +151,50 @@
     color: #0f0142;
     font-weight: bold;
   }
+
+
+    .filtersearch {
+        margin: 20px auto;
+        padding: 1em;
+        width: 95%;
+        border-radius: 15px;
+        background-color: #ffffff;
+        list-style-type: none;
+        display: flex;
+        justify-content: center;
+    }
+.filtersearch {
+  margin: 20px auto;
+  padding: 1em;
+  width: 95%;
+  border-radius: 15px;
+  background-color: #ffffff;
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+}
+
+.filtersearch input[type='text'] {
+  height: 40px;
+  width: 500px;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #CCCCCC;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+
+.filtersearch button[type='submit'] {
+  height: 40px;
+  background-color: #0f0142;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  text-decoration: none;
+  font-size: 12pt;
+  margin: 4px 2px;
+  cursor: pointer;
+  flex-wrap: nowrap;
+}
+

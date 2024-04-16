@@ -23,6 +23,13 @@ class PostsController < ApplicationController
       when 'threads'
         @posts = @posts.where(url: [nil, ''])
       end
+
+      if params[:search].present?
+        @results = Post.where("title LIKE ? OR body LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%")
+      else
+        @results = nil
+      end
+
   end
 
   # PUT /posts/:id/boost
