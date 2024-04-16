@@ -6,16 +6,18 @@
     <div style="flex: 1;">
       <h3><%= @magazine.title %></h3>
       <p><%= @magazine.description %></p>
-      <p>Owned by: <%= @magazine.user.username %></p>
-      <span>Created: </span><span class=" createdAt" data-created-at="<%= @magazine.created_at %>"></span>
+      <p><b>Rules: </b><%= @magazine.rules %></p>
+      <p><b>Created: </b> <%= time_ago_in_words(@magazine.created_at) %> ago</p>
     </div>
 
     <div style="flex: 1; padding-left: 20px;">
-      <p><%= @posts_count %> posts</p>
-      <p><%= @comments_count %> comments</p>
+    <br>
+      <p><b>Owner: </b><%= @magazine.user.username %></p>
+      <p><b>Posts: </b><%= @posts_count %></p>
+      <p><b>Comments: </b><%= @comments_count %></p>
       <div style="display: flex; align-items: center;">
         <span class="subsCount"><i class="fa-solid fa-users"></i><span class="subsCountNum"><%= @subscribers_count %></span></span>
-        <% if User.find(id=1).magazines.include?(@magazine) %>
+        <% if User.find(id=1).subscribed_magazines.include?(@magazine) %>
           <%= button_to unsubscribe_magazine_path(@magazine),:class=>"subsButton", method: :post do %>
             <i class="fa-solid fa-folder-minus"></i> Unsubscribe
           <% end %>
@@ -48,44 +50,3 @@
       <%= render post %>
 <% end %>
 </div>
-
-<script>
-
-    function formatData(created_at) {
-
-        var time = new Date();
-        var datecreated = new Date(created_at);
-
-        var diff = time - datecreated;
-
-        const seconds = Math.floor(diff / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
-        const months = Math.floor(days / 30);
-        const years = Math.floor(months / 12);
-
-        if (years > 0) {
-            return years + " years ago";
-        } else if (months > 0) {
-            return months + " months ago";
-        } else if (days > 0) {
-            return days + " days ago";
-        } else if (hours > 0) {
-            return hours + " hours ago";
-        } else if (minutes > 0) {
-            return minutes + " minutes ago";
-        } else {
-            return seconds + " seconds ago";
-        }
-    }
-
-
-    document.querySelectorAll(".createdAt").forEach(function (element) {
-        element.textContent = formatData(element.getAttribute('data-created-at'));
-    });
-
-
-</script>
-
-

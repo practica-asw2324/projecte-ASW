@@ -5,14 +5,14 @@ class User < ApplicationRecord
     has_many :dislikes
     has_many :disliked_posts, through: :dislikes, source: :post
     has_many :subscriptions
-    has_many :magazines, through: :subscriptions
+    has_many :subscribed_magazines, through: :subscriptions, source: :magazine
     has_many :boosts
     has_many :boosted_posts, through: :boosts, source: :post
     has_many :likes_comments
     has_many :liked_comments, through: :likes_comments, source: :comment
     has_many :dislikes_comments
     has_many :disliked_comments, through: :dislikes_comments, source: :comment
-    has_many :magazines
+    has_many :created_magazines, class_name: 'Magazine', foreign_key: 'user_id'
 
     def liked_post?(post)
         self.liked_posts.include?(post)

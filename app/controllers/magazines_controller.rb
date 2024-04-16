@@ -27,14 +27,15 @@ class MagazinesController < ApplicationController
   def subscribe
     current_user = User.find(id=1)
     @magazine = Magazine.find(params[:id])
-    current_user.magazines << @magazine unless current_user.magazines.include?(@magazine)
+    current_user.subscribed_magazines << @magazine unless current_user.subscribed_magazines.include?(@magazine)
     redirect_to request.referrer || root_path
   end
 
   def unsubscribe
     current_user = User.find(id=1)
     @magazine = Magazine.find(params[:id])
-    current_user.magazines.delete(@magazine)
+    subscription = Subscription.find_by(user_id: current_user.id, magazine_id: @magazine.id)
+    subscription.delete if subscription
     redirect_to request.referrer || root_path
   end
 
