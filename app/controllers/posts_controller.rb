@@ -5,9 +5,16 @@ class PostsController < ApplicationController
   def index
       params[:sort] ||= 'newest'
       params[:type] ||= 'all'
-      
-      @posts = Post.includes(:user, :magazine, :comments)
-    
+
+      if params[:search].present?
+        @results = Post.where("title LIKE ? OR body LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%")
+        @posts = @results
+      else
+        @results = nil
+        @posts = Post.includes(:user, :magazine, :comments)
+      end
+
+
       case params[:sort]
       when 'top'
         @posts = @posts.left_joins(:likes).group(:id).order('COUNT(likes.id) DESC')
@@ -23,14 +30,6 @@ class PostsController < ApplicationController
       when 'threads'
         @posts = @posts.where(url: [nil, ''])
       end
-
-      if params[:search].present?
-        @results = Post.where("title LIKE ? OR body LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%")
-        @posts = @results
-      else
-        @results = nil
-      end
-
   end
 
   # PUT /posts/:id/boost
