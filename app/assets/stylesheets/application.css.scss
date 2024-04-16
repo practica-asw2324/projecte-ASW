@@ -149,3 +149,24 @@ body {
   .centered-menu li {
     margin: 0 10px;
   }
+
+  .navbar-menu li a {
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .navbar-menu li a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    background: white;
+    transition: width .3s;
+    top: 35px;
+    left: 0;
+  }
+  
+  .navbar-menu li a:hover::after {
+    width: 100%;
+  }
