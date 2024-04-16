@@ -27,19 +27,44 @@ class MagazinesController < ApplicationController
   def subscribe
     current_user = User.find(id=1)
     @magazine = Magazine.find(params[:id])
-    current_user.magazines << @magazine unless current_user.magazines.include?(@magazine)
+    current_user.subscribed_magazines << @magazine unless current_user.subscribed_magazines.include?(@magazine)
     redirect_to request.referrer || root_path
   end
 
   def unsubscribe
     current_user = User.find(id=1)
     @magazine = Magazine.find(params[:id])
-    current_user.magazines.delete(@magazine)
+    subscription = Subscription.find_by(user_id: current_user.id, magazine_id: @magazine.id)
+    subscription.delete if subscription
     redirect_to request.referrer || root_path
   end
 
   # GET /magazines/1 or /magazines/1.json
   def show
+    params[:sort] ||= 'newest'
+    params[:type] ||= 'all'
+    
+    @posts = @magazine.posts.includes(:user, :comments)
+
+    @posts_count = @posts.count
+    @comments_count = @posts.sum { |post| post.comments.count }
+    @subscribers_count = @magazine.users.count
+  
+    case params[:sort]
+    when 'top'
+      @posts = @posts.left_joins(:likes).group(:id).order('COUNT(likes.id) DESC')
+    when 'commented'
+      @posts = @posts.left_joins(:comments).group(:id).order('COUNT(comments.id) DESC')
+    when 'newest'
+      @posts = @posts.order(created_at: :desc)
+    end
+  
+    case params[:type]
+    when 'links'
+      @posts = @posts.where.not(url: [nil, ''])
+    when 'threads'
+      @posts = @posts.where(url: [nil, ''])
+    end
   end
 
   # GET /magazines/new

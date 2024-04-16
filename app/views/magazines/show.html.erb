@@ -1,10 +1,51 @@
-<p style="color: green"><%= notice %></p>
+<div class="magazineinfo">
+  <h5><%= @magazine.name %></h5>
+  <hr>
 
-<%= render @magazine %>
+  <div style="display: flex; justify-content: space-between;">
+    <div style="flex: 1;">
+      <h3><%= @magazine.title %></h3>
+      <p><%= @magazine.description %></p>
+      <p><b>Rules: </b><%= @magazine.rules %></p>
+      <p><b>Created: </b> <%= time_ago_in_words(@magazine.created_at) %> ago</p>
+    </div>
 
-<div>
-  <%= link_to "Edit this magazine", edit_magazine_path(@magazine) %> |
-  <%= link_to "Back to magazines", magazines_path %>
+    <div style="flex: 1; padding-left: 20px;">
+      <p><b>Owner: </b><%= @magazine.user.username %></p>
+      <p><b>Posts: </b><%= @posts_count %></p>
+      <p><b>Comments: </b><%= @comments_count %></p>
+      <div style="display: flex; align-items: center;">
+        <span class="subsCount"><i class="fa-solid fa-users"></i><span class="subsCountNum"><%= @subscribers_count %></span></span>
+        <% if User.find(id=1).subscribed_magazines.include?(@magazine) %>
+          <%= button_to unsubscribe_magazine_path(@magazine),:class=>"subsButton", method: :post do %>
+            <i class="fa-solid fa-folder-minus"></i> Unsubscribe
+          <% end %>
+        <% else %>
+          <%= button_to subscribe_magazine_path(@magazine),:class=>"subsButton", method: :post do %>
+            <i class="fa-solid fa-folder-plus"></i> Subscribe
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <%= button_to "Destroy this magazine", @magazine, method: :delete %>
+<ul class="filterposts" style="justify-content: space-between;">
+  <div style="display:flex">
+    <li><%= link_to 'top', magazine_path(sort: 'top', type: params[:type]), class: ('selected' if params[:sort] == 'top') %></li>
+    <li><%= link_to 'newest', magazine_path(sort: 'newest', type: params[:type]), class: ('selected' if params[:sort] == 'newest') %></li>
+    <li><%= link_to 'commented', magazine_path(sort: 'commented', type: params[:type]), class: ('selected' if params[:sort] == 'commented') %></li>
+  </div>
+
+  <div style="display:flex">
+    <li><%= link_to 'all', magazine_path(type: 'all', sort: params[:sort]), class: ('selected' if params[:type] == 'all') %></li>
+    <li><%= link_to 'links', magazine_path(type: 'links', sort: params[:sort]), class: ('selected' if params[:type] == 'links') %></li>
+    <li><%= link_to 'threads', magazine_path(type: 'threads', sort: params[:sort]), class: ('selected' if params[:type] == 'threads') %></li>
+  </div>
+</ul>
+
+<div id="posts" class="posts">
+    <% @posts.each do |post| %>
+      <%= render post %>
+<% end %>
 </div>
