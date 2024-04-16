@@ -12,6 +12,7 @@ class User < ApplicationRecord
     has_many :liked_comments, through: :likes_comments, source: :comment
     has_many :dislikes_comments
     has_many :disliked_comments, through: :dislikes_comments, source: :comment
+    has_many :magazines
 
     def liked_post?(post)
         self.liked_posts.include?(post)
