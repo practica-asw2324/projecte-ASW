@@ -26,6 +26,7 @@ class PostsController < ApplicationController
 
       if params[:search].present?
         @results = Post.where("title LIKE ? OR body LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%")
+        @posts = @results
       else
         @results = nil
       end
