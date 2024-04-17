@@ -9,9 +9,8 @@
     <div class="field" style="width: auto; text-align: left;">
       <%= f.label :name %>
       <%= f.text_area :name, oninput: 'autoResize(this)' %>
-      <% if @magazine.errors[:title].any? %>
-        <span class="error-message" style="margin-left: 100px;"><%= @magazine.errors[:title].join(", ") %></span>
-        <span style="color: white;">ivan</span>
+      <% if @magazine.errors[:name].any? %>
+        <span class="error-message" style="margin-left: 100px;"><%= @magazine.errors[:name].join(", ") %></span>
       <% end %>
     </div>
 
@@ -20,7 +19,6 @@
       <%= f.text_area :title, oninput: 'autoResize(this)' %>
       <% if @magazine.errors[:title].any? %>
         <span class="error-message" style="margin-left: 100px;"><%= @magazine.errors[:title].join(", ") %></span>
-        <span style="color: white;">ivan</span>
       <% end %>
     </div>
 
@@ -35,11 +33,7 @@
     </div>
 
     <div class="button-container">
-      <%= f.submit (if @magazine.new_record?
-                      @is_link ? "Add new link" : "Add new thread"
-                    else
-                      "Edit Post"
-                    end), class: 'postitem-button' %>
+      <%= f.submit (@magazine.new_record? ? "Add new magazine" : "Edit Magazine"), class: 'postitem-button' %>
     </div>
 
   <% end %>

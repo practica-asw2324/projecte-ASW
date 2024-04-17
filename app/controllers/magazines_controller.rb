@@ -79,6 +79,7 @@ class MagazinesController < ApplicationController
   # POST /magazines or /magazines.json
   def create
     @magazine = Magazine.new(magazine_params)
+    @magazine.user_id = 1
 
     respond_to do |format|
       if @magazine.save
