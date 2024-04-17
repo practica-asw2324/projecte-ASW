@@ -3,7 +3,7 @@
     <div class="commentHeader">
       <div class="commentInfo">
         <h4><span><%= comment.user.name %></span>,
-          <span class="domain createdAt" data-created-at="<%= comment.created_at %>"></span></h4>
+          <span class="domain"><%= time_ago_in_words(comment.created_at) %> ago</span></h4>
       </div>
       <div class="commentActions">
         <%= button_to like_comment_path(comment), method: :put, class: "comment-likeButton #{'voted' if User.find(id = 1).liked_comment?(comment)}" do %>
