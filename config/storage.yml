@@ -32,3 +32,7 @@ local:
 #   service: Mirror
 #   primary: local
 #   mirrors: [ amazon, google, microsoft ]
+
+google_sign_in:
+  client_id: 244029621019-uukuh3detia8mhtmekm7afbams2icrp6.apps.googleusercontent.com
+  client_secret: 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

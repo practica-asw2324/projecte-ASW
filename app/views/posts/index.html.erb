@@ -1,3 +1,5 @@
+<%= google_sign_in_button 'Sign in with my Google account', proceed_to: create_login_url %>
+
 <%if params[:from_nav_button] or params[:search] == session[:last_search] %>
   <ul class="filtersearch">
     <%= form_tag(posts_path, method: "get") do %>
