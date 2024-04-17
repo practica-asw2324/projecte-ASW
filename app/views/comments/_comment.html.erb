@@ -50,7 +50,6 @@
             link.addEventListener('click', function (e) {
                 e.preventDefault();
                 var commentId = this.dataset.commentId;
-                var repliesContainer = document.getElementById('replies-container-' + commentId);
                 var form = document.querySelector('#comment_' + commentId + ' .reply-form');
                 form.querySelector('input[name="comment[comment_id]"]').value = commentId;
                 form.style.display = 'block';

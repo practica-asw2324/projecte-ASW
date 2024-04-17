@@ -40,6 +40,7 @@ class CommentsController < ApplicationController
   # PATCH/PUT /comments/1 or /comments/1.json
   def update
     @comment = Comment.find(params[:id])
+    params[:comment].delete(:comment_id) if @comment.present?
     if @comment.update(comment_params)
       redirect_to post_url(@comment.post_id), notice: 'Comment was successfully updated.'
     else
