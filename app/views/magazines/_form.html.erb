@@ -1,25 +1,25 @@
 <style>
-  .positem {
+  .magazineItem {
       width: 70%;
   }
 </style>
 
-<div class="positem">
+<div class="magazineItem">
   <%= form_for @magazine, html: {class: 'magazine-form'} do |f| %>
-    <div class="field" style="width: auto; text-align: left;">
+    <div>
       <%= f.label :name %>
-      <%= f.text_area :name, oninput: 'autoResize(this)' %>
       <% if @magazine.errors[:name].any? %>
-        <span class="error-message" style="margin-left: 100px;"><%= @magazine.errors[:name].join(", ") %></span>
+        <span class="error-message"><%= @magazine.errors[:name].join(", ") %></span>
       <% end %>
+      <%= f.text_area :name, oninput: 'autoResize(this)' %>
     </div>
 
-    <div class="field" style="width: auto; text-align: left;">
+    <div>
       <%= f.label :title %>
-      <%= f.text_area :title, oninput: 'autoResize(this)' %>
       <% if @magazine.errors[:title].any? %>
         <span class="error-message" style="margin-left: 100px;"><%= @magazine.errors[:title].join(", ") %></span>
       <% end %>
+      <%= f.text_area :title, oninput: 'autoResize(this)' %>
     </div>
 
     <div>
@@ -33,7 +33,7 @@
     </div>
 
     <div class="button-container">
-      <%= f.submit (@magazine.new_record? ? "Add new magazine" : "Edit Magazine"), class: 'postitem-button' %>
+      <%= f.submit "Add new magazine", class: 'magazineItem-button' %>
     </div>
 
   <% end %>

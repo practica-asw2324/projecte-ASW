@@ -1,3 +1,5 @@
+@import "font-awesome";
+
 .magazines{
     background: #ffffff;
     margin: 20px auto;
@@ -62,6 +64,18 @@ table td, table th {
     border: 1px dashed grey;
 }
 
+.magazineItem {
+    margin: 20px auto;
+    width: 96%;
+    border-radius: 15px;
+    background-color: #ffffff;
+    display: block;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #444;
+    font-size: 12pt;
+    padding: 1em 1em 20px;
+}
+
 .magazineinfo {
     margin: 20px auto;
     padding: 5px 20px;
@@ -114,7 +128,7 @@ table td, table th {
     width: 100%;
 }
 
-.postitem-button {
+.magazineItem-button {
     color: white;
     margin-top: 20px;
     border: none;
@@ -138,14 +152,4 @@ table td, table th {
 
 .full-width {
     width: 100%;
-}
-
-.error-message {
-    color: #af3030;
-    font-size: 12pt;
-    font-weight: bold;
-}
-
-#title-error-message {
-    min-height: 20px; /* Adjust this value as needed */
 }
