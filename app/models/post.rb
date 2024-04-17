@@ -1,6 +1,8 @@
 class Post < ApplicationRecord
 
-  validates :title, presence: true, length: {minimum: 2, message: "is too short. It should have 2 characters or more."}
+  validates :title, presence: true, length: { minimum: 2, maximum: 255,
+                                              too_short: "Title must have at least 2 characters",
+                                              too_long: "Title must have at most 255 characters"}
   validates :magazine, presence: true, if: :is_link?
   validates :url, presence: true, if: :is_link?
 

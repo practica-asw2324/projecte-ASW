@@ -7,18 +7,23 @@
 
 <div class="postitem">
   <%= form_for @post, html: { class: 'post-form' } do |f| %>
+    <%= hidden_field_tag :type, params[:type] %>
     <% if @is_link %>
       <div>
         <%= f.label :url do %>
           <%= content_tag :span, 'URL', style: 'text-transform: uppercase;' %>
         <% end %>
-        <%= f.text_field :url, required: true %>
+        <%= f.text_field :url, required: @is_link %>
       </div>
     <% end %>
 
-    <div>
+    <div class="field" style="width: auto; text-align: left;">
       <%= f.label :title %>
-      <%= f.text_area :title, required: true, oninput: 'autoResize(this)' %>
+      <%= f.text_area :title, oninput: 'autoResize(this)' %>
+      <% if @post.errors[:title].any? %>
+      <span class="error-message" style="margin-left: 100px;"><%= @post.errors[:title].join(", ") %></span>
+        <span style="color: white;">ivan</span>
+      <% end %>
     </div>
 
     <div>
@@ -36,7 +41,7 @@
                       @is_link ? "Add new link" : "Add new thread"
                     else
                       "Edit Post"
-                    end), class: 'commentitem-button' %>
+                    end), class: 'postitem-button' %>
     </div>
   <% end %>
 </div>

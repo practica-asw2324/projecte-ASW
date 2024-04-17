@@ -117,13 +117,12 @@ class PostsController < ApplicationController
   # POST /posts or /posts.json
   def create
     @post = Post.new(post_params)
-    @post.url = nil if params[:type] == 'thread'
     @post.user_id = 1
+    @is_link = params[:type] == 'link'
 
     if @post.save
       redirect_to root_path, notice: 'Post was successfully created.'
     else
-      @is_link = params[:type] == 'link'
       @magazines = Magazine.all
       render :new
     end
