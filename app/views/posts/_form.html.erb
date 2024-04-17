@@ -1,40 +1,52 @@
-<%= form_with(model: post) do |form| %>
-  <body style="font-family: Helvetica">
-  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;"> <!-- Aplicar el estilo al contenedor principal y establecer la fuente -->
-    <h1>New link</h1>
-    <% if post.errors.any? %>
-      <div id="form" style="align-items: center">
-        <div style="color: red;">
-          <ul>
-            <% post.errors.each do |error| %>
-              <li><%= error.full_message %></li>
-            <% end %>
-          </ul>
-        </div>
+<style>
+    .postitem {
+        width: 70%;
+    }
+
+</style>
+
+<div class="postitem">
+  <%= form_for @post, html: { class: 'post-form' } do |f| %>
+    <%= hidden_field_tag :type, params[:type] %>
+    <% if @is_link %>
+      <div>
+        <%= f.label :url do %>
+          <%= content_tag :span, 'URL', style: 'text-transform: uppercase;' %>
+        <% end %>
+        <%= f.text_field :url, required: @is_link %>
       </div>
     <% end %>
 
-    <div style="width: 40%; height: 50px; margin: 20px 0;">
-      <%= form.label :url, "URL", style: "display: block; font-family: Helvetica;" %>
-      <%= form.text_field :url, style: "width: 100%; height: 100%; font-family: Helvetica;" %>
+    <div>
+      <%= f.label :title %>
+      <%= f.text_area :title, oninput: 'autoResize(this)' %>
     </div>
 
-    <div style="width: 40%; height: 50px; margin: 20px 0;">
-      <%= form.label :title, "Title", style: "display: block; font-family: Helvetica;" %>
-      <%= form.text_area :title, style: "width: 100%; height: 100%; font-family: Helvetica;" %>
+    <div>
+      <%= f.label :body %>
+      <%= f.text_area :body, class: 'body-textarea', oninput: 'autoResize(this)' %>
     </div>
 
-    <div style="width: 40%; height: 50px; margin: 20px 0;">
-      <%= form.text_area :body, placeholder: "Body", style: "width: 100%; height: 100%; font-family: Helvetica;" %>
+    <div>
+      <%= f.label :magazine %>
+      <%= f.collection_select :magazine_id, @magazines, :id, :name, {prompt: 'Select a magazine'}, {required: true} %>
     </div>
 
-    <div style="margin: 15px;">
-      <%= form.submit "Create", style: "width: 100%; padding: 10px 20px; background-color: #28a745; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;" %>
+    <div class="button-container">
+      <%= f.submit (if @post.new_record?
+                      @is_link ? "Add new link" : "Add new thread"
+                    else
+                      "Edit Post"
+                    end), class: 'postitem-button' %>
     </div>
+  <% end %>
+</div>
 
-    <div style="margin: 15px;"> <!-- Agregado el div para centrar el enlace -->
-      <%= link_to "Back to home", posts_path, style: "width: 100%; padding: 10px 20px; background-color: #0f0142; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; text-decoration: none;" %>
-    </div>
-  </div>
-  
-<% end %>
+<script>
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        if (textarea.scrollHeight > textarea.clientHeight) {
+            textarea.style.height = (textarea.scrollHeight) + 'px';
+        }
+    }
+</script>
