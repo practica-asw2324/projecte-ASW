@@ -3,7 +3,6 @@ class Post < ApplicationRecord
   validates :title, presence: true
   validates :magazine, presence: true, if: :is_link?
   validates :url, presence: true, if: :is_link?
-
   belongs_to :user
   alias_attribute :author, :user
   belongs_to :magazine
@@ -16,7 +15,6 @@ class Post < ApplicationRecord
   has_many :boosters, through: :boosts, source: :user, dependent: :destroy
 
   private
-
   def is_link?
     url.present?
   end
