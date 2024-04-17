@@ -1,37 +1,55 @@
-<%= form_with(model: magazine) do |form| %>
-  <% if magazine.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(magazine.errors.count, "error") %> prohibited this magazine from being saved:</h2>
+<style>
+  .positem {
+      width: 70%;
+  }
+</style>
 
-      <ul>
-        <% magazine.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+<div class="positem">
+  <%= form_for @magazine, html: {class: 'magazine-form'} do |f| %>
+    <div class="field" style="width: auto; text-align: left;">
+      <%= f.label :name %>
+      <%= f.text_area :name, oninput: 'autoResize(this)' %>
+      <% if @magazine.errors[:title].any? %>
+        <span class="error-message" style="margin-left: 100px;"><%= @magazine.errors[:title].join(", ") %></span>
+        <span style="color: white;">ivan</span>
+      <% end %>
     </div>
+
+    <div class="field" style="width: auto; text-align: left;">
+      <%= f.label :title %>
+      <%= f.text_area :title, oninput: 'autoResize(this)' %>
+      <% if @magazine.errors[:title].any? %>
+        <span class="error-message" style="margin-left: 100px;"><%= @magazine.errors[:title].join(", ") %></span>
+        <span style="color: white;">ivan</span>
+      <% end %>
+    </div>
+
+    <div>
+      <%= f.label :description %>
+      <%= f.text_area :description, class: 'body-textarea', oninput: 'autoResize(this)' %>
+    </div>
+
+    <div>
+      <%= f.label :rules %>
+      <%= f.text_area :rules, class: 'body-textarea', oninput: 'autoResize(this)' %>
+    </div>
+
+    <div class="button-container">
+      <%= f.submit (if @magazine.new_record?
+                      @is_link ? "Add new link" : "Add new thread"
+                    else
+                      "Edit Post"
+                    end), class: 'postitem-button' %>
+    </div>
+
   <% end %>
+</div>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div>
-    <%= form.label :title, style: "display: block" %>
-    <%= form.text_field :title %>
-  </div>
-
-  <div>
-    <%= form.label :description, style: "display: block" %>
-    <%= form.text_field :description %>
-  </div>
-
-  <div>
-    <%= form.label :rules, style: "display: block" %>
-    <%= form.text_field :rules %>
-  </div>
-
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
+<script>
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        if (textarea.scrollHeight > textarea.clientHeight) {
+            textarea.style.height = (textarea.scrollHeight) + 'px';
+        }
+    }
+</script>
