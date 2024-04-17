@@ -1,4 +1,8 @@
 class User < ApplicationRecord
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
     has_many :posts
     has_many :likes
     has_many :liked_posts, through: :likes, source: :post
@@ -13,6 +17,7 @@ class User < ApplicationRecord
     has_many :dislikes_comments
     has_many :disliked_comments, through: :dislikes_comments, source: :comment
     has_many :created_magazines, class_name: 'Magazine', foreign_key: 'user_id'
+    devise :omniauthable, omniauth_providers: [:google_oauth2]
 
     def liked_post?(post)
         self.liked_posts.include?(post)
@@ -32,6 +37,11 @@ class User < ApplicationRecord
 
     def disliked_comment?(comment)
         disliked_comments.include?(comment)
+    end
+
+    def self.from_google(u)
+        create_with(uid: u[:uid], provider: 'google',
+                    password: Devise.friendly_token[0, 20]).find_or_create_by!(email: u[:email])
     end
 
 end

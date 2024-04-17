@@ -13,6 +13,9 @@ gem "jbuilder",        "2.11.5"
 gem "puma",            "5.6.4"
 gem "bootsnap",        "1.12.0", require: false
 gem "font-awesome-sass", "6.5.2"
+gem 'devise'
+gem 'omniauth-google-oauth2'
+gem "omniauth-rails_csrf_protection"
 
 group :development, :test do
   gem "sqlite3", "1.4.2"
