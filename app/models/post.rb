@@ -1,5 +1,8 @@
 class Post < ApplicationRecord
-  validates :url, :title, :body, :author, presence: true
+
+  validates :title, presence: true
+  validates :magazine, presence: true, if: :is_link?
+  validates :url, presence: true, if: :is_link?
   belongs_to :user
   alias_attribute :author, :user
   belongs_to :magazine
@@ -10,4 +13,10 @@ class Post < ApplicationRecord
   has_many :dislikers, through: :dislikes, source: :user, dependent: :destroy
   has_many :boosts, dependent: :destroy
   has_many :boosters, through: :boosts, source: :user, dependent: :destroy
+
+  private
+  def is_link?
+    url.present?
+  end
+
 end

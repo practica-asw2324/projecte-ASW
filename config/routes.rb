@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   resources :magazines
   resources :users
-  resources :tweets
+
 
   resources :magazines do
     member do
@@ -23,6 +23,9 @@ Rails.application.routes.draw do
     put 'boost', on: :member
 
   end
-  
+
+    get 'new_link', to: 'posts#new', type: 'link', as: :new_link
+    get 'new_thread', to: 'posts#new', type: 'thread', as: :new_thread
+
   root 'posts#index'
 end
