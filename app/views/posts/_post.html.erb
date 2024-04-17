@@ -30,10 +30,11 @@
         <div class="dropdown">
           <button class="boostButton">more</button>
           <div class="dropdown-content">
-            <%= link_to 'edit', edit_post_path(post), class: "boostButton" %>
-            <a>
-              <%= button_to 'delete', post, method: :delete, data: { confirm: 'Are you sure?' }, class: 'delete-button' %>
-            </a>
+            <% if post.user_id == 1 %> <!-- Replace 1 with the current user's id -->
+              <%= link_to 'edit', edit_post_path(post), class: "boostButton" %>
+              <a><%= button_to 'delete', post, method: :delete, data: { confirm: 'Are you sure?' }, class: 'delete-button' %></a>
+            <% end %>
+
           </div>
         </div>
       <% end %>

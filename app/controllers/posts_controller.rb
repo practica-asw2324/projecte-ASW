@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: %i[ show edit update destroy like ]
+  before_action :set_post, only: %i[ show edit update destroy like sort_comments ]
 
   # GET /posts or /posts.json
   def index
@@ -50,22 +50,7 @@ class PostsController < ApplicationController
 
   # GET /posts/1 or /posts/1.json
   def show
-    @post = Post.find(params[:id])
-    @comment = Comment.new
-    @comments = @post.comments.where(comment_id: nil)
-    @selected_filter = params[:sort] || 'top'
-    case @selected_filter
-    when 'top'
-      @comments = @comments.left_joins(:likes_comments)
-                       .group('comments.id')
-                       .order('COUNT(likes_comments.id) DESC')
-    when 'newest'
-      @comments = @comments.order(created_at: :desc)
-    when 'old'
-      @comments = @comments.order(created_at: :asc)
-    else
-      @comments = @comments.order(created_at: :desc)
-    end
+    prepare_comments
   end
 
   # POST /posts/:id/react
@@ -129,27 +114,30 @@ class PostsController < ApplicationController
 
   # GET /posts/new
   def new
-    hola = params[:link]
     @post = Post.new
-  end
-
-  # GET /posts/1/edit
-  def edit
+    @is_link = params[:type] == 'link'
+    @magazines = Magazine.all
   end
 
   # POST /posts or /posts.json
   def create
     @post = Post.new(post_params)
+    @post.user_id = 1
+    @is_link = params[:type] == 'link'
 
-    respond_to do |format|
-      if @post.save
-        format.html { redirect_to post_url(@post), notice: "Post was successfully created." }
-        format.json { render :show, status: :created, location: @post }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
-      end
+    if @post.save
+      redirect_to root_path, notice: 'Post was successfully created.'
+    else
+      @magazines = Magazine.all
+      render :new
     end
+  end
+
+  # GET /posts/1/edit
+  def edit
+    @post = Post.find(params[:id])
+    @is_link = !@post.url.nil?
+    @magazines = Magazine.all
   end
 
   # PATCH/PUT /posts/1 or /posts/1.json
@@ -176,16 +164,21 @@ class PostsController < ApplicationController
   end
 
   def sort_comments
-    @post = Post.find(params[:id])
+    prepare_comments
+    render 'show'
+  end
+
+  private
+
+  def prepare_comments
     @comment = Comment.new
     @comments = @post.comments.where(comment_id: nil)
     @selected_filter = params[:sort] || 'top'
-
-    case params[:sort]
+    case @selected_filter
     when 'top'
       @comments = @comments.left_joins(:likes_comments)
-                       .group('comments.id')
-                       .order('COUNT(likes_comments.id) DESC')
+                           .group('comments.id')
+                           .order('COUNT(likes_comments.id) DESC')
     when 'newest'
       @comments = @comments.order(created_at: :desc)
     when 'old'
@@ -193,19 +186,14 @@ class PostsController < ApplicationController
     else
       @comments = @comments.order(created_at: :desc)
     end
-    render 'show'
   end
 
-  private
-
-  # Use callbacks to share common setup or constraints between actions.
   def set_post
     @post = Post.find(params[:id])
   end
 
-  # Only allow a list of trusted parameters through.
   def post_params
-    params.require(:post).permit(:title, :body, :url)
+    params.require(:post).permit(:title, :url, :body, :magazine_id)
   end
 
   def nested_comments(comments)
