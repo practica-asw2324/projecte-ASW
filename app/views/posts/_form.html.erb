@@ -17,13 +17,9 @@
       </div>
     <% end %>
 
-    <div class="field" style="width: auto; text-align: left;">
+    <div>
       <%= f.label :title %>
       <%= f.text_area :title, oninput: 'autoResize(this)' %>
-      <% if @post.errors[:title].any? %>
-      <span class="error-message" style="margin-left: 100px;"><%= @post.errors[:title].join(", ") %></span>
-        <span style="color: white;">ivan</span>
-      <% end %>
     </div>
 
     <div>
