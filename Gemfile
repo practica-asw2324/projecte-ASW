@@ -11,6 +11,10 @@ gem "turbo-rails",     "1.1.1"
 gem "stimulus-rails",  "1.0.4"
 gem "jbuilder",        "2.11.5"
 gem "puma",            "5.6.4"
+gem 'devise'
+gem 'omniauth'
+gem 'omniauth-google-oauth2'
+gem "omniauth-rails_csrf_protection"
 gem "bootsnap",        "1.12.0", require: false
 gem "font-awesome-sass", "6.5.2"
 
