@@ -170,3 +170,28 @@ body {
   .navbar-menu li a:hover::after {
     width: 100%;
   }
+
+.navbar-button.link-style.navbar-menu-link {
+  display: inline;
+  padding: 0;
+  background: none;
+  border: none;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  font: inherit;
+  outline: inherit;
+}
+
+.navbar-button.link-style.navbar-menu-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 3px;
+  top: 35px;
+  left: 0;
+}
+
+.navbar-button.link-style.navbar-menu-link:hover::after {
+  width: 100%;
+}

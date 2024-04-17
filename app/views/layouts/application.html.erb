@@ -27,7 +27,6 @@
         <i class="fas fa-search"></i>
       <% end %>
 
-
       <div class="dropdown">
         <label for="dropdown-toggle" class="dropdown-label"><i class="fas fa-plus plusbutton"></i></label>
         <div class="dropdown-content">
@@ -37,17 +36,14 @@
         </div>
       </div>
 
+      <%= form_tag(admin_google_oauth2_omniauth_authorize_path, method: :post, class: "navbar-buttons") do %>
+        <%= button_tag "Sign in with Google", type: :submit, data: { turbo: "false" }, class: 'navbar-button link-style navbar-menu-link' %>
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <% end %>
     </div>
   </div>
 </div>
 
-<% flash.each do |key, value| %>
-  <div class="flash <%= key %>">
-    <%= value %>
-  </div>
-<% end %>
-
-<%= yield %>
 
 </body>
 </html>
