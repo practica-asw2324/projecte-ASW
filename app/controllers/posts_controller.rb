@@ -33,7 +33,7 @@ class PostsController < ApplicationController
   # PUT /posts/:id/boost
   def boost
     @post = Post.find(params[:id])
-    user = User.find(id = 1)
+    user = current_user
 
     # If the user has already boosted the post, remove the boost
     if user.boosted_post?(@post)
@@ -61,7 +61,7 @@ class PostsController < ApplicationController
   # PUT /posts/:id/like
   def like
     @post = Post.find(params[:id])
-    userproves = User.find(id = 1)
+    userproves = current_user
 
     # If the user has already liked the post, remove the like
     if userproves.liked_post?(@post)
@@ -88,7 +88,7 @@ class PostsController < ApplicationController
   # PUT /posts/:id/dislike
   def dislike
     @post = Post.find(params[:id])
-    userproves = User.find(id = 1)
+    userproves = current_user
 
     # If the user has already disliked the post, remove the dislike
     if userproves.disliked_post?(@post)
@@ -122,7 +122,7 @@ class PostsController < ApplicationController
   # POST /posts or /posts.json
   def create
     @post = Post.new(post_params)
-    @post.user_id = 1
+    @post.user_id = current_user.id
     @is_link = params[:type] == 'link'
 
     if @post.save

@@ -32,7 +32,7 @@
           <td>
             <div style="display: flex; align-items: center; justify-content: space-between;">
               <span class="subsCount"><i class="fa-solid fa-users"></i><span class="subsCountNum"><%= magazine_data[:subscribers_count] %></span></span>
-              <% if User.find(id=1).subscribed_magazines.include?(magazine_data[:magazine]) %>
+              <% if current_user.subscribed_magazines.include?(magazine_data[:magazine]) %>
                 <%= button_to unsubscribe_magazine_path(magazine_data[:magazine]),:class=>"subsButton", method: :post do %>
                   <i class="fa-solid fa-folder-minus"></i> Unsubscribe
                 <% end %>
@@ -47,4 +47,4 @@
       <% end %>
     </tbody>
   </table>
-<div>
+</div>
