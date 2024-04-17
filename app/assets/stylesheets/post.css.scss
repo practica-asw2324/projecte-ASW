@@ -116,52 +116,100 @@
 }
 
 .dropdown {
-  position: relative;
-  display: inline-block;
+    position: relative;
+    display: inline-block;
 }
 
 .dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #ffffff;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  z-index: 1;
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
 }
-
+  
 .dropdown-content a {
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  font-size: 11pt;
-  width: 100%;
-  box-sizing: border-box;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 11pt;
+    width: 100%;
+    box-sizing: border-box;
 }
-
+  
 .dropdown-content a:hover {
   background-color: #f1f1f1;
 }
-
+  
 .dropdown:hover .dropdown-content {
-  display: block;
+   display: block;
 }
 
 .delete-button {
-  display: inline;
-  color: black; /* color de enlace predeterminado */
-  background-color: transparent;
-  padding: 0;
-  border: none;
-  text-decoration: none;
-  font-size: 11pt;
-  font-family: Arial, Helvetica, sans-serif;
-  cursor: pointer;
+    display: inline;
+    color: black; /* color de enlace predeterminado */
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    text-decoration: none;
+    font-size: 11pt;
+    font-family: Arial, Helvetica, sans-serif;
+    cursor: pointer;
 }
 
 .filterposts li a.selected {
-  color: #0f0142;
-  font-weight: bold;
+    color: #0f0142;
+    font-weight: bold;
+}
+
+.filtersearch {
+  margin: 20px auto;
+  padding: 1em;
+  width: 95%;
+  border-radius: 15px;
+  background-color: #ffffff;
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+}
+
+.filtersearch input[type='text'] {
+  height: 40px;
+  width: 500px;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #CCCCCC;
+  box-sizing: border-box;
+  border-radius: 5px;
+}
+
+.filtersearch button[type='submit'] {
+  height: 40px;
+  background-color: #0f0142;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  text-decoration: none;
+  font-size: 12pt;
+  margin: 4px 2px;
+  cursor: pointer;
+  flex-wrap: nowrap;
+}
+
+.no-results {
+  color: dimgray;
+  text-align: center;
+  background-color: #ffffff;
+  padding: 1em;
+  width: 95%;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  margin: 20px auto;
+  list-style-type: none;
 }
 
 .post-form div {
@@ -227,17 +275,3 @@
 .full-width {
   width: 100%;
 }
-
-.error-message {
-  color: #af3030;
-  font-size: 12pt;
-  font-weight: bold;
-}
-
-#title-error-message {
-  min-height: 20px; /* Adjust this value as needed */
-}
-
-
-
-

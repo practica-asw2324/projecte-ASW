@@ -30,8 +30,7 @@
       <% end %>
     </h3>
     <h4><span><%= @post.user.name %></span>,
-      <span class="domain createdAt" data-created-at="<%= @post.created_at %>"></span></h4>
-
+      <span class="domain"><%= time_ago_in_words(@post.created_at) %> ago</span></h4>  
     <div style="display :flex">
       <%= link_to @post.comments.count.to_s + ' comments', '#comments', class: "boostButton" %>
 
@@ -80,39 +79,3 @@
   <% end %>
 </div>
 <div style="height: 100px;"></div>
-<script>
-
-    function getDynamicValue(created_at) {
-
-        var time = new Date();
-        var datecreated = new Date(created_at);
-
-        var diff = time - datecreated;
-
-        const seconds = Math.floor(diff / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
-        const months = Math.floor(days / 30);
-        const years = Math.floor(months / 12);
-
-        if (years > 0) {
-            return years + " years ago";
-        } else if (months > 0) {
-            return months + " months ago";
-        } else if (days > 0) {
-            return days + " days ago";
-        } else if (hours > 0) {
-            return hours + " hours ago";
-        } else if (minutes > 0) {
-            return minutes + " minutes ago";
-        } else {
-            return seconds + " seconds ago";
-        }
-    }
-
-    document.querySelectorAll(".createdAt").forEach(function (element) {
-        element.textContent = getDynamicValue(element.getAttribute('data-created-at'));
-    });
-
-</script>
