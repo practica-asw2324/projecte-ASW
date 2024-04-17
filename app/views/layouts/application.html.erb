@@ -37,18 +37,15 @@
           </div>
         </div>
 
-        <% if User.find(id = 1) %>
         <div class="dropdown">
-          <!--<label for="dropdown-toggle" class="dropdown-label"><%=User.find(id=1).username %></label>-->
-          <%= button_to 'Login with Google', user_google_oauth2_omniauth_authorize_path, method: :post, :data => {turbo: "false"} %>
-          <div class="dropdown-content dropdown-content-right ">
-            <%= link_to "Profile", user_path(1) %>
-            <%= link_to "Logout", user_path(1) %>
-          </div>
+          <% if current_user %>
+            <label for="dropdown-toggle" class="dropdown-label"><%= current_user.username %></label>
+            <div class="dropdown-content dropdown-content-right ">
+              <%= link_to "Profile", user_path(current_user) %>
+              <%= button_to "Logout", sign_out_path, method: :delete, class: 'profile-link' %>  </div>          <% else %>
+            <%= button_to 'Sign in with Google', user_google_oauth2_omniauth_authorize_path, method: :post, :data => {turbo: "false"}, class: 'google-login-button' %>
+          <% end %>
         </div>
-        <% else %>
-        <a href="#" class="navbar-button">Login</a>
-        <% end %>
 
       </div>
     </div>

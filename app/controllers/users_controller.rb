@@ -57,6 +57,12 @@ class UsersController < ApplicationController
     end
   end
 
+  def logout
+    current_user.destroy
+    sign_out current_user
+    redirect_to root_path
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
