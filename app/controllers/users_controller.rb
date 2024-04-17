@@ -8,6 +8,27 @@ class UsersController < ApplicationController
 
   # GET /users/1 or /users/1.json
   def show
+    @user = User.find(params[:id])
+    @filter = params[:filter] || 'all'
+
+    case @filter
+    when 'posts'
+      @posts = @user.posts
+      @comments = []
+      @boosts = []
+    when 'comments'
+      @posts = []
+      @comments = @user.comments
+      @boosts = []
+    when 'boosts'
+      @posts = []
+      @comments = []
+      @boosts = @user.boosts
+    else
+      @posts = @user.posts
+      @comments = @user.comments
+      @boosts = @user.boosts
+    end
   end
 
   # GET /users/new

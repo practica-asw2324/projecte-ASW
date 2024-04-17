@@ -10,30 +10,54 @@
             <img width="100" height="100" style="max-width: 100px; max-height: 100px;" src="<%= url_for(@user.avatar) %>" alt="<%= @user.name %> avatar">
           </figure>
         <% end %>
-        <small>@<%= @user.username %></small>
+        <h4>@<%= @user.username %></h4>
+        <aside class="user__actions" data-controller="subs">
+          <div class="action">
+            <i class="fa-solid fa-users"></i><span>0</span>
+          </div>
+        </aside>
       </div>
-      <aside class="user__actions" data-controller="subs">
-        <div class="action">
-          <i class="fa-solid fa-users"></i><span>0</span>
-        </div>
-      </aside>
     </div>
   </div>
 </div>
 
+<aside class="options filter-options" id="options">
+  <div></div>
+  <menu class="options__main">
+    <li>
+      <%= link_to 'All', user_path(@user, filter: 'all'), class: @filter == 'all' ? 'active' : '' %>
+    </li>
+    <li>
+      <%= link_to "Posts (#{@user.posts.count})", user_path(@user, filter: 'posts'), class: @filter == 'posts' ? 'active' : '' %>
+    </li>
+    <li>
+      <%= link_to "Comments (#{@user.comments.count})", user_path(@user, filter: 'comments'), class: @filter == 'comments' ? 'active' : '' %>
+    </li>
+    <li>
+      <%= link_to "Boosts (#{@user.boosts.count})", user_path(@user, filter: 'boosts'), class: @filter == 'boosts' ? 'active' : '' %>
+    </li>
+  </menu>
+
+</aside>
+
 <div class="user-posts">
-  <h2>Posts ( <%= @user.posts.count %> )</h2>
-  <%= render @user.posts %>
+  <% if @filter == 'all' || @filter == 'posts' %>
+    <%= render @posts %>
+  <% end %>
 </div>
 
 <div class="user-comments">
-  <h2>Comments ( <%= @user.comments.count %> )</h2>
-  <%= render @user.comments %>
+  <% if @filter == 'all' || @filter == 'comments' %>
+    <%= render @comments %>
+  <% end %>
 </div>
 
 <% if current_user == @user %>
   <div class="user-boosts">
-    <h2>Boosts ( <%= @user.boosts.count %> )</h2>
-    <%= render @user.boosts %>
+    <% if @filter == 'all' || @filter == 'boosts' %>
+      <% @boosts.each do |boost| %>
+        <%= render 'posts/post', post: boost.post %>
+      <% end %>
+    <% end %>
   </div>
 <% end %>
