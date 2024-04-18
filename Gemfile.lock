@@ -96,6 +96,8 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
+    dockerfile-rails (1.6.8)
+      rails (>= 3.0.0)
     erubi (1.12.0)
     faraday (2.9.0)
       faraday-net_http (>= 2.0, < 3.2)
@@ -296,6 +298,7 @@ DEPENDENCIES
   capybara (= 3.37.1)
   debug (= 1.5.0)
   devise
+  dockerfile-rails (>= 1.6)
   font-awesome-sass (= 6.5.2)
   importmap-rails (= 1.1.0)
   jbuilder (= 2.11.5)
