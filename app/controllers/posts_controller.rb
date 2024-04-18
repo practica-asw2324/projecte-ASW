@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :authenticate_user, only: [:new, :create]
+  before_action :authenticate_user, only: [:new, :create, :like, :dislike, :boost]
   before_action :set_post, only: %i[ show edit update destroy like sort_comments ]
 
   # GET /posts or /posts.json
@@ -62,18 +62,17 @@ class PostsController < ApplicationController
   # PUT /posts/:id/like
   def like
     @post = Post.find(params[:id])
-    userproves = current_user
 
     # If the user has already liked the post, remove the like
-    if userproves.liked_post?(@post)
-      @post.likes.find_by(user: userproves).destroy
+    if current_user.liked_post?(@post)
+      @post.likes.find_by(user: current_user).destroy
       flash[:notice] = "You've unliked this post."
     else
-      @like = @post.likes.build(user: userproves)
+      @like = @post.likes.build(user: current_user)
 
       # If the user has disliked the post, remove the dislike
-      if userproves.disliked_post?(@post)
-        @post.dislikes.find_by(user: userproves).destroy
+      if current_user.disliked_post?(@post)
+        @post.dislikes.find_by(user: current_user).destroy
       end
 
       if @like.save
@@ -89,18 +88,17 @@ class PostsController < ApplicationController
   # PUT /posts/:id/dislike
   def dislike
     @post = Post.find(params[:id])
-    userproves = current_user
 
     # If the user has already disliked the post, remove the dislike
-    if userproves.disliked_post?(@post)
-      @post.dislikes.find_by(user: userproves).destroy
+    if current_user.disliked_post?(@post)
+      @post.dislikes.find_by(user: current_user).destroy
       flash[:notice] = "You've undisliked this post."
     else
-      @dislike = @post.dislikes.build(user: userproves)
+      @dislike = @post.dislikes.build(user: current_user)
 
       # If the user has liked the post, remove the like
-      if userproves.liked_post?(@post)
-        @post.likes.find_by(user: userproves).destroy
+      if current_user.liked_post?(@post)
+        @post.likes.find_by(user: current_user).destroy
       end
 
       if @dislike.save
