@@ -7,6 +7,11 @@
       <% end %>
     <% end %>
   </ul>
+  <% if @posts %>
+    <% unless @posts.present? %>
+      <p class="no-results">No results were found</p>
+    <% end %>
+  <% end %>
 <% end %>
 
 <% unless params[:from_nav_button] %>
@@ -30,9 +35,4 @@
     <%  end  %>
   </div>
 
-  <% if @posts %>
-    <% unless @posts.present? %>
-      <p class="no-results">No results were found</p>
-    <% end %>
-  <% end %>
 <% end %>
