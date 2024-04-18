@@ -26,14 +26,12 @@
         <%= 'boost (' + post.boosts.count.to_s + ')' %>
       <% end %>
 
-      <% if post.user == User.find(id = 1) %>
+      <% if user_signed_in? && current_user == post.user %>
         <div class="dropdown">
           <button class="boostButton">more</button>
           <div class="dropdown-content">
-            <% if post.user_id == 1 %> <!-- Replace 1 with the current user's id -->
-              <%= link_to 'edit', edit_post_path(post), class: "boostButton" %>
-              <a><%= button_to 'delete', post, method: :delete, data: { confirm: 'Are you sure?' }, class: 'delete-button' %></a>
-            <% end %>
+            <%= link_to 'edit', edit_post_path(post), class: "boostButton" %>
+            <a><%= button_to 'delete', post, method: :delete, data: { confirm: 'Are you sure?' }, class: 'delete-button' %></a>
           </div>
         </div>
       <% end %>
