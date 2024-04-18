@@ -1,10 +1,49 @@
-<h1>Editing user</h1>
+<div class="with-cover with-avatar">
+  <% if @user.cover.attached? %>
+    <img height="220" width="100%" class="cover" src="<%= url_for(@user.cover) %>" alt="<%= @user.name %>">
+  <% else %>
+    <div class="cover-placeholder"></div>
+  <% end %>
+  <div class="user-main" id="content">
+    <div>
+      <div class="row">
+        <% if @user.avatar.attached? %>
+          <figure>
+            <img width="100" height="100" style="max-width: 100px; max-height: 100px;" src="<%= url_for(@user.avatar) %>" alt="<%= @user.name %> avatar">
+          </figure>
+        <% else %>
+          <figure class="avatar-placeholder"></figure>
+        <% end %>
+        <h4>@<%= @user.username %></h4>
+      </div>
+    </div>
+  </div>
+</div>
 
-<%= render "form", user: @user %>
+<div class="postitem">
+  <%= form_for @user, html: { class: 'post-form', multipart: true } do |f| %>
+    <div>
+      <%= f.label :username %>
+      <%= f.text_field :username %>
+    </div>
 
-<br>
+    <div>
+      <%= f.label :description %>
+      <%= f.text_field :description %>
+    </div>
 
-<div>
-  <%= link_to "Show this user", @user %> |
-  <%= link_to "Back to users", users_path %>
+    <div>
+      <%= f.label :avatar %>
+      <%= f.file_field :avatar %>
+    </div>
+
+    <div>
+      <%= f.label :cover %>
+      <%= f.file_field :cover %>
+    </div>
+
+    <div class="button-container">
+      <%= f.submit "Update Profile", class: 'postitem-button' %>
+    </div>
+  <% end %>
 </div>
