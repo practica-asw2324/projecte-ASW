@@ -14,11 +14,11 @@ table {
 table thead th {
     background-color: #e7e4f5;
     color: black; 
-    font-weight: bold;/* This is to ensure the text is readable on the grey background */
+    font-weight: bold;
 }
 
 table td, table th {
-    padding: 20px 80px; /* This adds 10px of vertical padding and 20px of horizontal padding */
+    padding: 20px 80px;
     text-align: center;
 }
 
@@ -71,7 +71,6 @@ table td, table th {
     color: #444;
     font-size: 12pt;
     padding-bottom: 20px;
-    //display: flex; 
     justify-content: space-between; 
     align-items: center; 
 }

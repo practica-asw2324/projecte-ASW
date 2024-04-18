@@ -115,7 +115,7 @@
 
 .avatar-container {
   position: absolute;
-  top: 100%; /* adjust as needed */
+  top: 100%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -125,6 +125,14 @@
 }
 
 .user-main {
-  margin-top: 50px; /* adjust as needed */
-  text-align: center; /* to center the username and description */
+  margin-top: 50px;
+  text-align: center;
+}
+
+.custom-link {
+  text-decoration: none;
+  color: #0f0142;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-left: 10px;
 }
