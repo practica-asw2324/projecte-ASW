@@ -34,9 +34,11 @@
     <li>
       <%= link_to "Comments (#{@user.comments.count})", user_path(@user, filter: 'comments'), class: @filter == 'comments' ? 'active' : '' %>
     </li>
-    <li>
-      <%= link_to "Boosts (#{@user.boosts.count})", user_path(@user, filter: 'boosts'), class: @filter == 'boosts' ? 'active' : '' %>
-    </li>
+    <% if current_user == @user %>
+      <li>
+        <%= link_to "Boosts (#{@user.boosts.count})", user_path(@user, filter: 'boosts'), class: @filter == 'boosts' ? 'active' : '' %>
+      </li>
+    <% end %>
   </menu>
 
 </aside>
