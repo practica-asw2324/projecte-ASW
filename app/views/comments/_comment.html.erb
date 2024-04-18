@@ -1,8 +1,8 @@
-<div id="<%= dom_id comment %>" style="margin-left: <%= 20 * comment.depth %>px;">
-  <div class="commentitem">
+<div id="<%= dom_id comment %>" style="<%= comment_margin_style(comment, escalate) %>">
+  <div class="commentitem <%= 'user-post-or-comment' if defined?(user_view) && user_view && comment.user == current_user %> <%= 'white-background' if defined?(@from_user_view) && @from_user_view %>">
     <div class="commentHeader">
       <div class="commentInfo">
-        <h4><span><%= comment.user.name %></span>,
+        <h4><span><%= link_to comment.user.name, user_path(comment.user),  class: 'user-link' %></span>,
           <span class="domain"><%= time_ago_in_words(comment.created_at) %> ago</span></h4>
       </div>
       <div class="commentActions">
@@ -39,7 +39,7 @@
     </div>
   </div>
   <% comment.replies.each do |reply| %>
-    <%= render 'comments/comment', comment: reply %>
+    <%= render 'comments/comment', comment: reply, escalate: escalate, user_view: user_view %>
   <% end %>
 </div>
 

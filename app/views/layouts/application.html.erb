@@ -42,9 +42,11 @@
             <label for="dropdown-toggle" class="dropdown-label"><%= current_user.username %></label>
             <div class="dropdown-content dropdown-content-right ">
               <%= link_to "Profile", user_path(current_user) %>
-              <%= button_to "Log out", sign_out_path, method: :delete, class: 'profile-link' %>  </div>
+              <%= link_to "Edit Profile", edit_user_path(current_user) %>
+              <%= button_to "Logout", sign_out_path, method: :delete, class: 'profile-link' %>
+            </div>
           <% else %>
-            <%= button_to 'Log in', new_user_path, method: :get, :data => {turbo: "false"}, class: 'google-login-button' %>
+            <%= button_to 'Sign in with Google', user_google_oauth2_omniauth_authorize_path, method: :post, :data => {turbo: "false"}, class: 'google-login-button' %>
           <% end %>
         </div>
 

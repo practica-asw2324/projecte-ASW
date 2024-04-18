@@ -57,7 +57,7 @@
 
 .postitem {
   margin: 20px auto;
-  width: 96%;
+  width: 95%;
   border-radius: 15px;
   background-color: #ffffff;
   display: block;
@@ -77,7 +77,7 @@
 .filterposts {
   margin: 20px auto;
   padding: 1em;
-  width: 95%;
+  width: 94%;
   border-radius: 15px;
   background-color: #ffffff;
   list-style-type: none;
@@ -167,7 +167,7 @@
 .filtersearch {
   margin: 20px auto;
   padding: 1em;
-  width: 95%;
+  width: 94%;
   border-radius: 15px;
   background-color: #ffffff;
   list-style-type: none;
@@ -183,6 +183,7 @@
   border: 1px solid #CCCCCC;
   box-sizing: border-box;
   border-radius: 5px;
+  font-size: 15px;
 }
 
 .filtersearch button[type='submit'] {
@@ -204,7 +205,7 @@
   text-align: center;
   background-color: #ffffff;
   padding: 1em;
-  width: 95%;
+  width: 94%;
   border-radius: 15px;
   display: flex;
   justify-content: center;
@@ -274,4 +275,14 @@
 
 .full-width {
   width: 100%;
+}
+
+.user-link {
+  color: inherit; /* hereda el color del texto circundante */
+  text-decoration: none; /* elimina el subrayado */
+
+}
+
+.user-link:hover {
+  color: #0f0142; /* Cambia el color al que prefieras cuando se haga hover */
 }

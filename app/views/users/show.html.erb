@@ -1,10 +1,57 @@
-<p style="color: green"><%= notice %></p>
+<!--<p style="color: green"><%= notice %></p>-->
 
 <%= render @user %>
 
-<div>
-  <%= link_to "Edit this user", edit_user_path(@user) %> |
-  <%= link_to "Back to users", users_path %>
+<aside class="options filter-options" id="options">
+  <menu class="options__main">
+    <li>
+      <%= link_to 'All', user_path(@user, filter: 'all'), class: @filter == 'all' ? 'active' : '' %>
+    </li>
+    <li>
+      <%= link_to "Posts (#{@user.posts.count})", user_path(@user, filter: 'posts'), class: @filter == 'posts' ? 'active' : '' %>
+    </li>
+    <li>
+      <%= link_to "Comments (#{@user.comments.count})", user_path(@user, filter: 'comments'), class: @filter == 'comments' ? 'active' : '' %>
+    </li>
+    <li>
+      <%= link_to "Boosts (#{@user.boosts.count})", user_path(@user, filter: 'boosts'), class: @filter == 'boosts' ? 'active' : '' %>
+    </li>
+  </menu>
 
-  <%= button_to "Destroy this user", @user, method: :delete %>
-</div>
+</aside>
+
+<% if @filter == 'comments' %>
+    <% @comments.where(comment_id: nil).each do |comment| %>
+      <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
+    <% end %>
+<% end %>
+
+<% if @filter == 'posts' %>
+  <%= render @post %>
+<% end %>
+
+<% if @filter == 'all' %>
+  <% @user.posts.uniq.each do |post| %>
+    <%= render post %>
+    <% post.comments.where(user_id: @user.id, comment_id: nil).each do |comment| %>
+      <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
+    <% end %>
+  <% end %>
+
+  <% (@user.commented_posts - @user.posts).uniq.each do |post| %>
+    <%= render post %>
+    <% post.comments.where(user_id: @user.id, comment_id: nil).each do |comment| %>
+      <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<% if current_user == @user %>
+  <div class="user-boosts">
+    <% if @filter == 'boosts' %>
+      <% @boosts.each do |boost| %>
+        <%= render 'posts/post', post: boost.post %>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
