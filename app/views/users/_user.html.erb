@@ -42,7 +42,7 @@
 
 <% if @filter == 'comments' %>
     <% @comments.where(comment_id: nil).each do |comment| %>
-      <%= render 'comments/comment', comment: comment, escalate: false %>
+      <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
     <% end %>
 <% end %>
 
@@ -54,14 +54,14 @@
   <% @user.posts.uniq.each do |post| %>
     <%= render post %>
     <% post.comments.where(user_id: @user.id, comment_id: nil).each do |comment| %>
-      <%= render 'comments/comment', comment: comment, escalate: false %>
+      <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
     <% end %>
   <% end %>
 
   <% (@user.commented_posts - @user.posts).uniq.each do |post| %>
     <%= render post %>
     <% post.comments.where(user_id: @user.id, comment_id: nil).each do |comment| %>
-      <%= render 'comments/comment', comment: comment, escalate: false %>
+      <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
     <% end %>
   <% end %>
 <% end %>

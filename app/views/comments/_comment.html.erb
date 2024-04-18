@@ -1,5 +1,5 @@
-<div id="<%= dom_id comment %>" style="<%= 'margin-left: ' + (20 * comment.depth).to_s + 'px;' if defined?(escalate) && escalate %>">
-  <div class="commentitem <%= 'white-background' if defined?(@from_user_view) && @from_user_view %>">
+<div id="<%= dom_id comment %>" style="<%= comment_margin_style(comment, escalate) %>">
+  <div class="commentitem <%= 'user-post-or-comment' if defined?(user_view) && user_view && comment.user == current_user %> <%= 'white-background' if defined?(@from_user_view) && @from_user_view %>">
     <div class="commentHeader">
       <div class="commentInfo">
         <h4><span><%= comment.user.name %></span>,
@@ -39,7 +39,7 @@
     </div>
   </div>
   <% comment.replies.each do |reply| %>
-    <%= render 'comments/comment', comment: reply, escalate: escalate %>
+    <%= render 'comments/comment', comment: reply, escalate: escalate, user_view: user_view %>
   <% end %>
 </div>
 
