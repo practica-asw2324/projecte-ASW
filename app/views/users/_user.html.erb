@@ -16,6 +16,7 @@
             <i class="fa-solid fa-users"></i><span>0</span>
           </div>
         </aside>
+        <p><%= @user.description %></p>
       </div>
     </div>
   </div>
@@ -46,11 +47,11 @@
   <% end %>
 </div>
 
-<div class="user-comments">
-  <% if @filter == 'all' || @filter == 'comments' %>
-    <%= render @comments %>
-  <% end %>
-</div>
+<!--<div class="user-comments">-->
+  <%# if @filter == 'all' || @filter == 'comments' %>
+    <%#= render @comments %>
+  <%# end %>
+<!--</div>-->
 
 <% if current_user == @user %>
   <div class="user-boosts">
