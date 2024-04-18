@@ -39,10 +39,11 @@ class User < ApplicationRecord
         disliked_comments.include?(comment)
     end
 
-    def self.from_google(u)
-        create_with(uid: u[:uid], provider: 'google',
-                    password: Devise.friendly_token[0, 20]).find_or_create_by!(email: u[:email])
-    end
-
+  def self.from_google(u)
+    username = u[:email].split('@').first
+    name = u[:name].split(' ')[0]
+    create_with(uid: u[:uid], provider: 'google', email: u[:email], username: username, name: name,
+                password: Devise.friendly_token[0, 20]).find_or_create_by!(email: u[:email])
+  end
 end
 

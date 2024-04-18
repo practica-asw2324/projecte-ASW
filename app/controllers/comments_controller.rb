@@ -1,4 +1,5 @@
 class CommentsController < ApplicationController
+  before_action :authenticate_user, only: %i[ create like dislike ]
   before_action :set_comment, only: %i[ show edit update destroy ]
 
   # GET /comments or /comments.json
@@ -24,7 +25,7 @@ class CommentsController < ApplicationController
   # POST /comments or /comments.json
   def create
     @comment = Comment.new(comment_params)
-    @comment.user_id = 1
+    @comment.user_id = current_user.id
 
     respond_to do |format|
       if @comment.save
@@ -40,6 +41,7 @@ class CommentsController < ApplicationController
   # PATCH/PUT /comments/1 or /comments/1.json
   def update
     @comment = Comment.find(params[:id])
+    params[:comment].delete(:comment_id) if @comment.present?
     if @comment.update(comment_params)
       redirect_to post_url(@comment.post_id), notice: 'Comment was successfully updated.'
     else
@@ -62,18 +64,17 @@ class CommentsController < ApplicationController
   # PUT /comments/:id/likes
   def like
     @comment = Comment.find(params[:id])
-    userproves = User.find(id = 1)
 
     # If the user has already liked the comment, remove the like
-    if userproves.liked_comment?(@comment)
-      @comment.likes_comments.find_by(user: userproves).destroy
+    if current_user.liked_comment?(@comment)
+      @comment.likes_comments.find_by(user: current_user).destroy
       flash[:notice] = "You've unliked this comment."
     else
-      @like = @comment.likes_comments.build(user: userproves)
+      @like = @comment.likes_comments.build(user: current_user)
 
       # If the user has disliked the comment, remove the dislike
-      if userproves.disliked_comment?(@comment)
-        @comment.dislikes_comments.find_by(user: userproves).destroy
+      if current_user.disliked_comment?(@comment)
+        @comment.dislikes_comments.find_by(user: current_user).destroy
       end
 
       if @like.save
@@ -89,18 +90,17 @@ class CommentsController < ApplicationController
   # PUT /comments/:id/dislike
   def dislike
     @comment = Comment.find(params[:id])
-    userproves = User.find(id = 1)
 
     # If the user has already disliked the comment, remove the dislike
-    if userproves.disliked_comment?(@comment)
-      @comment.dislikes_comments.find_by(user: userproves).destroy
+    if current_user.disliked_comment?(@comment)
+      @comment.dislikes_comments.find_by(user: current_user).destroy
       flash[:notice] = "You've undisliked this comment."
     else
-      @dislike = @comment.dislikes_comments.build(user: userproves)
+      @dislike = @comment.dislikes_comments.build(user: current_user)
 
       # If the user has liked the comment, remove the like
-      if userproves.liked_comment?(@comment)
-        @comment.likes_comments.find_by(user: userproves).destroy
+      if current_user.liked_comment?(@comment)
+        @comment.likes_comments.find_by(user: current_user).destroy
       end
 
       if @dislike.save

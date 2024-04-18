@@ -43,6 +43,12 @@
 </div>
 
 <script>
+    window.onload = function() {
+        document.querySelectorAll('textarea').forEach((textarea) => {
+            autoResize(textarea);
+        });
+    }
+
     function autoResize(textarea) {
         textarea.style.height = 'auto';
         if (textarea.scrollHeight > textarea.clientHeight) {

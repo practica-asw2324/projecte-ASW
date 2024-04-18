@@ -1,4 +1,5 @@
 class MagazinesController < ApplicationController
+  before_action :authenticate_user, only: [:new, :create, :subscribe, :unsubscribe]
   before_action :set_magazine, only: %i[ show edit update destroy ]
 
   # GET /magazines or /magazines.json
@@ -25,14 +26,12 @@ class MagazinesController < ApplicationController
   end
 
   def subscribe
-    current_user = User.find(id=1)
     @magazine = Magazine.find(params[:id])
     current_user.subscribed_magazines << @magazine unless current_user.subscribed_magazines.include?(@magazine)
     redirect_to request.referrer || root_path
   end
 
   def unsubscribe
-    current_user = User.find(id=1)
     @magazine = Magazine.find(params[:id])
     subscription = Subscription.find_by(user_id: current_user.id, magazine_id: @magazine.id)
     subscription.delete if subscription
@@ -79,7 +78,7 @@ class MagazinesController < ApplicationController
   # POST /magazines or /magazines.json
   def create
     @magazine = Magazine.new(magazine_params)
-    @magazine.user_id = 1
+    @magazine.user_id = current_user.id
 
     respond_to do |format|
       if @magazine.save

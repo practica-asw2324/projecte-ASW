@@ -1,4 +1,5 @@
 class PostsController < ApplicationController
+  before_action :authenticate_user, only: [:new, :create, :like, :dislike, :boost]
   before_action :set_post, only: %i[ show edit update destroy like sort_comments ]
 
   # GET /posts or /posts.json
@@ -33,7 +34,7 @@ class PostsController < ApplicationController
   # PUT /posts/:id/boost
   def boost
     @post = Post.find(params[:id])
-    user = User.find(id = 1)
+    user = current_user
 
     # If the user has already boosted the post, remove the boost
     if user.boosted_post?(@post)
@@ -61,18 +62,17 @@ class PostsController < ApplicationController
   # PUT /posts/:id/like
   def like
     @post = Post.find(params[:id])
-    userproves = User.find(id = 1)
 
     # If the user has already liked the post, remove the like
-    if userproves.liked_post?(@post)
-      @post.likes.find_by(user: userproves).destroy
+    if current_user.liked_post?(@post)
+      @post.likes.find_by(user: current_user).destroy
       flash[:notice] = "You've unliked this post."
     else
-      @like = @post.likes.build(user: userproves)
+      @like = @post.likes.build(user: current_user)
 
       # If the user has disliked the post, remove the dislike
-      if userproves.disliked_post?(@post)
-        @post.dislikes.find_by(user: userproves).destroy
+      if current_user.disliked_post?(@post)
+        @post.dislikes.find_by(user: current_user).destroy
       end
 
       if @like.save
@@ -88,18 +88,17 @@ class PostsController < ApplicationController
   # PUT /posts/:id/dislike
   def dislike
     @post = Post.find(params[:id])
-    userproves = User.find(id = 1)
 
     # If the user has already disliked the post, remove the dislike
-    if userproves.disliked_post?(@post)
-      @post.dislikes.find_by(user: userproves).destroy
+    if current_user.disliked_post?(@post)
+      @post.dislikes.find_by(user: current_user).destroy
       flash[:notice] = "You've undisliked this post."
     else
-      @dislike = @post.dislikes.build(user: userproves)
+      @dislike = @post.dislikes.build(user: current_user)
 
       # If the user has liked the post, remove the like
-      if userproves.liked_post?(@post)
-        @post.likes.find_by(user: userproves).destroy
+      if current_user.liked_post?(@post)
+        @post.likes.find_by(user: current_user).destroy
       end
 
       if @dislike.save
@@ -122,7 +121,7 @@ class PostsController < ApplicationController
   # POST /posts or /posts.json
   def create
     @post = Post.new(post_params)
-    @post.user_id = 1
+    @post.user_id = current_user.id
     @is_link = params[:type] == 'link'
 
     if @post.save

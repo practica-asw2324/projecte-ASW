@@ -1,9 +1,16 @@
-## Lab Session #04
+## PROJECTE ASW
 
 Students:
 
-* Surname_1, First_name_1
+* Amorín Díaz, Miquel
 
-* Surname_2, First_name_2
+* Costabella Moreno, Agustí
+  
+* López Ruiz, Alba
 
-Your deployed webapp at Fly.io|Heroku|... (task #6): <https://*********.***.***/>
+* Tena Domingo, Julia
+
+
+Webapp deployed: 
+
+Taiga project: <https://tree.taiga.io/project/albalr-asw-1/timeline/>

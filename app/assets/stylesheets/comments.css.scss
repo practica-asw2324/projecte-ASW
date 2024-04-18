@@ -203,5 +203,9 @@
   cursor: pointer;
 }
 
+.profile-link {
+  color: inherit; /* Esto hará que el color del enlace sea el mismo que el del texto circundante */
+  text-decoration: none; /* Esto eliminará el subrayado */
+}
 
 
