@@ -1,22 +1,27 @@
-<%= form_for @user, html: { multipart: true } do |f| %>
-  <!-- Otros campos del formulario -->
+<%= form_with(model: user) do |form| %>
+  <% if user.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
 
-  <div class="field">
-    <%= f.label :avatar %><br>
-    <%= f.file_field :avatar %>
+      <ul>
+        <% user.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name, style: "display: block" %>
+    <%= form.text_field :name %>
   </div>
 
-  <div class="field">
-    <%= f.label :cover %><br>
-    <%= f.file_field :cover %>
+  <div>
+    <%= form.label :username, style: "display: block" %>
+    <%= form.text_field :username %>
   </div>
 
-  <div class="field">
-    <%= f.label :description %><br>
-    <%= f.text_area :description %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit %>
+  <div>
+    <%= form.submit %>
   </div>
 <% end %>
