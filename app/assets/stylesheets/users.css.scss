@@ -58,9 +58,8 @@
   border-radius: 15px;
   display: flex;
   margin: 20px auto;
-  width: 95%;
+  width: 96.5%;
   justify-content: space-around;
-  padding: 1em 1em 10px;
 }
 
 .filter-options .options__main {
@@ -81,7 +80,8 @@
   width: 0;
   height: 3px;
   background: white;
-  top: 35px;
+  transition: width .3s;
+  top: 20px;
   left: 0;
 }
 
@@ -97,10 +97,34 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .user-post-or-comment {
   border-left: 1px dashed #000;
   padding-left: 10px;
+}
+
+.with-cover {
+  position: relative;
+}
+
+.with-cover img.cover {
+  object-fit: cover;
+}
+
+.avatar-container {
+  position: absolute;
+  top: 100%; /* adjust as needed */
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.avatar-container figure img {
+  border-radius: 15px;
+}
+
+.user-main {
+  margin-top: 50px; /* adjust as needed */
+  text-align: center; /* to center the username and description */
 }

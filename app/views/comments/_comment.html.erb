@@ -2,7 +2,7 @@
   <div class="commentitem <%= 'user-post-or-comment' if defined?(user_view) && user_view && comment.user == current_user %> <%= 'white-background' if defined?(@from_user_view) && @from_user_view %>">
     <div class="commentHeader">
       <div class="commentInfo">
-        <h4><span><%= comment.user.name %></span>,
+        <h4><span><%= link_to comment.user.name, user_path(comment.user),  class: 'user-link' %></span>,
           <span class="domain"><%= time_ago_in_words(comment.created_at) %> ago</span></h4>
       </div>
       <div class="commentActions">

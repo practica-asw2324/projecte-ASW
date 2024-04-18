@@ -1,97 +1,20 @@
-<div class="with-cover with-avatar">
+<div class="with-cover">
   <% if @user.cover.attached? %>
     <img height="220" width="100%" class="cover" src="<%= url_for(@user.cover) %>" alt="<%= @user.name %>">
   <% end %>
-  <div class="user-main" id="content">
-    <div>
-      <div class="row">
-        <% if @user.avatar.attached? %>
-          <figure>
-            <img width="100" height="100" style="max-width: 100px; max-height: 100px;" src="<%= url_for(@user.avatar) %>" alt="<%= @user.name %> avatar">
-          </figure>
-        <% end %>
-        <h4>@<%= @user.username %></h4>
-        <aside class="user__actions" data-controller="subs">
-          <div class="action">
-            <i class="fa-solid fa-users"></i><span>0</span>
-          </div>
-        </aside>
-        <p><%= @user.description %></p>
-      </div>
+  <% if @user.avatar.attached? %>
+    <div class="avatar-container">
+      <figure>
+        <img width="100" height="100" style="max-width: 100px; max-height: 100px;" src="<%= url_for(@user.avatar) %>" alt="<%= @user.name %> avatar">
+      </figure>
+    </div>
+  <% end %>
+</div>
+<div class="user-main" id="content">
+  <div>
+    <div class="row">
+      <h4>@<%= @user.username %></h4>
+      <p><%= @user.description %></p>
     </div>
   </div>
 </div>
-
-<aside class="options filter-options" id="options">
-  <div></div>
-  <menu class="options__main">
-    <li>
-      <%= link_to 'All', user_path(@user, filter: 'all'), class: @filter == 'all' ? 'active' : '' %>
-    </li>
-    <li>
-      <%= link_to "Posts (#{@user.posts.count})", user_path(@user, filter: 'posts'), class: @filter == 'posts' ? 'active' : '' %>
-    </li>
-    <li>
-      <%= link_to "Comments (#{@user.comments.count})", user_path(@user, filter: 'comments'), class: @filter == 'comments' ? 'active' : '' %>
-    </li>
-    <li>
-      <%= link_to "Boosts (#{@user.boosts.count})", user_path(@user, filter: 'boosts'), class: @filter == 'boosts' ? 'active' : '' %>
-    </li>
-  </menu>
-
-</aside>
-
-<% if @filter == 'comments' %>
-
-  <ul class="filteritem filteritem-user">
-    <li><%= link_to 'top', sort_comments_post_path(@post, sort: 'top'), class: "#{'selected' if @selected_filter == 'top'}" %></li>
-    <li><%= link_to 'newest', sort_comments_post_path(@post, sort: 'newest'), class: "#{'selected' if @selected_filter == 'newest'}" %></li>
-    <li><%= link_to 'oldest', sort_comments_post_path(@post, sort: 'old'), class: "#{'selected' if @selected_filter == 'old'}" %></li>
-  </ul>
-
-  <% @comments.where(comment_id: nil).each do |comment| %>
-    <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
-  <% end %>
-<% end %>
-
-<% if @filter == 'posts' %>
-  <ul class="filterposts" style="justify-content: space-between;">
-    <div style="display:flex">
-      <li><%= link_to 'top', user_path(@user, sort: 'top', type: params[:type], search: params[:search]), class: ('selected' if params[:sort] == 'top') %></li>
-      <li><%= link_to 'newest', user_path(@user, sort: 'newest', type: params[:type], search: params[:search]), class: ('selected' if params[:sort] == 'newest') %></li>
-      <li><%= link_to 'commented', user_path(@user, sort: 'commented', type: params[:type], search: params[:search]), class: ('selected' if params[:sort] == 'commented') %></li>
-    </div>
-  </ul>
-
-  <% @posts.each do |post| %>
-    <%= render post, user_view: true %>
-  <% end %>
-<% end %>
-
-<% if @filter == 'all' %>
-  <% @user.posts.uniq.each do |post| %>
-    <%= render post, user_view: true %>
-    <% post.comments.where(user_id: @user.id, comment_id: nil).each do |comment| %>
-      <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
-    <% end %>
-  <% end %>
-
-  <% (@user.commented_posts - @user.posts).uniq.each do |post| %>
-    <%= render post, user_view: true %>
-    <% post.comments.where(user_id: @user.id, comment_id: nil).each do |comment| %>
-      <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
-    <% end %>
-  <% end %>
-<% end %>
-
-<% if current_user == @user %>
-  <div class="user-boosts">
-    <% if @filter == 'boosts' %>
-      <% @boosts.each do |boost| %>
-        <%= render 'posts/post', post: boost.post %>
-      <% end %>
-    <% end %>
-  </div>
-<% end %>
-
-<div style="height: 100px;"></div>
