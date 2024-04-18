@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     delete 'sign_out', to: 'users#logout'
+    get 'login', to: 'users#new', as: 'new_user'
   end
 
   resources :comments do
