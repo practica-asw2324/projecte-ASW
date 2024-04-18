@@ -17,7 +17,7 @@
 
     <h4><span><%= link_to post.user.name, user_path(post.user),  class: 'user-link' %></span>,
       <span class="domain"><%= time_ago_in_words(post.created_at) %> ago</span><span class="domain"> to </span>
-      <span> <%= post.magazine.name %> </span></h4>
+      <span><%= link_to post.magazine.name, magazine_path(post.magazine), class: 'user-link' %></span></h4>
 
     <div style="display :flex">
       <%= link_to post.comments.count.to_s + ' comments', post, class: "boostButton" %>
