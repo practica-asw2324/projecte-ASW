@@ -10,6 +10,10 @@
   font-size: 12pt;
 }
 
+.commentitem.white-background {
+  background-color: #ffffff;
+}
+
 .commentitem textarea {
   width: calc(100% - 20px);
   padding: 0.5em;
