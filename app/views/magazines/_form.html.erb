@@ -1,37 +1,49 @@
-<%= form_with(model: magazine) do |form| %>
-  <% if magazine.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(magazine.errors.count, "error") %> prohibited this magazine from being saved:</h2>
+<style>
+  .magazineItem {
+      width: 70%;
+  }
+</style>
 
-      <ul>
-        <% magazine.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+<div class="magazineItem">
+  <%= form_for @magazine, html: {class: 'magazine-form'} do |f| %>
+
+    <div>
+      <%= f.label :name %>
+      <% if @magazine.errors[:name].any? %>
+        <div class="error-message">
+          <span><%= @magazine.errors[:name].join(", ") %></span>
+        </div>
+      <% end %>
+      <%= f.text_area :name, oninput: 'autoResize(this)', required: true %>
     </div>
+
+    <div>
+      <%= f.label :title %>
+      <%= f.text_area :title, oninput: 'autoResize(this)', required: true %>
+    </div>
+
+    <div>
+      <%= f.label :description %>
+      <%= f.text_area :description, class: 'body-textarea', oninput: 'autoResize(this)' %>
+    </div>
+
+    <div>
+      <%= f.label :rules %>
+      <%= f.text_area :rules, class: 'body-textarea', oninput: 'autoResize(this)' %>
+    </div>
+
+    <div class="button-container">
+      <%= f.submit "Add new magazine", class: 'magazineItem-button' %>
+    </div>
+
   <% end %>
+</div>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div>
-    <%= form.label :title, style: "display: block" %>
-    <%= form.text_field :title %>
-  </div>
-
-  <div>
-    <%= form.label :description, style: "display: block" %>
-    <%= form.text_field :description %>
-  </div>
-
-  <div>
-    <%= form.label :rules, style: "display: block" %>
-    <%= form.text_field :rules %>
-  </div>
-
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
+<script>
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        if (textarea.scrollHeight > textarea.clientHeight) {
+            textarea.style.height = (textarea.scrollHeight) + 'px';
+        }
+    }
+</script>
