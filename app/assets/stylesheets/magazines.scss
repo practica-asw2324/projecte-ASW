@@ -1,0 +1,77 @@
+.magazines{
+    background: #ffffff;
+    margin: 20px auto;
+    width: 96%;
+    border-radius: 15px;
+    padding-top: 20px;
+}
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+table thead th {
+    background-color: #e7e4f5;
+    color: black; 
+    font-weight: bold;/* This is to ensure the text is readable on the grey background */
+}
+
+table td, table th {
+    padding: 20px 80px; /* This adds 10px of vertical padding and 20px of horizontal padding */
+    text-align: center;
+}
+
+.linkMagazine {
+    color: #1f73a1;
+    text-decoration: none;
+}
+  
+.linkMagazine:visited {
+    color: #1f73a1;
+    text-decoration: none;
+}
+
+.linkMagazine:hover {
+    color: #0f0142;
+}
+
+.subsCount {
+    color: grey;
+    font-size: 14px;
+    font-weight: bold;
+    border: 1px dashed grey;
+    padding: 10px 10px;
+}
+
+.subsCountNum{
+    padding-left: 5px;
+}
+
+.subsButton {
+    background-color: white;
+    color: grey;
+    padding: 10px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    width: 130px;
+    cursor: pointer;
+    border: 1px dashed grey;
+}
+
+.magazineinfo{
+    margin: 20px auto;
+    padding: 5px 20px;
+    width: 95%;
+    border-radius: 15px;
+    background-color: #ffffff;display:block;font-family: Arial, Helvetica, sans-serif;
+    color: #444;
+    font-size: 12pt;
+    padding-bottom: 20px;
+    //display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}

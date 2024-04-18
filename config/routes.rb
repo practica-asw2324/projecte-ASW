@@ -1,7 +1,38 @@
 Rails.application.routes.draw do
-  resources :posts
-  resources :users
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
 
-  root 'application#hello'
+  devise_scope :user do
+    delete 'sign_out', to: 'users#logout'
+    get 'login', to: 'users#new', as: 'new_user'
+  end
+
+  resources :comments do
+    put 'like', on: :member
+    put 'dislike', on: :member
+  end
+
+  resources :magazines
+  resources :users
+
+
+  resources :magazines do
+    member do
+      post 'subscribe'
+      post 'unsubscribe'
+    end
+  end
+
+  resources :posts do
+    post 'react', on: :member
+    get 'sort_comments', on: :member
+    put 'like', on: :member
+    put 'dislike', on: :member
+    put 'boost', on: :member
+
+  end
+
+    get 'new_link', to: 'posts#new', type: 'link', as: :new_link
+    get 'new_thread', to: 'posts#new', type: 'thread', as: :new_thread
+
+  root 'posts#index'
 end

@@ -1,15 +1,60 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Waslab04</title>
+    <title>Tuiter</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-RE8f1eGsGaaZVzTqrqIh+/fGBccgb4RWo1LxEs5r+57D+9x1DiVdd5TIvJB28an" crossorigin="anonymous">
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   </head>
 
   <body>
-    <%= yield %>
+  <div class="navbar-container">
+    <div class="navbar">
+      <%= link_to "Tuiter", root_path, :class=>'navbar-logo'%>
+      <ul class="navbar-menu centered-menu">
+        <li><%= link_to "Threads", root_path%></li>
+        <li><a href="#">Microblog</a></li>
+        <li><a href="#">All Content</a></li>
+        <li><a href="#">People</a></li>
+        <li><a href="<%= magazines_path %>">Magazines</a></li>
+        <li><a href="#">Collections</a></li>
+      </ul>
+
+      <div class="navbar-buttons">
+        <%= link_to posts_path(from_nav_button: true), class: "navbar-button" do %>
+          <i class="fas fa-search"></i>
+        <% end %>
+        
+
+        <div class="dropdown">
+          <label for="dropdown-toggle" class="dropdown-label"><i class="fas fa-plus plusbutton"></i></label>
+          <div class="dropdown-content dropdown-content-right">
+            <%= link_to 'Add new link', new_post_path(type: 'link') %>
+            <%= link_to 'Add new thread', new_post_path(type: 'thread') %>
+            <%= link_to "Create new magazine", new_magazine_path %>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <% if current_user %>
+            <label for="dropdown-toggle" class="dropdown-label"><%= current_user.username %></label>
+            <div class="dropdown-content dropdown-content-right ">
+              <%= link_to "Profile", user_path(current_user) %>
+              <%= link_to "Edit Profile", edit_user_path(current_user) %>
+              <%= button_to "Logout", sign_out_path, method: :delete, class: 'profile-link' %>
+            </div>
+          <% else %>
+            <%= button_to 'Sign in with Google', user_google_oauth2_omniauth_authorize_path, method: :post, :data => {turbo: "false"}, class: 'google-login-button' %>
+          <% end %>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <%= yield %>
+
   </body>
 </html>
