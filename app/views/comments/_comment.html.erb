@@ -19,15 +19,17 @@
     <br>
     <div class="link-container">
       <%= link_to 'reply', '#', class: 'reply-link', data: { comment_id: comment.id } %>
-      <div class="dropdown">
-        <span class="more-link">more</span>
-        <div class="dropdown-content">
-          <%= link_to 'edit', '#', class: 'edit-link', data: { comment_id: comment.id } %>
-          <a>
-            <%= button_to 'delete', comment, method: :delete, data: { confirm: 'Are you sure?' }, class: 'delete-button' %>
-          </a>
+      <% if user_signed_in? && current_user == comment.user %>
+        <div class="dropdown">
+          <span class="more-link">more</span>
+          <div class="dropdown-content">
+            <%= link_to 'edit', '#', class: 'edit-link', data: { comment_id: comment.id } %>
+            <a>
+              <%= button_to 'delete', comment, method: :delete, data: { confirm: 'Are you sure?' }, class: 'delete-button' %>
+            </a>
+          </div>
         </div>
-      </div>
+      <% end %>
     </div>
     <div class="reply-form">
       <%= render 'comments/form', comment: @comment %>
