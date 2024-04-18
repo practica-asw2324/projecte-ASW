@@ -77,7 +77,6 @@ class UsersController < ApplicationController
   end
 
   def logout
-    current_user.destroy
     sign_out current_user
     redirect_to root_path
   end

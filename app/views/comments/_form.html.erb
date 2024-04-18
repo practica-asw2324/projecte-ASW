@@ -2,7 +2,6 @@
               method: comment.new_record? ? "post" : "patch", id: "reply-form-#{comment.id}",
               class: "new-comment-form") do |form| %>
   <%= form.text_area :body, id: "newCommentText", rows: "4", cols: "50", oninput: 'autoResize(this)' %>
-  <%= form.hidden_field :user_id, value: 1 %>
   <%= form.hidden_field :post_id, value: @post.id %>
   <%= form.hidden_field :comment_id, value: comment.id %>
   <%= form.submit comment.new_record? ? 'Add Comment' : 'Update Comment', class: 'commentitem-button' %>
