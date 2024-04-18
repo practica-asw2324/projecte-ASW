@@ -275,3 +275,13 @@
 .full-width {
   width: 100%;
 }
+
+.user-link {
+  color: inherit; /* hereda el color del texto circundante */
+  text-decoration: none; /* elimina el subrayado */
+
+}
+
+.user-link:hover {
+  color: #0f0142; /* Cambia el color al que prefieras cuando se haga hover */
+}
