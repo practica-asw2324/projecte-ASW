@@ -42,25 +42,42 @@
 </aside>
 
 <% if @filter == 'comments' %>
-    <% @comments.where(comment_id: nil).each do |comment| %>
-      <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
-    <% end %>
+
+  <ul class="filteritem filteritem-user">
+    <li><%= link_to 'top', sort_comments_post_path(@post, sort: 'top'), class: "#{'selected' if @selected_filter == 'top'}" %></li>
+    <li><%= link_to 'newest', sort_comments_post_path(@post, sort: 'newest'), class: "#{'selected' if @selected_filter == 'newest'}" %></li>
+    <li><%= link_to 'oldest', sort_comments_post_path(@post, sort: 'old'), class: "#{'selected' if @selected_filter == 'old'}" %></li>
+  </ul>
+
+  <% @comments.where(comment_id: nil).each do |comment| %>
+    <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
+  <% end %>
 <% end %>
 
 <% if @filter == 'posts' %>
-  <%= render @post %>
+  <ul class="filterposts" style="justify-content: space-between;">
+    <div style="display:flex">
+      <li><%= link_to 'top', user_path(@user, sort: 'top', type: params[:type], search: params[:search]), class: ('selected' if params[:sort] == 'top') %></li>
+      <li><%= link_to 'newest', user_path(@user, sort: 'newest', type: params[:type], search: params[:search]), class: ('selected' if params[:sort] == 'newest') %></li>
+      <li><%= link_to 'commented', user_path(@user, sort: 'commented', type: params[:type], search: params[:search]), class: ('selected' if params[:sort] == 'commented') %></li>
+    </div>
+  </ul>
+
+  <% @posts.each do |post| %>
+    <%= render post, user_view: true %>
+  <% end %>
 <% end %>
 
 <% if @filter == 'all' %>
   <% @user.posts.uniq.each do |post| %>
-    <%= render post %>
+    <%= render post, user_view: true %>
     <% post.comments.where(user_id: @user.id, comment_id: nil).each do |comment| %>
       <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
     <% end %>
   <% end %>
 
   <% (@user.commented_posts - @user.posts).uniq.each do |post| %>
-    <%= render post %>
+    <%= render post, user_view: true %>
     <% post.comments.where(user_id: @user.id, comment_id: nil).each do |comment| %>
       <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
     <% end %>
@@ -76,3 +93,5 @@
     <% end %>
   </div>
 <% end %>
+
+<div style="height: 100px;"></div>

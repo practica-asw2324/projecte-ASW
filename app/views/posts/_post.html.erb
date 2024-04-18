@@ -1,4 +1,4 @@
-<div class="postitem" id=post.id>
+<div class="postitem <%= 'user-post-or-comment' if defined?(user_view) && user_view && post.user == current_user %>" id=post.id>
   <div class="vote">
     <br>
     <%= button_to like_post_path(post), method: :put, class: "voteButton #{'voted' if user_signed_in? && current_user.liked_post?(post)}" do %>

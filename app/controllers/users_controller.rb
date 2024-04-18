@@ -12,6 +12,9 @@ class UsersController < ApplicationController
     @from_user_view = true
     prepare_comments
     @filter = params[:filter] || 'all'
+    @sort = params[:sort] || 'top'
+    @type = params[:type]
+    @search = params[:search]
 
     case @filter
     when 'posts'
