@@ -155,6 +155,8 @@ table td, table th {
 .error-message {
     color: #842029;
     font-weight: bold;
+    display: block;
+    clear: both;
     min-width: 100%;
     box-sizing: border-box;
 }

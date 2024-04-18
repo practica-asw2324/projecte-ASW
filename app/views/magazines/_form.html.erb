@@ -11,9 +11,7 @@
       <%= f.label :name %>
       <% if @magazine.errors[:name].any? %>
         <div class="error-message">
-          <% @magazine.errors[:name].each do |error| %>
-            <p><%= error %></p>
-          <% end %>
+          <span><%= @magazine.errors[:name].join(", ") %></span>
         </div>
       <% end %>
       <%= f.text_area :name, oninput: 'autoResize(this)', required: true %>
