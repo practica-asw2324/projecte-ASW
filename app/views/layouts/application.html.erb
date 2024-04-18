@@ -14,7 +14,7 @@
     <div class="navbar">
       <%= link_to "Tuiter", root_path, :class=>'navbar-logo'%>
       <ul class="navbar-menu centered-menu">
-        <li><%= link_to "Threads", root_path%></li>
+        <li><%= link_to "Posts", root_path%></li>
         <li><a href="#">Microblog</a></li>
         <li><a href="#">All Content</a></li>
         <li><a href="#">People</a></li>
@@ -46,7 +46,7 @@
               <%= button_to "Logout", sign_out_path, method: :delete, class: 'profile-link' %>
             </div>
           <% else %>
-            <%= button_to 'Sign in with Google', user_google_oauth2_omniauth_authorize_path, method: :post, :data => {turbo: "false"}, class: 'google-login-button' %>
+            <%= button_to 'Log in', new_user_path, method: :get, :data => {turbo: "false"}, class: 'google-login-button' %>
           <% end %>
         </div>
 

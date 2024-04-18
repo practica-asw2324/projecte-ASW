@@ -29,7 +29,7 @@
         <%= @post.title %>
       <% end %>
     </h3>
-    <h4><span><%= @post.user.name %></span>,
+    <h4><span><%= link_to @post.user.name, user_path(@post.user),  class: 'user-link' %></span>,
       <span class="domain"><%= time_ago_in_words(@post.created_at) %> ago</span></h4>  
     <div style="display :flex">
       <%= link_to @post.comments.count.to_s + ' comments', '#comments', class: "boostButton" %>

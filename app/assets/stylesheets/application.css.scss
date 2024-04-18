@@ -27,14 +27,14 @@ body{
 }
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 columnas */
-    grid-gap: 20px; /* Espacio entre las imágenes */
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 20px;
     margin: 20px;
 }
 
 .grid-item img {
-    width: 100%; /* Ajustar el tamaño de la imagen al contenedor */
-    height: auto; /* Mantener la proporción de aspecto */
+    width: 100%;
+    height: auto;
 }
 .posts{
     grid-area: main;
@@ -54,7 +54,7 @@ body {
     padding: 0;
 }
 .navbar {
-    background-color: #0f0142; /* Color azul */
+    background-color: #0f0142;
     color: white;
     padding: 10px;
     display: flex;
