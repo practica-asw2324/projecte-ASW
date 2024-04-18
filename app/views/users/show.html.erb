@@ -22,15 +22,54 @@
 
 
 <% if @filter == 'comments' %>
-
   <ul class="filteritem filteritem-user">
     <li><%= link_to 'top', user_path(@user, sort: 'top', filter: params[:filter]), class: ('selected' if params[:sort] == 'top') %></li>
       <li><%= link_to 'newest', user_path(@user, sort: 'newest', filter: params[:filter]), class: ('selected' if params[:sort] == 'newest') %></li>
       <li><%= link_to 'oldest', user_path(@user, sort: 'oldest', filter: params[:filter]), class: ('selected' if params[:sort] == 'oldest') %></li>
   </ul>
 
-  <% @comments.where(comment_id: nil).each do |comment| %>
-    <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
+  <% @comments.each do |comment| %>
+    <div id="<%= dom_id comment %>" style="<%= comment_margin_style(comment, false) %>">
+  <div class="commentitem <%= 'user-post-or-comment' if defined?(user_view) && user_view && comment.user == current_user %> <%= 'white-background' if defined?(@from_user_view) && @from_user_view %>">
+    <div class="commentHeader">
+      <div class="commentInfo">
+        <h4><span><%= link_to comment.user.name, user_path(comment.user),  class: 'user-link' %></span>,
+          <span class="domain"><%= time_ago_in_words(comment.created_at) %> ago</span></h4>
+      </div>
+      <div class="commentActions">
+        <%= button_to like_comment_path(comment), method: :put, class: "comment-likeButton #{'voted' if user_signed_in? && current_user.liked_comment?(comment)}" do %>
+          <span class="#{'voted' if current_user.liked_comment?(comment)}"><i class="fas fa-arrow-up"></i><span> </span><%= comment.likes_comments.count %></span>
+        <% end %>
+
+        <%= button_to dislike_comment_path(comment), method: :put, class: "comment-dislikeButton #{'voted' if user_signed_in? && current_user.disliked_comment?(comment)}" do %>
+          <span class="#{'voted' if current_user.disliked_comment?(comment)}"><i class="fas fa-arrow-down"></i><span> </span><%= comment.dislikes_comments.count %></span>
+        <% end %>
+      </div>
+    </div>
+    <p class="comment-content"><%= comment.body %></p>
+    <br>
+    <div class="link-container">
+      <%= link_to 'reply', '#', class: 'reply-link', data: { comment_id: comment.id } %>
+      <% if user_signed_in? && current_user == comment.user %>
+        <div class="dropdown">
+          <span class="more-link">more</span>
+          <div class="dropdown-content">
+            <%= link_to 'edit', '#', class: 'edit-link', data: { comment_id: comment.id } %>
+            <a>
+              <%= button_to 'delete', comment, method: :delete, data: { confirm: 'Are you sure?' }, class: 'delete-button' %>
+            </a>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <div class="reply-form">
+      <%= render 'comments/form', comment: @comment %>
+    </div>
+    <div class="edit-form" id="edit-form-<%= comment.id %>">
+      <%= render 'comments/form', comment: comment %>
+    </div>
+  </div>
+</div>
   <% end %>
 <% end %>
 

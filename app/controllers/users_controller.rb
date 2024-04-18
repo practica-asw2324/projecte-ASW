@@ -36,7 +36,7 @@ class UsersController < ApplicationController
       @posts = []
       @comments = []
       @boosts = @user.boosts
-    else
+    when 'all'
       @posts = sort_posts(@user.posts.distinct)
       @comments = sort_comments(@user.comments)
       @boosts = @user.boosts
@@ -44,32 +44,6 @@ class UsersController < ApplicationController
     end
   end
   
-  private
-  
-  def sort_posts(posts)
-    case @sort
-    when 'top'
-      posts.left_joins(:likes).group(:id).order('COUNT(likes.id) DESC')
-    when 'commented'
-      posts.left_joins(:comments).group(:id).order('COUNT(comments.id) DESC')
-    when 'newest'
-      posts.order(created_at: :desc)
-    else
-      posts
-    end
-  end
-  
-  def sort_comments(comments)
-    case @sort
-    when 'oldest'
-      comments.order(created_at: :asc)
-    when 'newest'
-      comments.order(created_at: :desc)
-    else
-      comments
-    end
-    
-  end
 
   # GET /users/new
   def new
@@ -136,5 +110,29 @@ class UsersController < ApplicationController
   # Only allow a list of trusted parameters through.
   def user_params
     params.require(:user).permit(:name, :username, :description, :avatar, :cover)
+  end
+
+  def sort_posts(posts)
+    case @sort
+    when 'top'
+      posts.left_joins(:likes).group(:id).order('COUNT(likes.id) DESC')
+    when 'commented'
+      posts.left_joins(:comments).group(:id).order('COUNT(comments.id) DESC')
+    when 'newest'
+      posts.order(created_at: :desc)
+    else
+      posts
+    end
+  end
+  
+  def sort_comments(comments)
+    case @sort
+    when 'top'
+      comments.left_joins(:likes_comments).group(:id).order('COUNT(likes_comments.id) DESC')
+    when 'oldest'
+      comments.order(created_at: :asc)
+    when 'newest'
+      comments.order(created_at: :desc)
+    end
   end
 end
