@@ -46,11 +46,11 @@
   <% end %>
 </div>
 
-<div class="user-comments">
-  <% if @filter == 'all' || @filter == 'comments' %>
-    <%= render @comments %>
-  <% end %>
-</div>
+<!--<div class="user-comments">-->
+  <%# if @filter == 'all' || @filter == 'comments' %>
+    <%#= render @comments %>
+  <%# end %>
+<!--</div>-->
 
 <% if current_user == @user %>
   <div class="user-boosts">
