@@ -41,21 +41,35 @@
 
 </aside>
 
-<div class="user-posts">
-  <% if @filter == 'all' || @filter == 'posts' %>
-    <%= render @posts %>
-  <% end %>
-</div>
+<% if @filter == 'comments' %>
+    <% @comments.where(comment_id: nil).each do |comment| %>
+      <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
+    <% end %>
+<% end %>
 
-<!--<div class="user-comments">-->
-  <%# if @filter == 'all' || @filter == 'comments' %>
-    <%#= render @comments %>
-  <%# end %>
-<!--</div>-->
+<% if @filter == 'posts' %>
+  <%= render @post %>
+<% end %>
+
+<% if @filter == 'all' %>
+  <% @user.posts.uniq.each do |post| %>
+    <%= render post %>
+    <% post.comments.where(user_id: @user.id, comment_id: nil).each do |comment| %>
+      <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
+    <% end %>
+  <% end %>
+
+  <% (@user.commented_posts - @user.posts).uniq.each do |post| %>
+    <%= render post %>
+    <% post.comments.where(user_id: @user.id, comment_id: nil).each do |comment| %>
+      <%= render 'comments/comment', comment: comment, escalate: false, user_view: true %>
+    <% end %>
+  <% end %>
+<% end %>
 
 <% if current_user == @user %>
   <div class="user-boosts">
-    <% if  @filter == 'boosts' %>
+    <% if @filter == 'boosts' %>
       <% @boosts.each do |boost| %>
         <%= render 'posts/post', post: boost.post %>
       <% end %>
