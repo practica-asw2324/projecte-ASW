@@ -57,7 +57,7 @@
 
 .postitem {
   margin: 20px auto;
-  width: 96%;
+  width: 95%;
   border-radius: 15px;
   background-color: #ffffff;
   display: block;
@@ -77,7 +77,7 @@
 .filterposts {
   margin: 20px auto;
   padding: 1em;
-  width: 95%;
+  width: 94%;
   border-radius: 15px;
   background-color: #ffffff;
   list-style-type: none;
@@ -274,4 +274,14 @@
 
 .full-width {
   width: 100%;
+}
+
+.user-link {
+  color: inherit; /* hereda el color del texto circundante */
+  text-decoration: none; /* elimina el subrayado */
+
+}
+
+.user-link:hover {
+  color: #0f0142; /* Cambia el color al que prefieras cuando se haga hover */
 }

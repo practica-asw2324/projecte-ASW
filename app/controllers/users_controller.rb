@@ -9,6 +9,8 @@ class UsersController < ApplicationController
   # GET /users/1 or /users/1.json
   def show
     @user = User.find(params[:id])
+    @from_user_view = true
+    prepare_comments
     @filter = params[:filter] || 'all'
 
     case @filter
@@ -16,10 +18,12 @@ class UsersController < ApplicationController
       @posts = @user.posts
       @comments = []
       @boosts = []
+      @post = @posts.first unless @posts.empty?
     when 'comments'
       @posts = []
       @comments = @user.comments
       @boosts = []
+      @post = @comments.first.post unless @comments.empty?
     when 'boosts'
       @posts = []
       @comments = []
@@ -28,6 +32,7 @@ class UsersController < ApplicationController
       @posts = @user.posts
       @comments = @user.comments
       @boosts = @user.boosts
+      @post = @posts.first unless @posts.empty?
     end
   end
 
@@ -46,7 +51,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.save
-        format.html { redirect_to user_url(@user), notice: "User was successfully created." }
+        format.html { redirect_to user_url(@user) }
         format.json { render :show, status: :created, location: @user }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -82,12 +87,18 @@ class UsersController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
-      @user = User.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
+  # Use callbacks to share common setup or constraints between actions.
+  def set_user
+    @user = User.find(params[:id])
+  end
+
+  def prepare_comments
+    @comment = Comment.new
+    @comments = @user.comments
+  end
+
+  # Only allow a list of trusted parameters through.
   def user_params
     params.require(:user).permit(:name, :username, :description, :avatar, :cover)
   end
