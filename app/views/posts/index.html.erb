@@ -1,38 +1,14 @@
-<%if params[:from_nav_button] or params[:search] == session[:last_search] %>
-  <ul class="filtersearch">
-    <%= form_tag(posts_path, method: "get") do %>
-      <%= text_field_tag :search, params[:search], placeholder: "Write search term" %>
-      <%= button_tag(type: 'submit') do %>
-        <i class="fas fa-search"></i>
-      <% end %>
-    <% end %>
-  </ul>
-<% end %>
+<p style="color: green"><%= notice %></p>
 
-<% unless params[:from_nav_button] %>
-  <ul class="filterposts" style="justify-content: space-between;">
-    <div style="display:flex">
-      <li><%=  link_to 'top', posts_path(sort: 'top', type: params[:type], search: params[:search]), class: ('selected' if params[:sort] == 'top') %></li>
-      <li><%=  link_to 'newest', posts_path(sort: 'newest', type: params[:type], search: params[:search]), class: ('selected' if params[:sort] == 'newest')  %></li>
-      <li><%=  link_to 'commented', posts_path(sort: 'commented', type: params[:type], search: params[:search]), class: ('selected' if params[:sort] == 'commented') %></li>
-    </div>
+<h1>Posts</h1>
 
-    <div style="display:flex">
-      <li><%=  link_to 'all', posts_path(type: 'all', sort: params[:sort], search: params[:search]), class: ('selected' if params[:type] == 'all') %></li>
-      <li><%=  link_to 'links', posts_path(type: 'links', sort: params[:sort], search: params[:search]), class: ('selected' if params[:type] == 'links')  %></li>
-      <li><%=  link_to 'threads', posts_path(type: 'threads', sort: params[:sort], search: params[:search]), class: ('selected' if params[:type] == 'threads') %></li>
-    </div>
-  </ul>
-
-  <div id="posts" class="posts">
-    <%  @posts.each do |post|  %>
-      <%=  render post  %>
-    <%  end  %>
-  </div>
-
-  <% if @posts %>
-    <% unless @posts.present? %>
-      <p class="no-results">No results were found</p>
-    <% end %>
+<div id="posts">
+  <% @posts.each do |post| %>
+    <%= render post %>
+    <p>
+      <%= link_to "Show this post", post %>
+    </p>
   <% end %>
-<% end %>
+</div>
+
+<%= link_to "New post", new_post_path %>

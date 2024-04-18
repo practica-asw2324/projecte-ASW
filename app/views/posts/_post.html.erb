@@ -1,42 +1,17 @@
-<div class="postitem" id=post.id>
-  <div class="vote">
-    <br>
-    <%= button_to like_post_path(post), method: :put, class: "voteButton #{'voted' if user_signed_in? && current_user.liked_post?(post)}" do %>
-      <i class="fas fa-arrow-up"></i><span> </span><%= post.likes.count %>
-    <% end %>
+<div id="<%= dom_id post %>">
+  <p>
+    <strong>Title:</strong>
+    <%= post.title %>
+  </p>
 
-    <%= button_to dislike_post_path(post), method: :put, class: "voteButton #{'voted' if user_signed_in? && current_user.disliked_post?(post)}" do %>
-      <i class="fas fa-arrow-down"></i><span> </span><%= post.dislikes.count %>
-    <% end %>
-  </div>
+  <p>
+    <strong>Body:</strong>
+    <%= post.body %>
+  </p>
 
-  <div class="postinfo">
-    <h3><%= link_to post.title, post, :class => 'link' %>
-      <% if post.url.present? %> <a href="http://<%= post.url %>" target="_blank" class="domain">(<%= post.url %>)</a>
-      <% end %></h3>
+  <p>
+    <strong>Url:</strong>
+    <%= post.url %>
+  </p>
 
-    <h4><span><%= post.user.name %></span>,
-      <span class="domain"><%= time_ago_in_words(post.created_at) %> ago</span><span class="domain"> to </span>
-      <span> <%= post.magazine.name %> </span></h4>
-
-    <div style="display :flex">
-      <%= link_to post.comments.count.to_s + ' comments', post, class: "boostButton" %>
-
-      <%= button_to boost_post_path(post), method: :put, class: "boostButton" do %>
-        <%= 'boost (' + post.boosts.count.to_s + ')' %>
-      <% end %>
-
-      <% if user_signed_in? && current_user == post.user %>
-        <div class="dropdown">
-          <button class="boostButton">more</button>
-          <div class="dropdown-content">
-            <%= link_to 'edit', edit_post_path(post), class: "boostButton" %>
-            <a><%= button_to 'delete', post, method: :delete, data: { confirm: 'Are you sure?' }, class: 'delete-button' %></a>
-          </div>
-        </div>
-      <% end %>
-    </div>
-  </div>
 </div>
-
-

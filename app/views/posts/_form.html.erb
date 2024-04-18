@@ -1,58 +1,32 @@
-<style>
-    .postitem {
-        width: 70%;
-    }
+<%= form_with(model: post) do |form| %>
+  <% if post.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(post.errors.count, "error") %> prohibited this post from being saved:</h2>
 
-</style>
-
-<div class="postitem">
-  <%= form_for @post, html: { class: 'post-form' } do |f| %>
-    <%= hidden_field_tag :type, params[:type] %>
-    <% if @is_link %>
-      <div>
-        <%= f.label :url do %>
-          <%= content_tag :span, 'URL', style: 'text-transform: uppercase;' %>
+      <ul>
+        <% post.errors.each do |error| %>
+          <li><%= error.full_message %></li>
         <% end %>
-        <%= f.text_field :url, required: @is_link %>
-      </div>
-    <% end %>
-
-    <div>
-      <%= f.label :title %>
-      <%= f.text_area :title, oninput: 'autoResize(this)' %>
-    </div>
-
-    <div>
-      <%= f.label :body %>
-      <%= f.text_area :body, class: 'body-textarea', oninput: 'autoResize(this)' %>
-    </div>
-
-    <div>
-      <%= f.label :magazine %>
-      <%= f.collection_select :magazine_id, @magazines, :id, :name, {prompt: 'Select a magazine'}, {required: true} %>
-    </div>
-
-    <div class="button-container">
-      <%= f.submit (if @post.new_record?
-                      @is_link ? "Add new link" : "Add new thread"
-                    else
-                      "Edit Post"
-                    end), class: 'postitem-button' %>
+      </ul>
     </div>
   <% end %>
-</div>
 
-<script>
-    window.onload = function() {
-        document.querySelectorAll('textarea').forEach((textarea) => {
-            autoResize(textarea);
-        });
-    }
+  <div>
+    <%= form.label :title, style: "display: block" %>
+    <%= form.text_field :title %>
+  </div>
 
-    function autoResize(textarea) {
-        textarea.style.height = 'auto';
-        if (textarea.scrollHeight > textarea.clientHeight) {
-            textarea.style.height = (textarea.scrollHeight) + 'px';
-        }
-    }
-</script>
+  <div>
+    <%= form.label :body, style: "display: block" %>
+    <%= form.text_field :body %>
+  </div>
+
+  <div>
+    <%= form.label :url, style: "display: block" %>
+    <%= form.text_field :url %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
