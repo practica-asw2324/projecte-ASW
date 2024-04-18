@@ -2,22 +2,18 @@
   .magazineItem {
       width: 70%;
   }
-
-  .field-with-error {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      align-content: flex-start;
-  }
 </style>
 
 <div class="magazineItem">
   <%= form_for @magazine, html: {class: 'magazine-form'} do |f| %>
-    <div class="field-with-error">
+
+    <div>
       <%= f.label :name %>
       <% if @magazine.errors[:name].any? %>
         <div class="error-message">
-          <%= @magazine.errors[:name].join(", ") %>
+          <% @magazine.errors[:name].each do |error| %>
+            <p><%= error %></p>
+          <% end %>
         </div>
       <% end %>
       <%= f.text_area :name, oninput: 'autoResize(this)', required: true %>
