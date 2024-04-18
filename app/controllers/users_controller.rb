@@ -12,29 +12,38 @@ class UsersController < ApplicationController
     @from_user_view = true
     prepare_comments
     @filter = params[:filter] || 'all'
-
+    @sort = params[:sort] || 'top'
+    @type = params[:type]
+    @search = params[:search]
+  
+    # Change sort to 'commented' if sort is 'oldest' and filter is 'posts'
+    if @sort == 'oldest' && @filter == 'posts'
+      @sort = 'top'
+    end 
+  
     case @filter
     when 'posts'
-      @posts = @user.posts
+      @posts = sort_posts(@user.posts.distinct)
       @comments = []
       @boosts = []
       @post = @posts.first unless @posts.empty?
     when 'comments'
       @posts = []
-      @comments = @user.comments
+      @comments = sort_comments(@user.comments)
       @boosts = []
       @post = @comments.first.post unless @comments.empty?
     when 'boosts'
       @posts = []
       @comments = []
       @boosts = @user.boosts
-    else
-      @posts = @user.posts
-      @comments = @user.comments
+    when 'all'
+      @posts = sort_posts(@user.posts.distinct)
+      @comments = sort_comments(@user.comments)
       @boosts = @user.boosts
       @post = @posts.first unless @posts.empty?
     end
   end
+  
 
   # GET /users/new
   def new
@@ -101,5 +110,29 @@ class UsersController < ApplicationController
   # Only allow a list of trusted parameters through.
   def user_params
     params.require(:user).permit(:name, :username, :description, :avatar, :cover)
+  end
+
+  def sort_posts(posts)
+    case @sort
+    when 'top'
+      posts.left_joins(:likes).group(:id).order('COUNT(likes.id) DESC')
+    when 'commented'
+      posts.left_joins(:comments).group(:id).order('COUNT(comments.id) DESC')
+    when 'newest'
+      posts.order(created_at: :desc)
+    else
+      posts
+    end
+  end
+  
+  def sort_comments(comments)
+    case @sort
+    when 'top'
+      comments.left_joins(:likes_comments).group(:id).order('COUNT(likes_comments.id) DESC')
+    when 'oldest'
+      comments.order(created_at: :asc)
+    when 'newest'
+      comments.order(created_at: :desc)
+    end
   end
 end

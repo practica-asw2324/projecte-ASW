@@ -2,8 +2,13 @@
   <div class="commentitem <%= 'user-post-or-comment' if defined?(user_view) && user_view && comment.user == current_user %> <%= 'white-background' if defined?(@from_user_view) && @from_user_view %>">
     <div class="commentHeader">
       <div class="commentInfo">
-        <h4><span><%= link_to comment.user.name, user_path(comment.user),  class: 'user-link' %></span>,
+        <h4><span><%= link_to comment.user.name, user_path(comment.user), class: 'user-link' %></span>,
           <span class="domain"><%= time_ago_in_words(comment.created_at) %> ago</span></h4>
+        <% if defined?(user_view) && user_view %>
+          <span class="parent-link custom-link">
+            <%= link_to '( Parent )', post_path(comment.post), class: 'custom-link' %>
+          </span>
+        <% end %>
       </div>
       <div class="commentActions">
         <%= button_to like_comment_path(comment), method: :put, class: "comment-likeButton #{'voted' if user_signed_in? && current_user.liked_comment?(comment)}" do %>
@@ -38,8 +43,10 @@
       <%= render 'comments/form', comment: comment %>
     </div>
   </div>
-  <% comment.replies.each do |reply| %>
-    <%= render 'comments/comment', comment: reply, escalate: escalate, user_view: user_view %>
+  <% unless defined?(from_user_show) && from_user_show %>
+    <% comment.replies.each do |reply| %>
+      <%= render 'comments/comment', comment: reply, escalate: escalate, user_view: user_view %>
+    <% end %>
   <% end %>
 </div>
 
