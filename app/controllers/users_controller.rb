@@ -23,7 +23,7 @@ class UsersController < ApplicationController
   
     case @filter
     when 'posts'
-      @posts = sort_posts(@user.posts.distinct)
+      @posts = sort_posts(@user.posts)
       @comments = []
       @boosts = []
       @post = @posts.first unless @posts.empty?
@@ -37,7 +37,7 @@ class UsersController < ApplicationController
       @comments = []
       @boosts = @user.boosts
     when 'all'
-      @posts = sort_posts(@user.posts.distinct)
+      @posts = sort_posts(@user.posts)
       @comments = sort_comments(@user.comments)
       @boosts = @user.boosts
       @post = @posts.first unless @posts.empty?
@@ -72,6 +72,13 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1 or /users/1.json
   def update
     @user = User.find(params[:id])
+
+    if params[:avatar]
+      @user.save_image_to_s3(params[:avatar], 'avatar')
+    end
+    if params[:cover]
+      @user.save_image_to_s3(params[:cover], 'cover')
+    end
 
     if @user.update(user_params)
       redirect_to @user
