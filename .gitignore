@@ -5,5 +5,5 @@ log/
 .idea
 schema.rb
 db/development.sqlite3:Zone.Identifier
-
+.env
 /config/master.key
