@@ -1,0 +1,49 @@
+<style>
+  .magazineItem {
+      width: 70%;
+  }
+</style>
+
+<div class="magazineItem">
+  <%= form_for @magazine, html: {class: 'magazine-form'} do |f| %>
+
+    <div>
+      <%= f.label :name %>
+      <% if @magazine.errors[:name].any? %>
+        <div class="error-message">
+          <span><%= @magazine.errors[:name].join(", ") %></span>
+        </div>
+      <% end %>
+      <%= f.text_area :name, oninput: 'autoResize(this)', required: true %>
+    </div>
+
+    <div>
+      <%= f.label :title %>
+      <%= f.text_area :title, oninput: 'autoResize(this)', required: true %>
+    </div>
+
+    <div>
+      <%= f.label :description %>
+      <%= f.text_area :description, class: 'body-textarea', oninput: 'autoResize(this)' %>
+    </div>
+
+    <div>
+      <%= f.label :rules %>
+      <%= f.text_area :rules, class: 'body-textarea', oninput: 'autoResize(this)' %>
+    </div>
+
+    <div class="button-container">
+      <%= f.submit "Add new magazine", class: 'magazineItem-button' %>
+    </div>
+
+  <% end %>
+</div>
+
+<script>
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        if (textarea.scrollHeight > textarea.clientHeight) {
+            textarea.style.height = (textarea.scrollHeight) + 'px';
+        }
+    }
+</script>

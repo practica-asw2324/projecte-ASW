@@ -8,7 +8,42 @@ class UsersController < ApplicationController
 
   # GET /users/1 or /users/1.json
   def show
+    @user = User.find(params[:id])
+    @from_user_view = true
+    prepare_comments
+    @filter = params[:filter] || 'all'
+    @sort = params[:sort] || 'top'
+    @type = params[:type]
+    @search = params[:search]
+  
+    # Change sort to 'commented' if sort is 'oldest' and filter is 'posts'
+    if @sort == 'oldest' && @filter == 'posts'
+      @sort = 'top'
+    end 
+  
+    case @filter
+    when 'posts'
+      @posts = sort_posts(@user.posts)
+      @comments = []
+      @boosts = []
+      @post = @posts.first unless @posts.empty?
+    when 'comments'
+      @posts = []
+      @comments = sort_comments(@user.comments)
+      @boosts = []
+      @post = @comments.first.post unless @comments.empty?
+    when 'boosts'
+      @posts = []
+      @comments = []
+      @boosts = @user.boosts
+    when 'all'
+      @posts = sort_posts(@user.posts)
+      @comments = sort_comments(@user.comments)
+      @boosts = @user.boosts
+      @post = @posts.first unless @posts.empty?
+    end
   end
+  
 
   # GET /users/new
   def new
@@ -25,7 +60,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.save
-        format.html { redirect_to user_url(@user), notice: "User was successfully created." }
+        format.html { redirect_to user_url(@user) }
         format.json { render :show, status: :created, location: @user }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -36,14 +71,12 @@ class UsersController < ApplicationController
 
   # PATCH/PUT /users/1 or /users/1.json
   def update
-    respond_to do |format|
-      if @user.update(user_params)
-        format.html { redirect_to user_url(@user), notice: "User was successfully updated." }
-        format.json { render :show, status: :ok, location: @user }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
-      end
+    @user = User.find(params[:id])
+
+    if @user.update(user_params)
+      redirect_to @user
+    else
+      render :edit
     end
   end
 
@@ -52,19 +85,54 @@ class UsersController < ApplicationController
     @user.destroy
 
     respond_to do |format|
-      format.html { redirect_to users_url, notice: "User was successfully destroyed." }
+      format.html { redirect_to users_url }
       format.json { head :no_content }
     end
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_user
-      @user = User.find(params[:id])
-    end
+  def logout
+    sign_out current_user
+    redirect_to root_path
+  end
 
-    # Only allow a list of trusted parameters through.
-    def user_params
-      params.require(:user).permit(:name, :username)
+  private
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_user
+    @user = User.find(params[:id])
+  end
+
+  def prepare_comments
+    @comment = Comment.new
+    @comments = @user.comments
+  end
+
+  # Only allow a list of trusted parameters through.
+  def user_params
+    params.require(:user).permit(:name, :username, :description, :avatar, :cover)
+  end
+
+  def sort_posts(posts)
+    case @sort
+    when 'top'
+      posts.left_joins(:likes).group(:id).order('COUNT(likes.id) DESC')
+    when 'commented'
+      posts.left_joins(:comments).group(:id).order('COUNT(comments.id) DESC')
+    when 'newest'
+      posts.order(created_at: :desc)
+    else
+      posts
     end
+  end
+  
+  def sort_comments(comments)
+    case @sort
+    when 'top'
+      comments.left_joins(:likes_comments).group(:id).order('COUNT(likes_comments.id) DESC')
+    when 'oldest'
+      comments.order(created_at: :asc)
+    when 'newest'
+      comments.order(created_at: :desc)
+    end
+  end
 end

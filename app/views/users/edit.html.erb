@@ -1,10 +1,29 @@
-<h1>Editing user</h1>
+<%= render @user %>
 
-<%= render "form", user: @user %>
+<div class="postitem">
+  <%= form_for @user, html: { class: 'post-form', multipart: true } do |f| %>
+    <div>
+      <%= f.label :username %>
+      <%= f.text_field :username %>
+    </div>
 
-<br>
+    <div>
+      <%= f.label :description %>
+      <%= f.text_field :description %>
+    </div>
 
-<div>
-  <%= link_to "Show this user", @user %> |
-  <%= link_to "Back to users", users_path %>
+    <div>
+      <%= f.label :avatar %>
+      <%= f.file_field :avatar %>
+    </div>
+
+    <div>
+      <%= f.label :cover %>
+      <%= f.file_field :cover %>
+    </div>
+
+    <div class="button-container">
+      <%= f.submit "Update Profile", class: 'postitem-button' %>
+    </div>
+  <% end %>
 </div>

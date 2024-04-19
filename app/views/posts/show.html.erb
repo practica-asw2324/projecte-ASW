@@ -1,10 +1,79 @@
-<p style="color: green"><%= notice %></p>
+<style>
+    body {
+        background-color: #ffffff;
+    }
 
-<%= render @post %>
+    .postitem {
+        background-color: transparent;
+    }
+</style>
 
-<div>
-  <%= link_to "Edit this post", edit_post_path(@post) %> |
-  <%= link_to "Back to posts", posts_path %>
+<div class="postitem" id=post.id>
+  <div class="vote">
+    <br>
+    <%= button_to like_post_path(@post), method: :put, class: "voteButton #{'voted' if user_signed_in? && current_user.liked_post?(@post)}" do %>
+      <i class="fas fa-arrow-up"></i><span> </span><%= @post.likes.count %>
+    <% end %>
 
-  <%= button_to "Destroy this post", @post, method: :delete %>
+    <%= button_to dislike_post_path(@post), method: :put, class: "voteButton #{'voted' if user_signed_in? && current_user.disliked_post?(@post)}" do %>
+      <i class="fas fa-arrow-down"></i><span> </span><%= @post.dislikes.count %>
+    <% end %>
+  </div>
+
+  <div class="postinfo">
+    <h3>
+      <% if @post.url.present? %>
+        <a href="<%= @post.url.start_with?('http://', 'https://') ? @post.url : 'http://' + @post.url %>"
+           class="link" target="_blank"><%= @post.title %></a>
+      <% else %>
+        <%= @post.title %>
+      <% end %>
+    </h3>
+    <h4><span><%= link_to @post.user.name, user_path(@post.user),  class: 'user-link' %></span>,
+      <span class="domain"><%= time_ago_in_words(@post.created_at) %> ago</span></h4>  
+    <div style="display :flex">
+      <%= link_to @post.comments.count.to_s + ' comments', '#comments', class: "boostButton" %>
+
+      <%= button_to boost_post_path(@post), method: :put, class: "boostButton" do %>
+        <%= 'boost (' + @post.boosts.count.to_s + ')' %>
+      <% end %>
+
+      <% if user_signed_in? && current_user == @post.user %>
+        <div class="dropdown">
+          <button class="boostButton">more</button>
+          <div class="dropdown-content">
+            <%= link_to 'edit', edit_post_path(@post), class: "boostButton" %>
+            <a><%= button_to 'delete', @post, method: :delete, data: { confirm: 'Are you sure?' }, class: 'delete-button' %></a>
+          </div>
+        </div>
+      <% end %>
+
+    </div>
+
+    <div>
+      <br>
+      <%= @post.body %>
+    </div>
+
+  </div>
+
 </div>
+
+<div class="commentitem">
+  <h4>Write your comment here</h4>
+  <%= render 'comments/form', comment: @comment %>
+</div>
+
+<ul class="filteritem">
+  <li><%= link_to 'top', sort_comments_post_path(@post, sort: 'top'), class: "#{'selected' if @selected_filter == 'top'}" %></li>
+  <li><%= link_to 'newest', sort_comments_post_path(@post, sort: 'newest'), class: "#{'selected' if @selected_filter == 'newest'}" %></li>
+  <li><%= link_to 'oldest', sort_comments_post_path(@post, sort: 'old'), class: "#{'selected' if @selected_filter == 'old'}" %></li>
+</ul>
+
+<div id="comments" class="comments">
+  <% @comments.each do |comment| %>
+    <%= render 'comments/comment', comment: comment, escalate: true, user_view: false %>
+    <div style="height: 10px; border-top: 1px solid gray; margin-left: 23px; margin-right: 23px;"></div>
+  <% end %>
+</div>
+<div style="height: 100px;"></div>
