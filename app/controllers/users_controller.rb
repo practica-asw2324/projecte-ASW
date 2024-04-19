@@ -73,6 +73,13 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
+    if params[:avatar]
+      @user.save_image_to_s3(params[:avatar], 'avatar')
+    end
+    if params[:cover]
+      @user.save_image_to_s3(params[:cover], 'cover')
+    end
+
     if @user.update(user_params)
       redirect_to @user
     else
