@@ -59,7 +59,7 @@ class User < ApplicationRecord
       secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
       session_token: ENV['AWS_SESSION_TOKEN']
     )
-    bucket = s3.bucket('my-bucket')
+    bucket = s3.bucket('tuiter-bucket') # reemplaza 'tuiter-bucket' con el nombre de tu bucket
     obj = bucket.object("#{image_type}/#{name}")
     obj.upload_file(image.path)
   end
