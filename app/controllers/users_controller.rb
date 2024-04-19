@@ -23,7 +23,7 @@ class UsersController < ApplicationController
   
     case @filter
     when 'posts'
-      @posts = sort_posts(@user.posts.distinct)
+      @posts = sort_posts(@user.posts)
       @comments = []
       @boosts = []
       @post = @posts.first unless @posts.empty?
@@ -37,7 +37,7 @@ class UsersController < ApplicationController
       @comments = []
       @boosts = @user.boosts
     when 'all'
-      @posts = sort_posts(@user.posts.distinct)
+      @posts = sort_posts(@user.posts)
       @comments = sort_comments(@user.comments)
       @boosts = @user.boosts
       @post = @posts.first unless @posts.empty?
