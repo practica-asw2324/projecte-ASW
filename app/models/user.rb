@@ -50,5 +50,18 @@ class User < ApplicationRecord
   def commented_posts
     Post.joins(:comments).where(comments: { user_id: id }).distinct
   end
+
+  def save_image_to_s3(image, image_type)
+    name = File.basename(image.path)
+    s3 = Aws::S3::Resource.new(
+      region: 'us-west-2',
+      access_key_id: ENV['AWS_ACCESS_KEY_ID'],
+      secret_access_key: ENV['AWS_SECRET_ACCESS_KEY'],
+      session_token: ENV['AWS_SESSION_TOKEN']
+    )
+    bucket = s3.bucket('my-bucket')
+    obj = bucket.object("#{image_type}/#{name}")
+    obj.upload_file(image.path)
+  end
 end
 
