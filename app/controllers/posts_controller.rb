@@ -9,7 +9,7 @@ class PostsController < ApplicationController
 
       if params[:search]
         session[:last_search] = params[:search]
-        @posts = Post.where("posts.title LIKE ? OR posts.body LIKE ?", "%#{params[:search]}%", "%#{params[:search]}%")
+        @posts = Post.where("lower(posts.title) LIKE ? OR lower(posts.body) LIKE ?", "%#{params[:search].downcase}%", "%#{params[:search].downcase}%")
       else
         @posts = Post.includes(:user, :magazine, :comments)
       end
