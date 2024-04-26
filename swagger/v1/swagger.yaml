@@ -1,152 +1,392 @@
----
 openapi: 3.0.1
 info:
-  title: API V1
-  version: v1
+  version: 1.0.0
+  title: Tuiter
+  description: ""
+
+servers:
+- url: http://localhost:3000
+
 paths:
-  "/posts/{id}/react":
-    parameters:
-    - name: id
-      in: path
-      description: id
-      required: true
-      schema:
-        type: string
-    post:
-      summary: react post
-      responses:
-        '200':
-          description: successful
-  "/posts/{id}/sort_comments":
-    parameters:
-    - name: id
-      in: path
-      description: id
-      required: true
-      schema:
-        type: string
-    get:
-      summary: sort_comments post
-      responses:
-        '200':
-          description: successful
-  "/posts/{id}/like":
-    parameters:
-    - name: id
-      in: path
-      description: id
-      required: true
-      schema:
-        type: string
-    put:
-      summary: like post
-      responses:
-        '200':
-          description: successful
-  "/posts/{id}/dislike":
-    parameters:
-    - name: id
-      in: path
-      description: id
-      required: true
-      schema:
-        type: string
-    put:
-      summary: dislike post
-      responses:
-        '200':
-          description: successful
-  "/posts/{id}/boost":
-    parameters:
-    - name: id
-      in: path
-      description: id
-      required: true
-      schema:
-        type: string
-    put:
-      summary: boost post
-      responses:
-        '200':
-          description: successful
   "/posts":
     get:
-      summary: list posts
+      summary: List all posts
+      operationId: getAllPost
       responses:
         '200':
-          description: successful
+          description: 'Show All'
+          content:
+            application/json:
+              schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Post'
     post:
-      summary: create post
+      summary: Create post
+      requestBody:
+        content:
+          application/json: 
+              schema:
+                  $ref: '#/components/schemas/NewPost'
       responses:
-        '200':
-          description: successful
-  "/posts/new":
-    get:
-      summary: new post
-      responses:
-        '200':
-          description: successful
-  "/posts/{id}/edit":
+        '201':
+          description: 'Created'
+          content:
+            application/json: 
+              schema:
+                  $ref: '#/components/schemas/Post'
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '422':
+          description: 'Error: Unprocessable'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422'
+
+                
+      security:
+        - API-KEY: []
+  "/posts/{postId}":
     parameters:
-    - name: id
+    - name: postId
       in: path
       description: id
       required: true
       schema:
         type: string
     get:
-      summary: edit post
+      summary: Show post
+      operationId: getPost
       responses:
         '200':
-          description: successful
-  "/posts/{id}":
-    parameters:
-    - name: id
-      in: path
-      description: id
-      required: true
-      schema:
-        type: string
-    get:
-      summary: show post
-      responses:
-        '200':
-          description: successful
-    patch:
-      summary: update post
-      responses:
-        '200':
-          description: successful
+          description: 'Show'
+          content:
+            application/json: 
+              schema:
+                  $ref: '#/components/schemas/Post'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
     put:
-      summary: update post
+      summary: Update post
+      requestBody:
+        content:
+          application/json: 
+              schema:
+                  $ref: '#/components/schemas/NewPost'
       responses:
         '200':
-          description: successful
+          description: 'Updated'
+          content:
+            application/json: 
+              schema:
+                  $ref: '#/components/schemas/Post'
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '403':
+          description: 'Error: Unauthorised'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+      security:
+        - API-KEY: []
     delete:
-      summary: delete post
+      summary: Delete post
       responses:
         '200':
-          description: successful
-  "/new_link":
-    get:
-      summary: new post
+          description: 'Deleted'
+          content:
+            application/json: 
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Post was successfully destroyed.'
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '403':
+          description: 'Error: Unauthorised'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+      security:
+        - API-KEY: []
+  "/posts/{postId}/like":
+    parameters:
+    - name: postId
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    put:
+      summary: Like post
       responses:
         '200':
-          description: successful
-  "/new_thread":
-    get:
-      summary: new post
+          description: 'Liked'
+          content:
+            application/json: 
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You've liked this post."
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+      security:
+        - API-KEY: []
+  "/posts/{postId}/dislike":
+    parameters:
+    - name: postId
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    put:
+      summary: Dislike post
       responses:
         '200':
-          description: successful
-  "/":
-    get:
-      summary: list posts
+          description: 'Disliked'
+          content:
+            application/json: 
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You've disiked this post."
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+      security:
+        - API-KEY: []
+  "/posts/{postId}/boost":
+    parameters:
+    - name: postId
+      in: path
+      description: Boost Post
+      required: true
+      schema:
+        type: string
+    put:
+      summary: Boost post
       responses:
         '200':
-          description: successful
-servers:
-- url: https://{defaultHost}
-  variables:
-    defaultHost:
-      default: www.example.com
+          description: 'Boosted'
+          content:
+            application/json: 
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You've boosted this post."
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+      security:
+        - API-KEY: []
+
+components:
+  securitySchemes:
+    API-KEY:
+      type: apiKey
+      name: API-KEY
+      in: header
+
+  schemas:
+    NewPost:
+      type: object
+      properties:
+        title:
+          type: string
+          example: 'post title'
+        body:
+          type: string
+          example: 'post body'
+        magazine_id:
+          type: integer
+          format: int64
+          example: 1
+        url:
+          type: string
+          example: 'google.com'
+
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 2
+        title:
+          type: string
+          minLength: 4
+          example: 'My name'
+        body:
+          type: string
+          minLength: 4
+          maxLength: 280
+          example: 'My content'
+        url:
+          type: string
+          format: url
+          example: google.com
+        created_at:
+          type: string
+          format: date-time
+        likes_count:
+          type: integer
+          format: int64
+          example: 0
+        dislikes_count:
+          type: integer
+          format: int64
+          example: 0
+        boosts_count:
+          type: integer
+          format: int64
+          example: 0
+        user_name:
+          type: string
+          example: author
+        magazine_name:
+          type: string
+          example: magazine
+
+    ErrorResult:
+        type: object
+        properties:
+          message: 
+            type: string
+        required:
+          - message
+          
+    Error422Result:
+    type: object
+    additionalProperties:
+      type: array
+      items:
+        type: string
+
+  examples:
+    error404:
+      value:
+        message: "Record not found"
+    error403:
+      value:
+        message: "You are not authorized to perform this action."
+    error401:
+      value:
+        message: "Invalid API-KEY"
+    error422:
+      value:
+        title: ["can't be blank"]
+        magazine: ["must exist"]
+        

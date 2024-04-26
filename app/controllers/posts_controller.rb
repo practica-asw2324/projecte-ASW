@@ -31,6 +31,21 @@ class PostsController < ApplicationController
       when 'threads'
         @posts = @posts.where(url: [nil, ''])
       end
+
+      respond_to do |format|
+        format.html
+        format.json { render json: @posts.as_json(except: [:magazine_id, :user_id, :updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
+      end
+  end
+
+  # GET /posts/1 or /posts/1.json
+  def show
+    prepare_comments
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @post.as_json(except: [:magazine_id, :user_id, :updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
+    end
   end
 
   # PUT /posts/:id/boost
@@ -53,11 +68,6 @@ class PostsController < ApplicationController
     end
   end
 
-  # GET /posts/1 or /posts/1.json
-  def show
-    prepare_comments
-  end
-
   # PUT /posts/:id/like
   def like
     @like = @post.likes.find_or_initialize_by(user: current_user)
@@ -77,10 +87,15 @@ class PostsController < ApplicationController
           format.html { redirect_back(fallback_location: root_path, notice: "You've liked this post.") }
           format.json { render json: { likes_count: @post.likes.count, message: "You've liked this post." } }
         else
-          format.html { redirect_back(fallback_location: root_path, alert: "There was an error liking this post.") }
-          format.json { render json: { error: "There was an error liking this post." }, status: :unprocessable_entity }
+          format.html { redirect_back(fallback_location: root_path, notice: "Unable to like this post.") }
+          format.json { render json: { error: "Unable to like this post." }, status: :unprocessable_entity }
         end
       end
+    end
+  rescue => e
+    respond_to do |format|
+      format.html { redirect_back(fallback_location: root_path, notice: "An error occurred: #{e.message}") }
+      format.json { render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error }
     end
   end
 
@@ -110,13 +125,6 @@ class PostsController < ApplicationController
     end
   end
 
-  # GET /posts/new
-  def new
-    @post = Post.new
-    @is_link = params[:type] == 'link'
-    @magazines = Magazine.all
-  end
-
   # POST /posts or /posts.json
   def create
     user = current_user
@@ -128,7 +136,7 @@ class PostsController < ApplicationController
     respond_to do |format|
       if @post.save
         format.html { redirect_to root_path, notice: 'Post was successfully created.' }
-        format.json { render json: @post, status: :created }
+        format.json { render json: @post.as_json(except: [:magazine_id, :user_id, :updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]), status: :created }
       else
         format.html { render :new }
         format.json { render json: @post.errors, status: :unprocessable_entity }
@@ -136,19 +144,12 @@ class PostsController < ApplicationController
     end
   end
 
-  # GET /posts/1/edit
-  def edit
-    @post = Post.find(params[:id])
-    @is_link = !@post.url.nil?
-    @magazines = Magazine.all
-  end
-
   # PATCH/PUT /posts/1 or /posts/1.json
   def update
     respond_to do |format|
       if @post.update(post_params)
         format.html { redirect_to post_url(@post), notice: "Post was successfully updated." }
-        format.json { render json: { message: "Post was successfully updated.", post: @post }, status: :ok }
+        format.json { render json: @post.as_json(except: [:magazine_id, :user_id, :updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: { error: "There was an error updating the post.", errors: @post.errors }, status: :unprocessable_entity }
@@ -169,6 +170,20 @@ class PostsController < ApplicationController
         format.json { render json: { error: "There was an error destroying the post." }, status: :unprocessable_entity }
       end
     end
+  end
+
+  # GET /posts/1/edit
+  def edit
+    @post = Post.find(params[:id])
+    @is_link = !@post.url.nil?
+    @magazines = Magazine.all
+  end
+
+  # GET /posts/new
+  def new
+    @post = Post.new
+    @is_link = params[:type] == 'link'
+    @magazines = Magazine.all
   end
 
   def sort_comments
