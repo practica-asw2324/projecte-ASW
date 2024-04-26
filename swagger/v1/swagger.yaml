@@ -1,0 +1,152 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/posts/{id}/react":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    post:
+      summary: react post
+      responses:
+        '200':
+          description: successful
+  "/posts/{id}/sort_comments":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    get:
+      summary: sort_comments post
+      responses:
+        '200':
+          description: successful
+  "/posts/{id}/like":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    put:
+      summary: like post
+      responses:
+        '200':
+          description: successful
+  "/posts/{id}/dislike":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    put:
+      summary: dislike post
+      responses:
+        '200':
+          description: successful
+  "/posts/{id}/boost":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    put:
+      summary: boost post
+      responses:
+        '200':
+          description: successful
+  "/posts":
+    get:
+      summary: list posts
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create post
+      responses:
+        '200':
+          description: successful
+  "/posts/new":
+    get:
+      summary: new post
+      responses:
+        '200':
+          description: successful
+  "/posts/{id}/edit":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    get:
+      summary: edit post
+      responses:
+        '200':
+          description: successful
+  "/posts/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    get:
+      summary: show post
+      responses:
+        '200':
+          description: successful
+    patch:
+      summary: update post
+      responses:
+        '200':
+          description: successful
+    put:
+      summary: update post
+      responses:
+        '200':
+          description: successful
+    delete:
+      summary: delete post
+      responses:
+        '200':
+          description: successful
+  "/new_link":
+    get:
+      summary: new post
+      responses:
+        '200':
+          description: successful
+  "/new_thread":
+    get:
+      summary: new post
+      responses:
+        '200':
+          description: successful
+  "/":
+    get:
+      summary: list posts
+      responses:
+        '200':
+          description: successful
+servers:
+- url: https://{defaultHost}
+  variables:
+    defaultHost:
+      default: www.example.com
