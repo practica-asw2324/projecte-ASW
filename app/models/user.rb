@@ -20,6 +20,8 @@ class User < ApplicationRecord
   has_many :created_magazines, class_name: 'Magazine', foreign_key: 'user_id'
   devise :omniauthable, omniauth_providers: [:google_oauth2]
 
+  after_create :generate_api_key
+
   def liked_post?(post)
     self.liked_posts.include?(post)
   end
@@ -62,6 +64,13 @@ class User < ApplicationRecord
     bucket = s3.bucket('tuiter-bucket') # reemplaza 'tuiter-bucket' con el nombre de tu bucket
     obj = bucket.object("#{image_type}/#{name}")
     obj.upload_file(image.path)
+  end
+
+  private
+
+  def generate_api_key
+    self.api_key = SecureRandom.hex
+    save!
   end
 end
 
