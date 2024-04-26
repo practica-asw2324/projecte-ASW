@@ -58,11 +58,6 @@ class PostsController < ApplicationController
     prepare_comments
   end
 
-  # POST /posts/:id/react
-  def react
-    @post = Post.find(params[:id])
-  end
-
   # PUT /posts/:id/like
   def like
     @like = @post.likes.find_or_initialize_by(user: current_user)
