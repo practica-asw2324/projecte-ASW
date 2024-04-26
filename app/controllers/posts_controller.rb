@@ -1,6 +1,8 @@
 class PostsController < ApplicationController
   before_action :authenticate_user, only: [:new, :create, :like, :dislike, :boost]
-  before_action :set_post, only: %i[ show edit update destroy like sort_comments ]
+  before_action :set_post, only: %i[ show edit update destroy like dislike sort_comments ]
+  protect_from_forgery unless: -> { request.format.json? }
+  before_action :check_user, only: [:edit, :update, :destroy]
 
   # GET /posts or /posts.json
   def index
@@ -35,18 +37,20 @@ class PostsController < ApplicationController
   def boost
     @post = Post.find(params[:id])
     user = current_user
-
-    # If the user has already boosted the post, remove the boost
-    if user.boosted_post?(@post)
-      @post.boosts.find_by(user: user).destroy
-      flash[:notice] = "You've unboosted this post."
-    else
-      # If the user hasn't boosted the post yet, create a new boost
-      @post.boosts.create(user: user)
-      flash[:notice] = "You've boosted this post."
+  
+    respond_to do |format|
+      # If the user has already boosted the post, remove the boost
+      if user.boosted_post?(@post)
+        @post.boosts.find_by(user: user).destroy
+        format.html { redirect_back(fallback_location: root_path, notice: "You've unboosted this post.") }
+        format.json { render json: { boosts_count: @post.boosts.count, message: "You've unboosted this post." } }
+      else
+        # If the user hasn't boosted the post yet, create a new boost
+        @post.boosts.create(user: user)
+        format.html { redirect_back(fallback_location: root_path, notice: "You've boosted this post.") }
+        format.json { render json: { boosts_count: @post.boosts.count, message: "You've boosted this post." } }
+      end
     end
-
-    redirect_back(fallback_location: root_path)
   end
 
   # GET /posts/1 or /posts/1.json
@@ -61,54 +65,54 @@ class PostsController < ApplicationController
 
   # PUT /posts/:id/like
   def like
-    @post = Post.find(params[:id])
-
-    # If the user has already liked the post, remove the like
-    if current_user.liked_post?(@post)
-      @post.likes.find_by(user: current_user).destroy
-      flash[:notice] = "You've unliked this post."
-    else
-      @like = @post.likes.build(user: current_user)
-
-      # If the user has disliked the post, remove the dislike
-      if current_user.disliked_post?(@post)
-        @post.dislikes.find_by(user: current_user).destroy
-      end
-
-      if @like.save
-        flash[:notice] = "You've liked this post."
+    @like = @post.likes.find_or_initialize_by(user: current_user)
+  
+    respond_to do |format|
+      if @like.persisted?
+        @like.destroy
+        format.html { redirect_back(fallback_location: root_path, notice: "You've unliked this post.") }
+        format.json { render json: { likes_count: @post.likes.count, message: "You've unliked this post." } }
       else
-        flash[:error] = "There was an error liking this post."
+        # If the user has disliked the post, remove the dislike
+        if current_user.disliked_post?(@post)
+          @post.dislikes.find_by(user: current_user).destroy
+        end
+  
+        if @like.save
+          format.html { redirect_back(fallback_location: root_path, notice: "You've liked this post.") }
+          format.json { render json: { likes_count: @post.likes.count, message: "You've liked this post." } }
+        else
+          format.html { redirect_back(fallback_location: root_path, alert: "There was an error liking this post.") }
+          format.json { render json: { error: "There was an error liking this post." }, status: :unprocessable_entity }
+        end
       end
     end
-
-    redirect_back(fallback_location: root_path)
   end
 
   # PUT /posts/:id/dislike
   def dislike
-    @post = Post.find(params[:id])
+    @dislike = @post.dislikes.find_or_initialize_by(user: current_user)
 
-    # If the user has already disliked the post, remove the dislike
-    if current_user.disliked_post?(@post)
-      @post.dislikes.find_by(user: current_user).destroy
-      flash[:notice] = "You've undisliked this post."
-    else
-      @dislike = @post.dislikes.build(user: current_user)
-
-      # If the user has liked the post, remove the like
-      if current_user.liked_post?(@post)
-        @post.likes.find_by(user: current_user).destroy
-      end
-
-      if @dislike.save
-        flash[:notice] = "You've disliked this post."
+    respond_to do |format|
+      if @dislike.persisted?
+        @dislike.destroy
+        format.html { redirect_back(fallback_location: root_path, notice: "You've removed your dislike for this post.") }
+        format.json { render json: { dislikes_count: @post.dislikes.count, message: "You've removed your dislike for this post." } }
       else
-        flash[:error] = "There was an error disliking this post."
+        # If the user has liked the post, remove the like
+        if current_user.liked_post?(@post)
+          @post.likes.find_by(user: current_user).destroy
+        end
+
+        if @dislike.save
+          format.html { redirect_back(fallback_location: root_path, notice: "You've disliked this post.") }
+          format.json { render json: { dislikes_count: @post.dislikes.count, message: "You've disliked this post." } }
+        else
+          format.html { redirect_back(fallback_location: root_path, alert: "There was an error disliking this post.") }
+          format.json { render json: { error: "There was an error disliking this post." }, status: :unprocessable_entity }
+        end
       end
     end
-    redirect_back(fallback_location: root_path)
-
   end
 
   # GET /posts/new
@@ -120,15 +124,20 @@ class PostsController < ApplicationController
 
   # POST /posts or /posts.json
   def create
+    user = current_user
+  
     @post = Post.new(post_params)
-    @post.user_id = current_user.id
+    @post.user_id = user.id
     @is_link = params[:type] == 'link'
-
-    if @post.save
-      redirect_to root_path, notice: 'Post was successfully created.'
-    else
-      @magazines = Magazine.all
-      render :new
+  
+    respond_to do |format|
+      if @post.save
+        format.html { redirect_to root_path, notice: 'Post was successfully created.' }
+        format.json { render json: @post, status: :created }
+      else
+        format.html { render :new }
+        format.json { render json: @post.errors, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -144,21 +153,26 @@ class PostsController < ApplicationController
     respond_to do |format|
       if @post.update(post_params)
         format.html { redirect_to post_url(@post), notice: "Post was successfully updated." }
-        format.json { render :show, status: :ok, location: @post }
+        format.json { render json: { message: "Post was successfully updated.", post: @post }, status: :ok }
       else
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
+        format.json { render json: { error: "There was an error updating the post.", errors: @post.errors }, status: :unprocessable_entity }
       end
     end
   end
 
   # DELETE /posts/1 or /posts/1.json
   def destroy
-    @post.destroy
-
-    respond_to do |format|
-      format.html { redirect_to posts_url, notice: "Post was successfully destroyed." }
-      format.json { head :no_content }
+    if @post.destroy
+      respond_to do |format|
+        format.html { redirect_to posts_url, notice: "Post was successfully destroyed." }
+        format.json { render json: { message: "Post was successfully destroyed." }, status: :ok }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to posts_url, alert: "There was an error destroying the post." }
+        format.json { render json: { error: "There was an error destroying the post." }, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -168,6 +182,16 @@ class PostsController < ApplicationController
   end
 
   private
+
+  def check_user
+    @post = Post.find(params[:id])
+    unless current_user == @post.user
+      respond_to do |format|
+        format.html { redirect_to @post, alert: "You are not authorized to perform this action." }
+        format.json { render json: { error: "You are not authorized to perform this action." }, status: :forbidden }
+      end
+    end
+  end
 
   def prepare_comments
     @comment = Comment.new
