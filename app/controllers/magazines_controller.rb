@@ -1,6 +1,9 @@
 class MagazinesController < ApplicationController
   before_action :authenticate_user, only: [:new, :create, :subscribe, :unsubscribe]
   before_action :set_magazine, only: %i[ show edit update destroy ]
+  before_action :check_user, only: [:edit, :update, :destroy]
+  protect_from_forgery unless: -> { request.format.json? }
+
 
   # GET /magazines or /magazines.json
   def index
@@ -23,19 +26,32 @@ class MagazinesController < ApplicationController
         subscribers_count: magazine.users.count
       }
     end
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @magazines.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
+    end
   end
 
   def subscribe
     @magazine = Magazine.find(params[:id])
-    current_user.subscribed_magazines << @magazine unless current_user.subscribed_magazines.include?(@magazine)
-    redirect_to request.referrer || root_path
+    if current_user.subscribed_magazines.include?(@magazine)
+      render json: { error: "You are already subscribed to this magazine." }, status: :unprocessable_entity
+    else
+      current_user.subscribed_magazines << @magazine
+      render json: { message: "You have successfully subscribed to this magazine." }, status: :ok
+    end
   end
 
   def unsubscribe
     @magazine = Magazine.find(params[:id])
     subscription = Subscription.find_by(user_id: current_user.id, magazine_id: @magazine.id)
-    subscription.delete if subscription
-    redirect_to request.referrer || root_path
+    if subscription
+      subscription.delete
+      render json: { message: "You have successfully unsubscribed from this magazine." }, status: :ok
+    else
+      render json: { error: "You are not subscribed to this magazine." }, status: :unprocessable_entity
+    end
   end
 
   # GET /magazines/1 or /magazines/1.json
@@ -64,6 +80,11 @@ class MagazinesController < ApplicationController
     when 'threads'
       @posts = @posts.where(url: [nil, ''])
     end
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @magazines.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
+    end
   end
 
   # GET /magazines/new
@@ -77,13 +98,15 @@ class MagazinesController < ApplicationController
 
   # POST /magazines or /magazines.json
   def create
+    user = current_user
+
     @magazine = Magazine.new(magazine_params)
-    @magazine.user_id = current_user.id
+    @magazine.user_id = user.id
 
     respond_to do |format|
       if @magazine.save
         format.html { redirect_to magazine_url(@magazine), notice: "Magazine was successfully created." }
-        format.json { render :show, status: :created, location: @magazine }
+        format.json { render json: @magazine.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]), status: :created }
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @magazine.errors, status: :unprocessable_entity }
@@ -96,10 +119,10 @@ class MagazinesController < ApplicationController
     respond_to do |format|
       if @magazine.update(magazine_params)
         format.html { redirect_to magazine_url(@magazine), notice: "Magazine was successfully updated." }
-        format.json { render :show, status: :ok, location: @magazine }
+        format.json { render json: @magazine.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
       else
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @magazine.errors, status: :unprocessable_entity }
+        format.json { render json: { error: "There was an error updating the magazine.", errors: @magazine.errors }, status: :unprocessable_entity }
       end
     end
   end
@@ -108,13 +131,31 @@ class MagazinesController < ApplicationController
   def destroy
     @magazine.destroy
 
-    respond_to do |format|
-      format.html { redirect_to magazines_url, notice: "Magazine was successfully destroyed." }
-      format.json { head :no_content }
+    if @magazine.destroy
+      respond_to do |format|
+        format.html { redirect_to magazines_url, notice: "Magazine was successfully destroyed." }
+        format.json { render json: { message: "Magazine was successfully destroyed." }, status: :ok }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to magazines_url, alert: "There was an error destroying the magazine." }
+        format.json { render json: { error: "There was an error destroying the magazine." }, status: :unprocessable_entity }
+      end
     end
   end
 
   private
+    def check_user
+      @magazine = Post.find(params[:id])
+      unless current_user == @magazine.user
+        respond_to do |format|
+          format.html { redirect_to @magazine, alert: "You are not authorized to perform this action." }
+          format.json { render json: { error: "You are not authorized to perform this action." }, status: :forbidden }
+        end
+      end
+    end
+
+
     # Use callbacks to share common setup or constraints between actions.
     def set_magazine
       @magazine = Magazine.find(params[:id])
