@@ -1,10 +1,12 @@
 class CommentsController < ApplicationController
   before_action :authenticate_user, only: %i[ create like dislike ]
   before_action :set_comment, only: %i[ show edit update destroy ]
+  protect_from_forgery unless: -> { request.format.json? }
+  before_action :check_user, only: [:edit, :update, :destroy]
 
   # GET /comments or /comments.json
   def index
-    @comments = Comment.all
+    @comments = Comment.where(comment_id: nil)
   end
 
   # GET /comments/1 or /comments/1.json
@@ -15,7 +17,7 @@ class CommentsController < ApplicationController
 
   # GET /comments/new
   def new
-    @comment = Comment.new(user_id: 1) # Assuming user with ID 1 is the hardcoded user
+    @comment = Comment.new(user_id: 1)
   end
 
   # GET /comments/1/edit
@@ -24,8 +26,9 @@ class CommentsController < ApplicationController
 
   # POST /comments or /comments.json
   def create
+    user = current_user
     @comment = Comment.new(comment_params)
-    @comment.user_id = current_user.id
+    @comment.user_id = user.id
 
     respond_to do |format|
       if @comment.save
@@ -113,13 +116,21 @@ class CommentsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+    def check_user
+      @comment = Comment.find(params[:id])
+      unless current_user == @comment.user
+        respond_to do |format|
+          format.html { redirect_to @comment, alert: "You are not authorized to perform this action." }
+          format.json { render json: { error: "You are not authorized to perform this action." }, status: :forbidden }
+        end
+      end
+    end
+
     def set_comment
       @comment = Comment.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
-    def comment_params
+  def comment_params
       params.require(:comment).permit(:body, :user_id, :post_id, :comment_id)
     end
 end
