@@ -2,13 +2,11 @@
 
 <h1>Comments</h1>
 
-<div id="comments">
+<div id="comments" class="comments">
   <% @comments.each do |comment| %>
-    <%= render comment %>
-    <p>
-      <%= link_to "Show this comment", comment %>
-    </p>
+    <%= render 'comments/comment', comment: comment, escalate: true, user_view: false %>
+    <div style="height: 10px; border-top: 1px solid gray; margin-left: 23px; margin-right: 23px;"></div>
   <% end %>
 </div>
 
-<%= link_to "New comment", new_comment_path %>
+<div style="height: 100px;"></div>

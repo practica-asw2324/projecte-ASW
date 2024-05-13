@@ -18,6 +18,7 @@ gem 'omniauth-google-oauth2'
 gem "omniauth-rails_csrf_protection"
 gem 'aws-sdk-s3'
 gem 'dotenv-rails', groups: [:development, :test]
+gem 'rack-cors'
 
 group :development, :test do
   gem "sqlite3", "1.4.2"
