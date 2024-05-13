@@ -146,7 +146,7 @@ class MagazinesController < ApplicationController
 
   private
     def check_user
-      @magazine = Post.find(params[:id])
+      @magazine = Magazine.find(params[:id])
       unless current_user == @magazine.user
         respond_to do |format|
           format.html { redirect_to @magazine, alert: "You are not authorized to perform this action." }
