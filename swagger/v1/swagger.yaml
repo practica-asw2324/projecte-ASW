@@ -2,16 +2,31 @@ openapi: 3.0.1
 info:
   version: 1.0.0
   title: Tuiter
-  description: ""
+  description: "Tuiter API specification"
 
 servers:
-  - url: http://localhost:3000
+  - url: https://tuiter.fly.dev
 
 paths:
   "/posts":
     get:
       summary: List all posts
       operationId: getAllPost
+      parameters:
+        - name: sort
+          in: query
+          description: Sorting criteria
+          required: false
+          schema:
+            type: string
+            enum: [top, newest, commented]
+        - name: type
+          in: query
+          description: Type of posts
+          required: false
+          schema:
+            type: string
+            enum: [all, links, threads]
       responses:
         '200':
           description: 'Show All'
@@ -754,6 +769,14 @@ components:
         magazine_name:
           type: string
           example: magazine
+        magazine_id:
+          type: integer
+          format: int64
+          example: 1
+        user_id:
+          type: integer
+          format: int64
+          example: 1
     NewUser:
       type: object
       properties:
@@ -885,4 +908,3 @@ components:
       value:
         title: ["can't be blank"]
         magazine: ["must exist"]
-
