@@ -641,7 +641,7 @@ components:
     NewComment:
       type: object
       properties:
-        text:
+        body:
           type: string
           example: 'This is a comment'
         comment_id:

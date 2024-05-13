@@ -2,12 +2,11 @@
 <%= form_with(model: [ @post, comment ], id: "reply-form-#{comment.id}",
               class: "new-comment-form") do |form| %>
   <%= form.text_area :body, id: "newCommentText", rows: "4", cols: "50", oninput: 'autoResize(this)' %>
-  <%= form.hidden_field :comment_id, value: comment.comment_id if comment.comment_id.present? %>
+  <%= form.hidden_field :comment_id, value: comment.comment_id %>
   <%= form.submit comment.new_record? ? 'Add Comment' : 'Update Comment', class: 'commentitem-button' %>
 <% end %>
 
 <script>
-
     document.addEventListener('DOMContentLoaded', function () {
         var editLinks = document.querySelectorAll('.edit-link');
         editLinks.forEach(function (link) {
