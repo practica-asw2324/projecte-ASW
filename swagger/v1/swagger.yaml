@@ -831,7 +831,127 @@ paths:
                 $ref: '#/components/schemas/ErrorResult'
       security:
         - API-KEY: [ ]
+  /magazines/{id}/subscribe:
+    parameters:
+      - name: id
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - Magazines
+      summary: Subscribe to a magazine
+      operationId: subscribeMagazine
+      parameters:
+        - name: id
+          in: path
+          description: ID of the magazine to subscribe to
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully subscribed to the magazine
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MagazineActionMessage'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422Result'
+  /magazines/{id}/unsubscribe:
+    parameters:
+      - name: id
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - Magazines
+      summary: Unsubscribe from a magazine
+      operationId: unsubscribeMagazine
+      parameters:
+        - name: id
+          in: path
+          description: ID of the magazine to unsubscribe from
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successfully unsubscribed from the magazine
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MagazineActionMessage'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422Result'
 
+  /magazines/new:
+    get:
+      tags:
+        - Magazines
+      summary: List all new magazines
+      operationId: getNewMagazines
+      responses:
+        '200':
+          description: 'Show All'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Magazine'
+
+  /magazines/{id}/edit:
+    parameters:
+      - name: id
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Magazines
+      summary: Edit a magazine
+      operationId: editMagazine
+      parameters:
+        - name: id
+          in: path
+          description: ID of the magazine to edit
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Show'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Magazine'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+      security:
+        - API-KEY: [ ]
 
 components:
   securitySchemes:
@@ -1018,7 +1138,15 @@ components:
           type: integer
           format: int64
           example: 0
-
+    MagazineActionMessage:
+      type: object
+      properties:
+        action:
+          type: string
+        magazineId:
+          type: integer
+        message:
+          type: string
 
     ErrorResult:
       type: object
