@@ -799,6 +799,18 @@ components:
         created_at:
           type: string
           format: date-time
+        posts_count:
+          type: integer
+          format: int64
+          example: 0
+        comments_count:
+          type: integer
+          format: int64
+          example: 0
+        boosts_count:
+          type: integer
+          format: int64
+          example: 0
 
     ErrorResult:
       type: object
