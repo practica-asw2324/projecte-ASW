@@ -34,7 +34,7 @@ class PostsController < ApplicationController
 
       respond_to do |format|
         format.html
-        format.json { render json: @posts.as_json(except: [:magazine_id, :user_id, :updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
+        format.json { render json: @posts.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
       end
   end
 
@@ -44,7 +44,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @post.as_json(except: [:magazine_id, :user_id, :updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
+      format.json { render json: @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
     end
   end
 
