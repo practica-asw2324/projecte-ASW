@@ -1,10 +1,10 @@
-# fly.toml app configuration file generated for waslab04asw on 2024-03-12T17:11:50Z
+# fly.toml app configuration file generated for tuiter on 2024-04-18T14:35:06Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'waslab04asw'
-primary_region = 'iad'
+app = 'tuiter'
+primary_region = 'mad'
 console_command = '/rails/bin/rails console'
 
 [build]
