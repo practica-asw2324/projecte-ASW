@@ -67,7 +67,7 @@ paths:
                 $ref: '#/components/schemas/Error422Result'
               examples:
                 errorExample:
-                  $ref: '#/components/examples/error422'
+                  $ref: '#/components/examples/error422post'
 
 
       security:
@@ -192,7 +192,7 @@ paths:
         required: true
         schema:
           type: string
-    put:
+    post:
       summary: Like post
       responses:
         '200':
@@ -205,6 +205,9 @@ paths:
                   message:
                     type: string
                     example: "You've liked this post."
+                  likes_count:
+                    type: integer
+                    example: 1
         '401':
           description: 'Error: Forbidden'
           content:
@@ -225,6 +228,51 @@ paths:
                   $ref: '#/components/examples/error404'
       security:
         - API-KEY: []
+    delete:
+      summary: Delete a post like
+      responses:
+        '200':
+          description: 'Unliked'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You've unliked this post."
+                  likes_count:
+                    type: integer
+                    example: 0
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+        '422':
+          description: 'Error: Unprocessable'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422like'
+      security:
+        - API-KEY: []
   "/posts/{postId}/dislike":
     parameters:
       - name: postId
@@ -233,7 +281,7 @@ paths:
         required: true
         schema:
           type: string
-    put:
+    post:
       summary: Dislike post
       responses:
         '200':
@@ -246,6 +294,9 @@ paths:
                   message:
                     type: string
                     example: "You've disiked this post."
+                  dislikes_count:
+                    type: integer
+                    example: 1
         '401':
           description: 'Error: Forbidden'
           content:
@@ -266,19 +317,11 @@ paths:
                   $ref: '#/components/examples/error404'
       security:
         - API-KEY: []
-  "/posts/{postId}/boost":
-    parameters:
-      - name: postId
-        in: path
-        description: Boost Post
-        required: true
-        schema:
-          type: string
-    put:
-      summary: Boost post
+    delete:
+      summary: Remove a post dislike
       responses:
         '200':
-          description: 'Boosted'
+          description: 'Undisliked'
           content:
             application/json:
               schema:
@@ -286,7 +329,10 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "You've boosted this post."
+                    example: "You've undisiked this post."
+                  dislikes_count:
+                    type: integer
+                    example: 0
         '401':
           description: 'Error: Forbidden'
           content:
@@ -305,6 +351,104 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+        '422':
+          description: 'Error: Unprocessable'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422dislike'
+      security:
+        - API-KEY: []
+  "/posts/{postId}/boost":
+    parameters:
+      - name: postId
+        in: path
+        description: Boost Post
+        required: true
+        schema:
+          type: string
+    post:
+      summary: Boost post
+      responses:
+        '200':
+          description: 'Boosted'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You've boosted this post."
+                  boosts_count:
+                    type: integer
+                    example: 1
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+      security:
+        - API-KEY: []
+    delete:
+      summary: Delete a boost
+      responses:
+        '200':
+          description: 'Unboosted'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You've unboosted this post."
+                  boosts_count:
+                    type: integer
+                    example: 0
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+        '422':
+          description: 'Error: Unprocessable'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422boost'
       security:
         - API-KEY: []
   "/users":
@@ -490,15 +634,6 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error401'
-        '422':
-          description: 'Error: Unprocessable'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error422Result'
-              examples:
-                errorExample:
-                  $ref: '#/components/examples/error422'
       security:
         - API-KEY: []
 
@@ -1217,7 +1352,16 @@ components:
     error401:
       value:
         message: "Invalid API-KEY"
-    error422:
+    error422post:
       value:
         title: ["can't be blank"]
         magazine: ["must exist"]
+    error422like:
+      value:
+        error: "Unable to unlike this post."
+    error422dislike:
+      value:
+        error: "Unable to unlike this post."
+    error422boost:
+      value:
+        error: "Unable to unlike this post."
