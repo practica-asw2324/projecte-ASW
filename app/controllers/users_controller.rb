@@ -1,5 +1,17 @@
 class UsersController < ApplicationController
   before_action :set_user, only: %i[ show edit update destroy ]
+  protect_from_forgery unless: -> { request.format.json? }
+  before_action :check_user, only: [:edit, :update, :destroy]
+
+  def check_user
+    @user = User.find(params[:id])
+    unless current_user == @user
+      respond_to do |format|
+        format.html { redirect_to @user, alert: "You are not authorized to perform this action." }
+        format.json { render json: { error: "You are not authorized to perform this action." }, status: :forbidden }
+      end
+    end
+  end
 
   # GET /users or /users.json
   def index
@@ -57,14 +69,13 @@ class UsersController < ApplicationController
   # POST /users or /users.json
   def create
     @user = User.new(user_params)
-
     respond_to do |format|
       if @user.save
         format.html { redirect_to user_url(@user) }
         format.json { render :show, status: :created, location: @user }
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
+        format.json { render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity }
       end
     end
   end

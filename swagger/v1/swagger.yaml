@@ -5,7 +5,7 @@ info:
   description: ""
 
 servers:
-- url: http://localhost:3000
+  - url: http://localhost:3000
 
 paths:
   "/posts":
@@ -18,23 +18,23 @@ paths:
           content:
             application/json:
               schema:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/Post'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
     post:
       summary: Create post
       requestBody:
         content:
-          application/json: 
-              schema:
-                  $ref: '#/components/schemas/NewPost'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPost'
       responses:
         '201':
           description: 'Created'
           content:
-            application/json: 
+            application/json:
               schema:
-                  $ref: '#/components/schemas/Post'
+                $ref: '#/components/schemas/Post'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -54,17 +54,17 @@ paths:
                 errorExample:
                   $ref: '#/components/examples/error422'
 
-                
+
       security:
         - API-KEY: []
   "/posts/{postId}":
     parameters:
-    - name: postId
-      in: path
-      description: id
-      required: true
-      schema:
-        type: string
+      - name: postId
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
     get:
       summary: Show post
       operationId: getPost
@@ -72,9 +72,9 @@ paths:
         '200':
           description: 'Show'
           content:
-            application/json: 
+            application/json:
               schema:
-                  $ref: '#/components/schemas/Post'
+                $ref: '#/components/schemas/Post'
         '404':
           description: 'Error: Not Found'
           content:
@@ -88,16 +88,16 @@ paths:
       summary: Update post
       requestBody:
         content:
-          application/json: 
-              schema:
-                  $ref: '#/components/schemas/NewPost'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewPost'
       responses:
         '200':
           description: 'Updated'
           content:
-            application/json: 
+            application/json:
               schema:
-                  $ref: '#/components/schemas/Post'
+                $ref: '#/components/schemas/Post'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -133,7 +133,7 @@ paths:
         '200':
           description: 'Deleted'
           content:
-            application/json: 
+            application/json:
               schema:
                 type: object
                 properties:
@@ -171,19 +171,19 @@ paths:
         - API-KEY: []
   "/posts/{postId}/like":
     parameters:
-    - name: postId
-      in: path
-      description: id
-      required: true
-      schema:
-        type: string
+      - name: postId
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
     put:
       summary: Like post
       responses:
         '200':
           description: 'Liked'
           content:
-            application/json: 
+            application/json:
               schema:
                 type: object
                 properties:
@@ -212,19 +212,19 @@ paths:
         - API-KEY: []
   "/posts/{postId}/dislike":
     parameters:
-    - name: postId
-      in: path
-      description: id
-      required: true
-      schema:
-        type: string
+      - name: postId
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
     put:
       summary: Dislike post
       responses:
         '200':
           description: 'Disliked'
           content:
-            application/json: 
+            application/json:
               schema:
                 type: object
                 properties:
@@ -253,19 +253,19 @@ paths:
         - API-KEY: []
   "/posts/{postId}/boost":
     parameters:
-    - name: postId
-      in: path
-      description: Boost Post
-      required: true
-      schema:
-        type: string
+      - name: postId
+        in: path
+        description: Boost Post
+        required: true
+        schema:
+          type: string
     put:
       summary: Boost post
       responses:
         '200':
           description: 'Boosted'
           content:
-            application/json: 
+            application/json:
               schema:
                 type: object
                 properties:
@@ -292,6 +292,397 @@ paths:
                   $ref: '#/components/examples/error404'
       security:
         - API-KEY: []
+  "/users":
+    get:
+      summary: List all users
+      operationId: getAllUser
+      responses:
+        '200':
+          description: 'Show All'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      summary: Create user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '201':
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+        '422':
+          description: 'Error: Unprocessable'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422Result'
+      security:
+        - API-KEY: [ ]
+  "/users/{userId}":
+    parameters:
+      - name: userId
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Show user
+      operationId: getUser
+      responses:
+        '200':
+          description: 'Show'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+    put:
+      summary: Update user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '200':
+          description: 'Updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+        '403':
+          description: 'Error: Unauthorised'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+      security:
+        - API-KEY: [ ]
+    delete:
+      summary: Delete user
+      responses:
+        '200':
+          description: 'Deleted'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'User was successfully destroyed.'
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+        '403':
+          description: 'Error: Unauthorised'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+      security:
+        - API-KEY: [ ]
+
+  "/posts/{postId}/comments":
+    parameters:
+      - name: postId
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+    get:
+      summary: List comments for a post
+      operationId: getPostComments
+      responses:
+        '200':
+          description: 'Show'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+    post:
+      summary: Add a comment to a post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewComment'
+      responses:
+        '201':
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '422':
+          description: 'Error: Unprocessable'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422'
+      security:
+        - API-KEY: []
+
+  "/posts/{postId}/comments/{commentId}":
+    parameters:
+      - name: postId
+        in: path
+        description: ID of the post
+        required: true
+        schema:
+          type: string
+      - name: commentId
+        in: path
+        description: ID of the comment
+        required: true
+        schema:
+          type: string
+    delete:
+      summary: Delete a comment from a post
+      responses:
+        '200':
+          description: 'Deleted'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Comment was successfully destroyed.'
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '403':
+          description: 'Error: Unauthorised'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+      security:
+        - API-KEY: []
+    put:
+      summary: Update comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewComment'
+      responses:
+        '200':
+          description: 'Updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '403':
+          description: 'Error: Unauthorised'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+      security:
+        - API-KEY: []
+
+  "/posts/{postId}/comments/{commentId}/like":
+    parameters:
+      - name: postId
+        in: path
+        description: ID of the post
+        required: true
+        schema:
+          type: string
+      - name: commentId
+        in: path
+        description: ID of the comment
+        required: true
+        schema:
+          type: string
+    put:
+      summary: Like comment
+      responses:
+        '200':
+          description: 'Liked'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You've liked this comment."
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+      security:
+        - API-KEY: [ ]
+
+  "/posts/{postId}/comments/{commentId}/dislike":
+    parameters:
+      - name: postId
+        in: path
+        description: ID of the post
+        required: true
+        schema:
+          type: string
+      - name: commentId
+        in: path
+        description: ID of the comment
+        required: true
+        schema:
+          type: string
+    put:
+      summary: Dislike comment
+      responses:
+        '200':
+          description: 'Disliked'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You've disiked this comment."
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+      security:
+        - API-KEY: [ ]
+
 
 components:
   securitySchemes:
@@ -341,6 +732,10 @@ components:
         created_at:
           type: string
           format: date-time
+        comments_count:
+          type: integer
+          format: int64
+          example: 0
         likes_count:
           type: integer
           format: int64
@@ -359,21 +754,110 @@ components:
         magazine_name:
           type: string
           example: magazine
+    NewUser:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'User name'
+        username:
+          type: string
+          example: 'Username'
+        description:
+          type: string
+          example: 'User description'
+        avatar:
+          type: string
+          example: 'URL of the avatar'
+        cover:
+          type: string
+          example: 'URL of the cover'
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 2
+        name:
+          type: string
+          example: 'User name'
+        username:
+          type: string
+          example: 'Username'
+        description:
+          type: string
+          example: 'User description'
+        avatar:
+          type: string
+          format: url
+          example: 'URL of the avatar'
+        cover:
+          type: string
+          format: url
+          example: 'URL of the cover'
+        created_at:
+          type: string
+          format: date-time
 
     ErrorResult:
-        type: object
-        properties:
-          message: 
-            type: string
-        required:
-          - message
-          
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
     Error422Result:
-    type: object
-    additionalProperties:
-      type: array
-      items:
-        type: string
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: string
+
+    NewComment:
+      type: object
+      properties:
+        body:
+          type: string
+          example: 'This is a comment'
+        comment_id:
+          type: integer
+          format: int64
+          example: 1
+          description: 'Optional. If present, this comment is a reply to the comment with this ID.'
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        body:
+          type: string
+          example: 'This is a comment'
+        createdAt:
+          type: string
+          format: date-time
+        user_name:
+          type: string
+          example: author
+        post_title:
+          type: string
+          example: post
+        replies_count:
+          type: integer
+          format: int64
+          example: 0
+        likes_count:
+          type: integer
+          format: int64
+          example: 0
+        dislikes_count:
+          type: integer
+          format: int64
+          example: 0
 
   examples:
     error404:
@@ -389,4 +873,4 @@ components:
       value:
         title: ["can't be blank"]
         magazine: ["must exist"]
-        
+

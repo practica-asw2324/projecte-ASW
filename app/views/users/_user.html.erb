@@ -1,8 +1,8 @@
 <div class="with-cover">
-  <% if @user.cover.attached? %>
+  <% if user.cover.attached? %>
     <img height="220" width="100%" class="cover" src="<%= url_for(@user.cover) %>" alt="<%= @user.name %>">
   <% end %>
-  <% if @user.avatar.attached? %>
+  <% if user.avatar.attached? %>
     <div class="avatar-container">
       <figure>
         <img width="100" height="100" style="max-width: 100px; max-height: 100px;" src="<%= url_for(@user.avatar) %>" alt="<%= @user.name %> avatar">
@@ -13,9 +13,9 @@
 <div class="user-main" id="content">
   <div>
     <div class="row">
-      <h4>@<%= @user.username %></h4>
-      <p><%= @user.description %></p>
-      <p>API Key: <%= @user.api_key %></p>
+      <h4>@<%= user.username %></h4>
+      <p><%= user.description %></p>
+      <p>API Key: <%= user.api_key %></p>
     </div>
   </div>
 </div>

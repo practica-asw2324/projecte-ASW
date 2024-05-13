@@ -17,7 +17,9 @@ class ApplicationController < ActionController::Base
 
   def authenticate_user
     if request.format.html?
-      authenticate_user!
+      if current_user.nil?
+        redirect_to new_user_path, alert: "Please log in first"
+      end
     elsif request.format.json?
       begin
         raise "Invalid API key" unless current_user
