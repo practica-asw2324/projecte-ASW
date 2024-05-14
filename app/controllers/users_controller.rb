@@ -113,9 +113,40 @@ class UsersController < ApplicationController
     redirect_to root_path
   end
 
+  def comments
+    @user = User.find(params[:id])
+    @comments = @user.comments
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @comments.as_json(except: [:user_id, :updated_at, :post_id, :comment_id],
+                                                   methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
+                                                             :post_title]) }
+    end
+  end
+
+  def posts
+    @user = User.find(params[:id])
+    @posts = @user.posts
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @posts.as_json(except: [:magazine_id, :user_id, :updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
+    end
+  end
+
+  def boosts
+    @user = User.find(params[:id])
+    @boosted_posts = @user.boosts
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @boosted_posts.map { |boost| boost.post.as_json(except: [:magazine_id, :user_id, :updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) } }
+    end
+  end
+
   private
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_user
     @user = User.find(params[:id])
   end

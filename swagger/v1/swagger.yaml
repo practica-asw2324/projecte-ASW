@@ -425,6 +425,87 @@ paths:
       security:
         - API-KEY: [ ]
 
+  "/users/{userId}/comments":
+    parameters:
+      - name: userId
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+    get:
+      summary: List comments for a user
+      operationId: getUserComments
+      responses:
+        '200':
+          description: 'Show'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+  "/users/{userId}/posts":
+    parameters:
+      - name: userId
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+    get:
+      summary: List posts for a user
+      operationId: getUserPosts
+      responses:
+        '200':
+          description: 'Show'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+  "/users/{userId}/boosts":
+    parameters:
+      - name: userId
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+    get:
+      summary: List boosted posts for a user
+      operationId: getUserBoostedPosts
+      responses:
+        '200':
+          description: 'Show'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
   "/posts/{postId}/comments":
     parameters:
       - name: postId
@@ -436,6 +517,14 @@ paths:
     get:
       summary: List comments for a post
       operationId: getPostComments
+      parameters:
+       - name: sort
+         in: query
+         description: Sorting criteria
+         required: false
+         schema:
+           type: string
+           enum: [ top, newest, old ]
       responses:
         '200':
           description: 'Show'
@@ -475,18 +564,8 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error401'
-        '422':
-          description: 'Error: Unprocessable'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error422Result'
-              examples:
-                errorExample:
-                  $ref: '#/components/examples/error422'
       security:
         - API-KEY: []
-
   "/posts/{postId}/comments/{commentId}":
     parameters:
       - name: postId
@@ -601,7 +680,7 @@ paths:
         required: true
         schema:
           type: string
-    put:
+    post:
       summary: Like comment
       responses:
         '200':
@@ -634,6 +713,50 @@ paths:
                   $ref: '#/components/examples/error404'
       security:
         - API-KEY: [ ]
+    delete:
+      tags:
+        - Comments
+      summary: Delete a comment like
+      responses:
+        '200':
+          description: 'Unliked'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You've unliked this comment."
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+        '422':
+          description: 'Error: Unprocessable'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422likeComment'
+      security:
+        - API-KEY: [ ]
 
   "/posts/{postId}/comments/{commentId}/dislike":
     parameters:
@@ -649,7 +772,7 @@ paths:
         required: true
         schema:
           type: string
-    put:
+    post:
       summary: Dislike comment
       responses:
         '200':
@@ -683,7 +806,50 @@ paths:
       security:
         - API-KEY: [ ]
 
-
+    delete:
+      tags:
+        - Comments
+      summary: Delete a comment dislike
+      responses:
+        '200':
+          description: 'Undisliked'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You've undisliked this comment."
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+        '422':
+          description: 'Error: Unprocessable'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422dislikeComment'
+      security:
+        - API-KEY: [ ]
 components:
   securitySchemes:
     API-KEY:
@@ -873,4 +1039,10 @@ components:
       value:
         title: ["can't be blank"]
         magazine: ["must exist"]
+    error422likeComment:
+      value:
+        error: "Unable to unlike this comment."
+    error422dislikeComment:
+      value:
+        error: "Unable to undislike this comment."
 
