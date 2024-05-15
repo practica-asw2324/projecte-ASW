@@ -9,10 +9,8 @@ Rails.application.routes.draw do
   resources :users
 
   resources :magazines do
-    member do
-      post 'subscribe'
-      post 'unsubscribe'
-    end
+      post 'subscribe', on: :member
+      delete 'unsubscribe', on: :member
   end
 
   resources :posts do

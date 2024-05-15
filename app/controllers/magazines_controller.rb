@@ -47,7 +47,7 @@ class MagazinesController < ApplicationController
     @magazine = Magazine.find(params[:id])
     subscription = Subscription.find_by(user_id: current_user.id, magazine_id: @magazine.id)
     if subscription
-      subscription.delete
+      subscription.destroy
       render json: { message: "You have successfully unsubscribed from this magazine." }, status: :ok
     else
       render json: { error: "You are not subscribed to this magazine." }, status: :unprocessable_entity
