@@ -3,15 +3,15 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
   has_one_attached :avatar
   has_one_attached :cover
-  has_many :posts
-  has_many :comments
+  has_many :posts, dependent: :destroy
+  has_many :comments, dependent: :destroy
+  has_many :boosts, dependent: :destroy
   has_many :likes
   has_many :liked_posts, through: :likes, source: :post
   has_many :dislikes
   has_many :disliked_posts, through: :dislikes, source: :post
   has_many :subscriptions
   has_many :subscribed_magazines, through: :subscriptions, source: :magazine
-  has_many :boosts
   has_many :boosted_posts, through: :boosts, source: :post
   has_many :likes_comments
   has_many :liked_comments, through: :likes_comments, source: :comment
