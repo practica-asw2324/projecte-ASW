@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  mount Rswag::Ui::Engine => '/api-docs'
-  mount Rswag::Api::Engine => '/api-docs'
   devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
 
   devise_scope :user do
@@ -14,19 +12,22 @@ Rails.application.routes.draw do
     get 'boosts', on: :member
   end
 
-
   resources :magazines do
-    member do
-      post 'subscribe'
-      post 'unsubscribe'
-    end
+      post 'subscribe', on: :member
+      delete 'unsubscribe', on: :member
   end
-
+  
   resources :posts do
     post 'react', on: :member
-    put 'like', on: :member
-    put 'dislike', on: :member
-    put 'boost', on: :member
+    get 'sort_comments', on: :member
+    member do
+      post 'like'
+      delete 'like', action: :unlike
+      post 'dislike'
+      delete 'dislike', action: :undislike
+      post 'boost'
+      delete 'boost', action: :unboost
+    end
     resources :comments, only: [:create, :index, :destroy, :update] do
       member do
         post 'like'

@@ -11,12 +11,24 @@
 <div class="postitem" id=post.id>
   <div class="vote">
     <br>
-    <%= button_to like_post_path(@post), method: :put, class: "voteButton #{'voted' if user_signed_in? && current_user.liked_post?(@post)}" do %>
-      <i class="fas fa-arrow-up"></i><span> </span><%= @post.likes.count %>
+    <% if user_signed_in? && current_user.liked_post?(@post) %>
+      <%= button_to like_post_path(@post), method: :delete, remote: true, class: "voteButton voted" do %>
+        <i class="fas fa-arrow-up"></i><span> </span><%= @post.likes.count %>
+      <% end %>
+    <% else %>
+      <%= button_to like_post_path(@post), method: :post, remote: true, class: "voteButton" do %>
+        <i class="fas fa-arrow-up"></i><span> </span><%= @post.likes.count %>
+      <% end %>
     <% end %>
 
-    <%= button_to dislike_post_path(@post), method: :put, class: "voteButton #{'voted' if user_signed_in? && current_user.disliked_post?(@post)}" do %>
-      <i class="fas fa-arrow-down"></i><span> </span><%= @post.dislikes.count %>
+    <% if user_signed_in? && current_user.disliked_post?(@post) %>
+      <%= button_to dislike_post_path(@post), method: :delete, remote: true, class: "voteButton voted" do %>
+        <i class="fas fa-arrow-down"></i><span> </span><%= @post.dislikes.count %>
+      <% end %>
+    <% else %>
+      <%= button_to dislike_post_path(@post), method: :post, remote: true, class: "voteButton" do %>
+        <i class="fas fa-arrow-down"></i><span> </span><%= @post.dislikes.count %>
+      <% end %>
     <% end %>
   </div>
 
@@ -34,8 +46,14 @@
     <div style="display :flex">
       <%= link_to @post.comments.count.to_s + ' comments', '#comments', class: "boostButton" %>
 
-      <%= button_to boost_post_path(@post), method: :put, class: "boostButton" do %>
-        <%= 'boost (' + @post.boosts.count.to_s + ')' %>
+      <% if user_signed_in? && current_user.boosted_post?(@post) %>
+        <%= button_to boost_post_path(@post), method: :delete, remote: true, class: "boostButton voted" do %>
+          <%= 'unboost (' + @post.boosts.count.to_s + ')' %>
+        <% end %>
+      <% else %>
+        <%= button_to boost_post_path(@post), method: :post, remote: true, class: "boostButton" do %>
+          <%= 'boost (' + @post.boosts.count.to_s + ')' %>
+        <% end %>
       <% end %>
 
       <% if user_signed_in? && current_user == @post.user %>

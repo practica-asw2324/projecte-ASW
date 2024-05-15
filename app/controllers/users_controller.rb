@@ -15,44 +15,74 @@ class UsersController < ApplicationController
 
   # GET /users or /users.json
   def index
-    @users = User.all
+    @users = User.all.map do |user|
+      user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid').merge({
+                                                                                                                                                                            posts_count: user.posts.count,
+                                                                                                                                                                            comments_count: user.comments.count,
+                                                                                                                                                                            boosts_count: user.boosts.count,
+                                                                                                                                                                            avatar: user.avatar.attached? ? url_for(user.avatar) : nil,
+                                                                                                                                                                            cover: user.cover.attached? ? url_for(user.cover) : nil
+                                                                                                                                                                          })
+    end
+    respond_to do |format|
+      format.html
+      format.json { render json: @users }
+    end
   end
 
   # GET /users/1 or /users/1.json
   def show
-    @user = User.find(params[:id])
+    user = User.find(params[:id])
+    posts_count = user.posts.count
+    comments_count = user.comments.count
+    boosts_count = user.boosts.count
+
+    @user_hash = user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid').merge({
+                                                                                                                                                                                       posts_count: posts_count,
+                                                                                                                                                                                       comments_count: comments_count,
+                                                                                                                                                                                       boosts_count: boosts_count,
+                                                                                                                                                                                       avatar: user.avatar.attached? ? url_for(user.avatar) : nil,
+                                                                                                                                                                                       cover: user.cover.attached? ? url_for(user.cover) : nil
+                                                                                                                                                                                     })
+
+    @user = user
     @from_user_view = true
     prepare_comments
     @filter = params[:filter] || 'all'
     @sort = params[:sort] || 'top'
     @type = params[:type]
     @search = params[:search]
-  
+
     # Change sort to 'commented' if sort is 'oldest' and filter is 'posts'
     if @sort == 'oldest' && @filter == 'posts'
       @sort = 'top'
-    end 
-  
+    end
+
     case @filter
     when 'posts'
-      @posts = sort_posts(@user.posts)
+      @posts = sort_posts(user.posts)
       @comments = []
       @boosts = []
       @post = @posts.first unless @posts.empty?
     when 'comments'
       @posts = []
-      @comments = sort_comments(@user.comments)
+      @comments = sort_comments(user.comments)
       @boosts = []
       @post = @comments.first.post unless @comments.empty?
     when 'boosts'
       @posts = []
       @comments = []
-      @boosts = @user.boosts
+      @boosts = user.boosts
     when 'all'
-      @posts = sort_posts(@user.posts)
-      @comments = sort_comments(@user.comments)
-      @boosts = @user.boosts
+      @posts = sort_posts(user.posts)
+      @comments = sort_comments(user.comments)
+      @boosts = user.boosts
       @post = @posts.first unless @posts.empty?
+    end
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @user_hash }
     end
   end
   
@@ -60,24 +90,6 @@ class UsersController < ApplicationController
   # GET /users/new
   def new
     @user = User.new
-  end
-
-  # GET /users/1/edit
-  def edit
-  end
-
-  # POST /users or /users.json
-  def create
-    @user = User.new(user_params)
-    respond_to do |format|
-      if @user.save
-        format.html { redirect_to user_url(@user) }
-        format.json { render :show, status: :created, location: @user }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity }
-      end
-    end
   end
 
   # PATCH/PUT /users/1 or /users/1.json
@@ -91,20 +103,37 @@ class UsersController < ApplicationController
       @user.save_image_to_s3(params[:cover], 'cover')
     end
 
-    if @user.update(user_params)
-      redirect_to @user
-    else
-      render :edit
+    respond_to do |format|
+      if @user.update(user_params)
+        user_hash = @user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid').merge({
+                                                                                                                                                                                           posts_count: @user.posts.count,
+                                                                                                                                                                                           comments_count: @user.comments.count,
+                                                                                                                                                                                           boosts_count: @user.boosts.count,
+                                                                                                                                                                                           avatar: @user.avatar.attached? ? url_for(@user.avatar) : nil,
+                                                                                                                                                                                           cover: @user.cover.attached? ? url_for(@user.cover) : nil
+                                                                                                                                                                                         })
+
+        format.html { redirect_to @user, notice: "User was successfully updated." }
+        format.json { render json: user_hash }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: { error: "There was an error updating the user.", errors: @user.errors }, status: :unprocessable_entity }
+      end
     end
   end
 
   # DELETE /users/1 or /users/1.json
   def destroy
-    @user.destroy
-
-    respond_to do |format|
-      format.html { redirect_to users_url }
-      format.json { head :no_content }
+    if @user.destroy
+      respond_to do |format|
+        format.html { redirect_to users_url, notice: "User was successfully destroyed." }
+        format.json { render json: { message: "User was successfully destroyed." }, status: :ok }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to users_url, alert: "There was an error destroying the user." }
+        format.json { render json: { error: "There was an error destroying the user." }, status: :unprocessable_entity }
+      end
     end
   end
 
