@@ -237,6 +237,15 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+        '409':
+          description: 'Error: Already liked'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error409like'
       security:
         - API-KEY: []
     delete:
@@ -316,6 +325,15 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+        '409':
+          description: 'Error: Already disliked'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error409dislike'
       security:
         - API-KEY: []
     delete:
@@ -395,6 +413,15 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+        '409':
+          description: 'Error: Already boosted'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error409boost'
       security:
         - API-KEY: []
     delete:
@@ -1494,3 +1521,13 @@ components:
     error422dislikeComment:
       value:
         error: "Unable to undislike this comment."
+    error409like:
+      value:
+        error: "You've already liked this post."
+    error409dislike:
+      value:
+        error: "You've already disliked this post."
+    error409boost:
+      value:
+        error: "You've already boosted this post."
+    
