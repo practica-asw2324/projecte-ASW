@@ -21,7 +21,7 @@ class CommentsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to post_path(params[:post_id], sort: @selected_filter) }
-      format.json { render json: @comments.as_json(except: [:user_id, :updated_at, :post_id, :comment_id],
+      format.json { render json: @comments.as_json(except: [:updated_at],
                                                    methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
                                                              :post_title, :all_replies]) }
     end
@@ -52,12 +52,12 @@ class CommentsController < ApplicationController
     respond_to do |format|
       if @comment.save
         format.html { redirect_to post_url(@comment.post_id), notice: "Comment was successfully created." }
-        format.json { render json: @comment.as_json(except: [:user_id, :updated_at, :post_id, :comment_id],
+        format.json { render json: @comment.as_json(except: [:updated_at],
                                                      methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
                                                                :post_title]) }
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @comment.as_json(except: [:user_id, :updated_at, :post_id, :comment_id],
+        format.json { render json: @comment.as_json(except: [:updated_at],
                                                      methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
                                                                :post_title]) }
       end
@@ -71,7 +71,7 @@ class CommentsController < ApplicationController
     if @comment.update(comment_params)
       respond_to do |format|
         format.html { redirect_to post_path(@post), notice: 'Comment was successfully updated.' }
-        format.json { render json: @comment.as_json(except: [:user_id, :updated_at, :post_id, :comment_id],
+        format.json { render json: @comment.as_json(except: [:updated_at],
                                                      methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
                                                                :post_title]), status: :ok }
       end
@@ -114,7 +114,7 @@ class CommentsController < ApplicationController
 
       if @like.save
         format.html { redirect_back(fallback_location: root_path, notice: "You've liked this comment.") }
-        format.json { render json: @comment.as_json(except: [:user_id, :updated_at, :post_id, :comment_id],
+        format.json { render json: @comment.as_json(except: [:updated_at],
                                                     methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
                                                               :post_title]), status: :ok }
       else
@@ -137,7 +137,7 @@ class CommentsController < ApplicationController
     respond_to do |format|
       if @like&.destroy
         format.html { redirect_back(fallback_location: root_path, notice: "You've unliked this comment.") }
-        format.json { render json: @comment.as_json(except: [:user_id, :updated_at, :post_id, :comment_id],
+        format.json { render json: @comment.as_json(except: [:updated_at],
                                                     methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
                                                               :post_title]), status: :ok }
       else
@@ -165,7 +165,7 @@ class CommentsController < ApplicationController
 
       if @dislike.save
         format.html { redirect_back(fallback_location: root_path, notice: "You've disliked this comment.") }
-        format.json { render json: @comment.as_json(except: [:user_id, :updated_at, :post_id, :comment_id],
+        format.json { render json: @comment.as_json(except: [:updated_at],
                                                     methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
                                                               :post_title]), status: :ok }
       else
@@ -188,7 +188,7 @@ class CommentsController < ApplicationController
     respond_to do |format|
       if @dislike&.destroy
         format.html { redirect_back(fallback_location: root_path, notice: "You've removed your dislike for this comment.") }
-        format.json { render json: @comment.as_json(except: [:user_id, :updated_at, :post_id, :comment_id],
+        format.json { render json: @comment.as_json(except: [:updated_at],
                                                     methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
                                                               :post_title]), status: :ok }
       else
