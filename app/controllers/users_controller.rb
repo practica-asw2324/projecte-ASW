@@ -148,7 +148,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @comments.as_json(except: [:user_id, :updated_at, :post_id, :comment_id],
+      format.json { render json: @comments.as_json(except: [:updated_at],
                                                    methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
                                                              :post_title]) }
     end
