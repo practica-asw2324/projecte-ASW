@@ -218,14 +218,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You've liked this post."
-                  likes_count:
-                    type: integer
-                    example: 1
+                $ref: '#/components/schemas/Post'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -256,14 +249,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You've unliked this post."
-                  likes_count:
-                    type: integer
-                    example: 0
+                $ref: '#/components/schemas/Post'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -311,14 +297,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You've disiked this post."
-                  dislikes_count:
-                    type: integer
-                    example: 1
+                $ref: '#/components/schemas/Post'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -349,14 +328,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You've undisiked this post."
-                  dislikes_count:
-                    type: integer
-                    example: 0
+                $ref: '#/components/schemas/Post'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -404,14 +376,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You've boosted this post."
-                  boosts_count:
-                    type: integer
-                    example: 1
+                $ref: '#/components/schemas/Post'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -442,14 +407,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You've unboosted this post."
-                  boosts_count:
-                    type: integer
-                    example: 0
+                $ref: '#/components/schemas/Post'
         '401':
           description: 'Error: Forbidden'
           content:
