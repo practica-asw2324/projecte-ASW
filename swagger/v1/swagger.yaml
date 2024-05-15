@@ -1048,7 +1048,7 @@ paths:
         required: true
         schema:
           type: string
-    post:
+    delete:
       tags:
         - Magazines
       summary: Unsubscribe from a magazine

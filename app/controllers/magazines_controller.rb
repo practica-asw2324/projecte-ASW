@@ -36,10 +36,16 @@ class MagazinesController < ApplicationController
   def subscribe
     @magazine = Magazine.find(params[:id])
     if current_user.subscribed_magazines.include?(@magazine)
-      render json: { error: "You are already subscribed to this magazine." }, status: :unprocessable_entity
+      respond_to do |format|
+        format.html { redirect_to request.referrer || root_path, alert: "You are already subscribed to this magazine." }
+        format.json { render json: { error: "You are already subscribed to this magazine." }, status: :unprocessable_entity }
+      end
     else
       current_user.subscribed_magazines << @magazine
-      render json: { message: "You have successfully subscribed to this magazine." }, status: :ok
+      respond_to do |format|
+        format.html { redirect_to request.referrer || root_path, notice: "Successfully subscribed to the magazine." }
+        format.json { render json: { message: "Successfully subscribed to the magazine." }, status: :ok }
+      end
     end
   end
 
@@ -47,12 +53,19 @@ class MagazinesController < ApplicationController
     @magazine = Magazine.find(params[:id])
     subscription = Subscription.find_by(user_id: current_user.id, magazine_id: @magazine.id)
     if subscription
-      subscription.destroy
-      render json: { message: "You have successfully unsubscribed from this magazine." }, status: :ok
+      subscription.delete
+      respond_to do |format|
+        format.html { redirect_to request.referrer || root_path, notice: "Successfully unsubscribed from the magazine." }
+        format.json { render json: { message: "Successfully unsubscribed from the magazine." }, status: :ok }
+      end
     else
-      render json: { error: "You are not subscribed to this magazine." }, status: :unprocessable_entity
+      respond_to do |format|
+        format.html { redirect_to request.referrer || root_path, alert: "You are not subscribed to this magazine." }
+        format.json { render json: { error: "You are not subscribed to this magazine." }, status: :unprocessable_entity }
+      end
     end
   end
+
 
   # GET /magazines/1 or /magazines/1.json
   def show

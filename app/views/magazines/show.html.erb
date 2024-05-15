@@ -17,7 +17,7 @@
       <div style="display: flex; align-items: center;">
         <span class="subsCount"><i class="fa-solid fa-users"></i><span class="subsCountNum"><%= @subscribers_count %></span></span>
         <% if user_signed_in? && current_user.subscribed_magazines.include?(@magazine) %>
-          <%= button_to unsubscribe_magazine_path(@magazine),:class=>"subsButton", method: :post do %>
+          <%= button_to unsubscribe_magazine_path(@magazine),:class=>"subsButton", method: :delete do %>
             <i class="fa-solid fa-folder-minus"></i> Unsubscribe
           <% end %>
         <% else %>
