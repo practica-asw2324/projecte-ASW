@@ -51,24 +51,32 @@ class PostsController < ApplicationController
   end
 
   # POST /posts/:id/boost
-  def boost
-    @boost = @post.boosts.find_or_initialize_by(user: current_user)
-  
-    respond_to do |format|
-      if @boost.save
-        format.html { redirect_back(fallback_location: root_path, notice: "You've boosted this post.") }
-        format.json { render json: @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
-      else
-        format.html { redirect_back(fallback_location: root_path, alert: "There was an error boosting this post.") }
-        format.json { render json: { error: "There was an error boosting this post." }, status: :unprocessable_entity }
+  # POST /posts/:id/boost
+def boost
+  @boost = @post.boosts.find_or_initialize_by(user: current_user)
+  already_boosted = !@boost.new_record?
+
+  respond_to do |format|
+    if @boost.save
+      format.html { redirect_back(fallback_location: root_path, notice: "You've boosted this post.") }
+      format.json do
+        if already_boosted
+          render json: { error: "You've already boosted this post." }, status: :conflict
+        else
+          render json: @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name])
+        end
       end
-    end
-  rescue => e
-    respond_to do |format|
-      format.html { redirect_back(fallback_location: root_path, notice: "An error occurred: #{e.message}") }
-      format.json { render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error }
+    else
+      format.html { redirect_back(fallback_location: root_path, alert: "There was an error boosting this post.") }
+      format.json { render json: { error: "There was an error boosting this post." }, status: :unprocessable_entity }
     end
   end
+rescue => e
+  respond_to do |format|
+    format.html { redirect_back(fallback_location: root_path, notice: "An error occurred: #{e.message}") }
+    format.json { render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error }
+  end
+end
   
   # DELETE /posts/:id/boost
   def unboost
@@ -93,6 +101,7 @@ class PostsController < ApplicationController
   # POST /posts/:id/like
   def like
     @like = @post.likes.find_or_initialize_by(user: current_user)
+    already_liked = !@like.new_record?
   
     respond_to do |format|
       # If the user has disliked the post, remove the dislike
@@ -102,7 +111,13 @@ class PostsController < ApplicationController
   
       if @like.save
         format.html { redirect_back(fallback_location: root_path, notice: "You've liked this post.") }
-        format.json { render json: @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
+        format.json do
+          if already_liked
+            render json: { error: "You've already liked this post." }, status: :conflict
+          else
+            render json: @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name])
+          end
+        end
       else
         format.html { redirect_back(fallback_location: root_path, notice: "Unable to like this post.") }
         format.json { render json: { error: "Unable to like this post." }, status: :unprocessable_entity }
@@ -139,6 +154,7 @@ class PostsController < ApplicationController
   # POST /posts/:id/dislike
   def dislike
     @dislike = @post.dislikes.find_or_initialize_by(user: current_user)
+    already_disliked = !@dislike.new_record?
   
     respond_to do |format|
       # If the user has liked the post, remove the like
@@ -148,7 +164,13 @@ class PostsController < ApplicationController
   
       if @dislike.save
         format.html { redirect_back(fallback_location: root_path, notice: "You've disliked this post.") }
-        format.json { render json: @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
+        format.json do
+          if already_disliked
+            render json: { error: "You've already disliked this post." }, status: :conflict
+          else
+            render json: @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name])
+          end
+        end
       else
         format.html { redirect_back(fallback_location: root_path, alert: "There was an error disliking this post.") }
         format.json { render json: { error: "There was an error disliking this post." }, status: :unprocessable_entity }

@@ -218,14 +218,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You've liked this post."
-                  likes_count:
-                    type: integer
-                    example: 1
+                $ref: '#/components/schemas/Post'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -244,6 +237,15 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+        '409':
+          description: 'Error: Already liked'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error409like'
       security:
         - API-KEY: []
     delete:
@@ -256,14 +258,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You've unliked this post."
-                  likes_count:
-                    type: integer
-                    example: 0
+                $ref: '#/components/schemas/Post'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -311,14 +306,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You've disiked this post."
-                  dislikes_count:
-                    type: integer
-                    example: 1
+                $ref: '#/components/schemas/Post'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -337,6 +325,15 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+        '409':
+          description: 'Error: Already disliked'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error409dislike'
       security:
         - API-KEY: []
     delete:
@@ -349,14 +346,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You've undisiked this post."
-                  dislikes_count:
-                    type: integer
-                    example: 0
+                $ref: '#/components/schemas/Post'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -404,14 +394,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You've boosted this post."
-                  boosts_count:
-                    type: integer
-                    example: 1
+                $ref: '#/components/schemas/Post'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -430,6 +413,15 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+        '409':
+          description: 'Error: Already boosted'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error409boost'
       security:
         - API-KEY: []
     delete:
@@ -442,14 +434,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You've unboosted this post."
-                  boosts_count:
-                    type: integer
-                    example: 0
+                $ref: '#/components/schemas/Post'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -1536,3 +1521,13 @@ components:
     error422dislikeComment:
       value:
         error: "Unable to undislike this comment."
+    error409like:
+      value:
+        error: "You've already liked this post."
+    error409dislike:
+      value:
+        error: "You've already disliked this post."
+    error409boost:
+      value:
+        error: "You've already boosted this post."
+    
