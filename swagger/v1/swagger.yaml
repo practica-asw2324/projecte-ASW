@@ -591,6 +591,93 @@ paths:
                 $ref: '#/components/schemas/ErrorResult'
       security:
         - API-KEY: [ ]
+  "/users/{userId}/comments":
+    parameters:
+      - name: userId
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Users
+      summary: List comments for a user
+      operationId: getUserComments
+      responses:
+        '200':
+          description: 'Show'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+  "/users/{userId}/posts":
+    parameters:
+      - name: userId
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Users
+      summary: List posts for a user
+      operationId: getUserPosts
+      responses:
+        '200':
+          description: 'Show'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+  "/users/{userId}/boosts":
+    parameters:
+      - name: userId
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Users
+      summary: List boosted posts for a user
+      operationId: getUserBoostedPosts
+      responses:
+        '200':
+          description: 'Show'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
 
   "/posts/{postId}/comments":
     parameters:
@@ -605,6 +692,14 @@ paths:
         - Comments
       summary: List comments for a post
       operationId: getPostComments
+      parameters:
+        - name: sort
+          in: query
+          description: Sorting criteria
+          required: false
+          schema:
+            type: string
+            enum: [ top, newest, old ]
       responses:
         '200':
           description: 'Show'
@@ -647,7 +742,7 @@ paths:
                 errorExample:
                   $ref: '#/components/examples/error401'
       security:
-        - API-KEY: []
+        - API-KEY: [ ]
 
   "/posts/{postId}/comments/{commentId}":
     parameters:
@@ -706,7 +801,7 @@ paths:
                 errorExample:
                   $ref: '#/components/examples/error404'
       security:
-        - API-KEY: []
+        - API-KEY: [ ]
     put:
       tags:
         - Comments
@@ -751,7 +846,7 @@ paths:
                 errorExample:
                   $ref: '#/components/examples/error404'
       security:
-        - API-KEY: []
+        - API-KEY: [ ]
 
   "/posts/{postId}/comments/{commentId}/like":
     parameters:
@@ -767,7 +862,7 @@ paths:
         required: true
         schema:
           type: string
-    put:
+    post:
       tags:
         - Comments
       summary: Like comment
@@ -802,6 +897,50 @@ paths:
                   $ref: '#/components/examples/error404'
       security:
         - API-KEY: [ ]
+    delete:
+      tags:
+        - Comments
+      summary: Delete a comment like
+      responses:
+        '200':
+          description: 'Unliked'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You've unliked this comment."
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+        '422':
+          description: 'Error: Unprocessable'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422likeComment'
+      security:
+        - API-KEY: [ ]
 
   "/posts/{postId}/comments/{commentId}/dislike":
     parameters:
@@ -817,10 +956,9 @@ paths:
         required: true
         schema:
           type: string
-    put:
+    post:
       tags:
         - Comments
-      
       summary: Dislike comment
       responses:
         '200':
@@ -851,6 +989,51 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+      security:
+        - API-KEY: [ ]
+
+    delete:
+      tags:
+        - Comments
+      summary: Delete a comment dislike
+      responses:
+        '200':
+          description: 'Undisliked'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "You've undisliked this comment."
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+        '422':
+          description: 'Error: Unprocessable'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422dislikeComment'
       security:
         - API-KEY: [ ]
   "/magazines":
@@ -1204,20 +1387,6 @@ components:
           type: string
           format: url
           description: 'URL for the cover image. This field expects a URL, not a file upload.'
-    ErrorResult:
-      type: object
-      properties:
-        message:
-          type: string
-      required:
-        - message
-
-    Error422Result:
-      type: object
-      additionalProperties:
-        type: array
-        items:
-          type: string
 
     NewComment:
       type: object
@@ -1262,65 +1431,81 @@ components:
           type: integer
           format: int64
           example: 0
-          
+
     NewMagazine:
-       type: object
-       properties:
-         name:
-           type: string
-           example: 'Magazine name'
-         title:
-           type: string
-           example: 'Magazine title'
-         description:
-           type: string
-           example: 'Magazine description'
-         rules:
-             type: string
-             example: 'Magazine rules'
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'Magazine name'
+        title:
+          type: string
+          example: 'Magazine title'
+        description:
+          type: string
+          example: 'Magazine description'
+        rules:
+          type: string
+          example: 'Magazine rules'
     Magazine:
-       type: object
-       properties:
-         id:
-           type: integer
-           format: int64
-           example: 1
-         name:
-           type: string
-           example: 'Magazine name'
-         title:
-           type: string
-           example: 'Magazine title'
-         description:
-           type: string
-           example: 'Magazine description'
-         rules:
-           type: string
-           example: 'Magazine rules'
-         created_at:
-           type: string
-           format: date-time
-         posts_count:
-           type: integer
-           format: int64
-           example: 0
-         comments_count:
-           type: integer
-           format: int64
-           example: 0
-         subscribers_count:
-           type: integer
-           format: int64
-           example: 0
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: 'Magazine name'
+        title:
+          type: string
+          example: 'Magazine title'
+        description:
+          type: string
+          example: 'Magazine description'
+        rules:
+          type: string
+          example: 'Magazine rules'
+        created_at:
+          type: string
+          format: date-time
+        posts_count:
+          type: integer
+          format: int64
+          example: 0
+        comments_count:
+          type: integer
+          format: int64
+          example: 0
+        subscribers_count:
+          type: integer
+          format: int64
+          example: 0
+
     MagazineActionMessage:
-       type: object
-       properties:
-         action:
-           type: string
-         magazineId:
-           type: integer
-         message:
-           type: string
+      type: object
+      properties:
+        action:
+          type: string
+        magazineId:
+          type: integer
+        message:
+          type: string
+
+    ErrorResult:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    Error422Result:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: string
 
   examples:
     error404:
@@ -1345,3 +1530,9 @@ components:
     error422boost:
       value:
         error: "Unable to unboost this post."
+    error422likeComment:
+      value:
+        error: "Unable to unlike this comment."
+    error422dislikeComment:
+      value:
+        error: "Unable to undislike this comment."

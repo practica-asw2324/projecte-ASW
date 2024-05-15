@@ -83,9 +83,9 @@
 </div>
 
 <ul class="filteritem">
-  <li><%= link_to 'top', sort_comments_post_path(@post, sort: 'top'), class: "#{'selected' if @selected_filter == 'top'}" %></li>
-  <li><%= link_to 'newest', sort_comments_post_path(@post, sort: 'newest'), class: "#{'selected' if @selected_filter == 'newest'}" %></li>
-  <li><%= link_to 'oldest', sort_comments_post_path(@post, sort: 'old'), class: "#{'selected' if @selected_filter == 'old'}" %></li>
+  <li><%= link_to 'top', post_comments_path(@post, sort: 'top'), class: "#{'selected' if @selected_filter == 'top'}" %></li>
+  <li><%= link_to 'newest', post_comments_path(@post, sort: 'newest'), class: "#{'selected' if @selected_filter == 'newest'}" %></li>
+  <li><%= link_to 'oldest', post_comments_path(@post, sort: 'old'), class: "#{'selected' if @selected_filter == 'old'}" %></li>
 </ul>
 
 <div id="comments" class="comments">

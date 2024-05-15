@@ -6,13 +6,17 @@ Rails.application.routes.draw do
     get 'login', to: 'users#new', as: 'new_user'
   end
 
-  resources :users
+  resources :users do
+    get 'comments', on: :member
+    get 'posts', on: :member
+    get 'boosts', on: :member
+  end
 
   resources :magazines do
       post 'subscribe', on: :member
       delete 'unsubscribe', on: :member
   end
-
+  
   resources :posts do
     post 'react', on: :member
     get 'sort_comments', on: :member
@@ -25,8 +29,12 @@ Rails.application.routes.draw do
       delete 'boost', action: :unboost
     end
     resources :comments, only: [:create, :index, :destroy, :update] do
-      put 'like', on: :member
-      put 'dislike', on: :member
+      member do
+        post 'like'
+        delete 'like', action: :unlike
+        post 'dislike'
+        delete 'dislike', action: :undislike
+      end
     end
   end
 

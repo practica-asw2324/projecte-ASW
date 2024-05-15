@@ -40,8 +40,10 @@ class PostsController < ApplicationController
 
   # GET /posts/1 or /posts/1.json
   def show
-    prepare_comments
-
+    @post = Post.find(params[:id])
+    @comments = @post.comments.where(comment_id: nil)
+    @selected_filter = params[:sort] || 'top'
+    @comments = @comments.sort_comments(@selected_filter)
     respond_to do |format|
       format.html
       format.json { render json: @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
@@ -240,11 +242,6 @@ class PostsController < ApplicationController
     @magazines = Magazine.all
   end
 
-  def sort_comments
-    prepare_comments
-    render 'show'
-  end
-
   private
 
   def check_user
@@ -254,24 +251,6 @@ class PostsController < ApplicationController
         format.html { redirect_to @post, alert: "You are not authorized to perform this action." }
         format.json { render json: { error: "You are not authorized to perform this action." }, status: :forbidden }
       end
-    end
-  end
-
-  def prepare_comments
-    @comment = Comment.new
-    @comments = @post.comments.where(comment_id: nil)
-    @selected_filter = params[:sort] || 'top'
-    case @selected_filter
-    when 'top'
-      @comments = @comments.left_joins(:likes_comments)
-                           .group('comments.id')
-                           .order('COUNT(likes_comments.id) DESC')
-    when 'newest'
-      @comments = @comments.order(created_at: :desc)
-    when 'old'
-      @comments = @comments.order(created_at: :asc)
-    else
-      @comments = @comments.order(created_at: :desc)
     end
   end
 

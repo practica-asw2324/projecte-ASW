@@ -32,5 +32,28 @@ class Comment < ApplicationRecord
     self.replies.count
   end
 
+  def all_replies
+    replies.map do |reply|
+      reply.as_json(except: [:user_id, :updated_at, :post_id, :comment_id],
+                    methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
+                              :post_title, :all_replies])
+    end
+  end
+
+  def self.sort_comments(sort_order)
+    case sort_order
+    when 'top'
+      left_joins(:likes_comments)
+        .group('comments.id')
+        .order('COUNT(likes_comments.id) DESC')
+    when 'newest'
+      order(created_at: :desc)
+    when 'old'
+      order(created_at: :asc)
+    else
+      order(created_at: :desc)
+    end
+  end
+
 
 end
