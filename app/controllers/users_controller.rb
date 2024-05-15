@@ -31,7 +31,6 @@ class UsersController < ApplicationController
   end
 
   # GET /users/1 or /users/1.json
-  # GET /users/1 or /users/1.json
   def show
     user = User.find(params[:id])
     posts_count = user.posts.count
@@ -93,24 +92,6 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
-  # GET /users/1/edit
-  def edit
-  end
-
-  # POST /users or /users.json
-  def create
-    @user = User.new(user_params)
-    respond_to do |format|
-      if @user.save
-        format.html { redirect_to user_url(@user) }
-        format.json { render :show, status: :created, location: @user }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity }
-      end
-    end
-  end
-
   # PATCH/PUT /users/1 or /users/1.json
   def update
     @user = User.find(params[:id])
@@ -122,20 +103,37 @@ class UsersController < ApplicationController
       @user.save_image_to_s3(params[:cover], 'cover')
     end
 
-    if @user.update(user_params)
-      redirect_to @user
-    else
-      render :edit
+    respond_to do |format|
+      if @user.update(user_params)
+        user_hash = @user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid').merge({
+                                                                                                                                                                                           posts_count: @user.posts.count,
+                                                                                                                                                                                           comments_count: @user.comments.count,
+                                                                                                                                                                                           boosts_count: @user.boosts.count,
+                                                                                                                                                                                           avatar: @user.avatar.attached? ? url_for(@user.avatar) : nil,
+                                                                                                                                                                                           cover: @user.cover.attached? ? url_for(@user.cover) : nil
+                                                                                                                                                                                         })
+
+        format.html { redirect_to @user, notice: "User was successfully updated." }
+        format.json { render json: user_hash }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: { error: "There was an error updating the user.", errors: @user.errors }, status: :unprocessable_entity }
+      end
     end
   end
 
   # DELETE /users/1 or /users/1.json
   def destroy
-    @user.destroy
-
-    respond_to do |format|
-      format.html { redirect_to users_url }
-      format.json { head :no_content }
+    if @user.destroy
+      respond_to do |format|
+        format.html { redirect_to users_url, notice: "User was successfully destroyed." }
+        format.json { render json: { message: "User was successfully destroyed." }, status: :ok }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to users_url, alert: "There was an error destroying the user." }
+        format.json { render json: { error: "There was an error destroying the user." }, status: :unprocessable_entity }
+      end
     end
   end
 
