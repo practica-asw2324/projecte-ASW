@@ -161,7 +161,9 @@ paths:
       summary: Delete post
       responses:
         '204':
-          description: 'Deleted'
+          description: No Content
+          content:
+            application/json: {}
         '401':
           description: 'Error: Forbidden'
           content:
@@ -189,6 +191,8 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+        '422':
+          description: 'Error: Not Found'
       security:
         - API-KEY: []
 
@@ -507,9 +511,22 @@ paths:
       summary: Update user
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/UpdateUser'
+              type: object
+              properties:
+                username:
+                  type: string
+                  format: text
+                description:
+                  type: string
+                  format: text
+                avatar:
+                  type: string
+                  format: binary
+                cover:
+                  type: string
+                  format: binary
       responses:
         '200':
           description: 'Updated'
@@ -536,7 +553,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
       security:
-        - API-KEY: [ ]
+        - API-KEY: []
     delete:
       tags:
         - Users
@@ -544,6 +561,8 @@ paths:
       responses:
         '204':
           description: 'Deleted'
+          content:
+            application/json: {}
         '401':
           description: 'Error: Forbidden'
           content:
@@ -766,6 +785,8 @@ paths:
       responses:
         '204':
           description: 'Deleted'
+          content:
+            application/json: {}
         '401':
           description: 'Error: Forbidden'
           content:
@@ -1607,4 +1628,3 @@ components:
     error409dislikecomment:
       value:
         error: "You've already disliked this Comment."
-    
