@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   version: 1.0.0
   title: Tuiter
-  description: ""
+  description: "API for a Tuiter social network."
 
 servers:
   - url: https://tuiter.fly.dev/
