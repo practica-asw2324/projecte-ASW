@@ -1279,6 +1279,34 @@ paths:
       security:
         - API-KEY: [ ]
 
+  "/magazines/{magazineId}/posts":
+    get:
+      tags:
+        - Magazines
+      summary: Show magazine
+      operationId: getMagazine
+      parameters:
+        - name: magazineId
+          in: path
+          description: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Show'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Magazine'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+
+
 components:
   securitySchemes:
     API-KEY:
@@ -1439,8 +1467,8 @@ components:
           type: integer
           format: int64
           example: 1
-          description: ID del comentario al que este comentario está respondiendo. 
-                        Si este campo es nulo, entonces el comentario no es una respuesta a otro comentario.
+          description: ID del comentario al que este comentario está respondiendo.
+            Si este campo es nulo, entonces el comentario no es una respuesta a otro comentario.
         user_id:
           type: integer
           format: int64
