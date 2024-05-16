@@ -145,6 +145,16 @@ class UsersController < ApplicationController
   def comments
     @user = User.find(params[:id])
     @comments = @user.comments
+    @selected_filter = params[:sort] || 'top'
+
+    case @selected_filter
+    when 'top'
+      @comments = @comments.left_joins(:likes_comments).group(:id).order('COUNT(likes_comments.id) DESC')
+    when 'newest'
+      @comments = @comments.order(created_at: :desc)
+    when 'oldest'
+      @comments = @comments.order(created_at: :asc)
+    end
 
     respond_to do |format|
       format.html
@@ -157,6 +167,16 @@ class UsersController < ApplicationController
   def posts
     @user = User.find(params[:id])
     @posts = @user.posts
+    @selected_filter = params[:sort] || 'top'
+
+    case @selected_filter
+    when 'top'
+      @posts = @posts.left_joins(:likes).group(:id).order('COUNT(likes.id) DESC')
+    when 'commented'
+      @posts = @posts.left_joins(:comments).group(:id).order('COUNT(comments.id) DESC')
+    when 'newest'
+      @posts = @posts.order(created_at: :desc)
+    end
 
     respond_to do |format|
       format.html

@@ -78,10 +78,9 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error422post'
-
-
       security:
         - API-KEY: []
+
   "/posts/{postId}":
     parameters:
       - name: postId
@@ -200,6 +199,7 @@ paths:
                   $ref: '#/components/examples/error404'
       security:
         - API-KEY: []
+
   "/posts/{postId}/like":
     parameters:
       - name: postId
@@ -288,6 +288,7 @@ paths:
                   $ref: '#/components/examples/error422like'
       security:
         - API-KEY: []
+
   "/posts/{postId}/dislike":
     parameters:
       - name: postId
@@ -376,6 +377,7 @@ paths:
                   $ref: '#/components/examples/error422dislike'
       security:
         - API-KEY: []
+
   "/posts/{postId}/boost":
     parameters:
       - name: postId
@@ -464,6 +466,7 @@ paths:
                   $ref: '#/components/examples/error422boost'
       security:
         - API-KEY: []
+
   "/users":
     get:
       tags:
@@ -479,6 +482,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+
   "/users/{userId}":
     parameters:
       - name: userId
@@ -576,6 +580,7 @@ paths:
                 $ref: '#/components/schemas/ErrorResult'
       security:
         - API-KEY: [ ]
+
   "/users/{userId}/comments":
     parameters:
       - name: userId
@@ -589,6 +594,14 @@ paths:
         - Users
       summary: List comments for a user
       operationId: getUserComments
+      parameters:
+        - name: sort
+          in: query
+          description: Sorting criteria
+          required: false
+          schema:
+            type: string
+            enum: [ top, newest, old ]
       responses:
         '200':
           description: 'Show'
@@ -605,6 +618,7 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+
   "/users/{userId}/posts":
     parameters:
       - name: userId
@@ -618,6 +632,14 @@ paths:
         - Users
       summary: List posts for a user
       operationId: getUserPosts
+      parameters:
+        - name: sort
+          in: query
+          description: Sorting criteria
+          required: false
+          schema:
+            type: string
+            enum: [ top, newest, commented ]
       responses:
         '200':
           description: 'Show'
@@ -634,6 +656,7 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+
   "/users/{userId}/boosts":
     parameters:
       - name: userId
@@ -976,7 +999,6 @@ paths:
                   $ref: '#/components/examples/error404'
       security:
         - API-KEY: [ ]
-
     delete:
       tags:
         - Comments
@@ -1021,6 +1043,7 @@ paths:
                   $ref: '#/components/examples/error422dislikeComment'
       security:
         - API-KEY: [ ]
+
   "/magazines":
     get:
       tags:
@@ -1137,33 +1160,27 @@ paths:
                 $ref: '#/components/schemas/ErrorResult'
       security:
         - API-KEY: [ ]
-    delete:
+
+  "/magazines/{magazineId}/posts":
+    parameters:
+      - name: magazineId
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+    get:
       tags:
         - Magazines
-      summary: Delete magazine
+      summary: Show magazine posts
+      operationId: getMagazinePosts
       responses:
         '200':
-          description: 'Deleted'
+          description: 'Show'
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Magazine was successfully destroyed.'
-        '401':
-          description: 'Error: Forbidden'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-        '403':
-          description: 'Error: Unauthorised'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
+                $ref: '#/components/schemas/Post'
         '404':
           description: 'Error: Not Found'
           content:
@@ -1172,7 +1189,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResult'
       security:
         - API-KEY: [ ]
-  /magazines/{id}/subscribe:
+
+  "/magazines/{id}/subscribe":
     parameters:
       - name: id
         in: path
@@ -1208,7 +1226,8 @@ paths:
                 $ref: '#/components/schemas/Error422Result'
       security:
         - API-KEY: [ ]
-  /magazines/{id}/unsubscribe:
+
+  "/magazines/{id}/unsubscribe":
     parameters:
       - name: id
         in: path
@@ -1323,6 +1342,7 @@ components:
           type: integer
           format: int64
           example: 1
+
     User:
       type: object
       properties:
@@ -1355,6 +1375,7 @@ components:
           type: integer
           format: int64
           example: 0
+
     UpdateUser:
       type: object
       properties:
@@ -1446,6 +1467,7 @@ components:
         rules:
           type: string
           example: 'Magazine rules'
+
     Magazine:
       type: object
       properties:
@@ -1479,7 +1501,7 @@ components:
         subscribers_count:
           type: integer
           format: int64
-          example: 0
+          example: 1
 
     MagazineActionMessage:
       type: object
