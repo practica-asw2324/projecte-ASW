@@ -16,7 +16,7 @@ class UsersController < ApplicationController
   # GET /users or /users.json
   def index
     @users = User.all.map do |user|
-      user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid').merge({
+      user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid', 'api_key').merge({
                                                                                                                                                                             posts_count: user.posts.count,
                                                                                                                                                                             comments_count: user.comments.count,
                                                                                                                                                                             boosts_count: user.boosts.count,
@@ -37,7 +37,7 @@ class UsersController < ApplicationController
     comments_count = user.comments.count
     boosts_count = user.boosts.count
 
-    @user_hash = user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid').merge({
+    @user_hash = user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid', 'api_key' ).merge({
                                                                                                                                                                                        posts_count: posts_count,
                                                                                                                                                                                        comments_count: comments_count,
                                                                                                                                                                                        boosts_count: boosts_count,
