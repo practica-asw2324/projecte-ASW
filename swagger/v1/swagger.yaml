@@ -1023,8 +1023,6 @@ paths:
         - API-KEY: [ ]
   "/magazines":
     get:
-      tags:
-        - Magazines
       summary: List all magazines
       operationId: getAllMagazines
       parameters:

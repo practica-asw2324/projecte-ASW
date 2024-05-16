@@ -29,7 +29,7 @@ class MagazinesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @magazines.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
+      format.json { render json: @magazines.as_json(except: [:user_id, :updated_at, :posts_count, :comments_count, :subscribers_count]) }
     end
   end
 
