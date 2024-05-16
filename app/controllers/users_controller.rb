@@ -96,21 +96,23 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    if params[:avatar].present?
-      avatar = params[:avatar].is_a?(String) ? parse_image_data(params[:avatar]) : params[:avatar]
+    user_params = params[:user].present? ? params[:user] : params
+
+    if user_params[:avatar].present?
+      avatar = user_params[:avatar].is_a?(String) ? parse_image_data(user_params[:avatar]) : user_params[:avatar]
       @user.avatar.attach(avatar)
       @user.save_image_to_s3(avatar, 'avatar')
     end
-    if params[:cover].present?
-      cover = params[:cover].is_a?(String) ? parse_image_data(params[:cover]) : params[:cover]
+    if user_params[:cover].present?
+      cover = user_params[:cover].is_a?(String) ? parse_image_data(user_params[:cover]) : user_params[:cover]
       @user.cover.attach(cover)
       @user.save_image_to_s3(cover, 'cover')
     end
-    if params[:username].present?
-      @user.username = params[:username]
+    if user_params[:username].present?
+      @user.username = user_params[:username]
     end
-    if params[:description].present?
-      @user.description = params[:description]
+    if user_params[:description].present?
+      @user.description = user_params[:description]
     end
 
     respond_to do |format|
