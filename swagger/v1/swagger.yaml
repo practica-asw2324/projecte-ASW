@@ -554,35 +554,6 @@ paths:
                 $ref: '#/components/schemas/ErrorResult'
       security:
         - API-KEY: []
-    delete:
-      tags:
-        - Users
-      summary: Delete user
-      responses:
-        '204':
-          description: 'Deleted'
-          content:
-            application/json: {}
-        '401':
-          description: 'Error: Forbidden'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-        '403':
-          description: 'Error: Unauthorised'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-        '404':
-          description: 'Error: Not Found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-      security:
-        - API-KEY: [ ]
 
   "/users/{userId}/comments":
     parameters:
@@ -1308,6 +1279,7 @@ paths:
       security:
         - API-KEY: [ ]
 
+
 components:
   securitySchemes:
     API-KEY:
@@ -1468,8 +1440,8 @@ components:
           type: integer
           format: int64
           example: 1
-          description: ID del comentario al que este comentario está respondiendo. 
-                        Si este campo es nulo, entonces el comentario no es una respuesta a otro comentario.
+          description: ID del comentario al que este comentario está respondiendo.
+            Si este campo es nulo, entonces el comentario no es una respuesta a otro comentario.
         user_id:
           type: integer
           format: int64
