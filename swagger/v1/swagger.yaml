@@ -160,7 +160,7 @@ paths:
         - Posts
       summary: Delete post
       responses:
-        '402':
+        '204':
           description: 'Deleted'
         '401':
           description: 'Error: Forbidden'
@@ -542,7 +542,7 @@ paths:
         - Users
       summary: Delete user
       responses:
-        '402':
+        '204':
           description: 'Deleted'
         '401':
           description: 'Error: Forbidden'
@@ -764,7 +764,7 @@ paths:
         - Comments
       summary: Delete a comment from a post
       responses:
-        '402':
+        '204':
           description: 'Deleted'
         '401':
           description: 'Error: Forbidden'
