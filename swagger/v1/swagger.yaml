@@ -691,7 +691,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ top, newest, ol ]
+            enum: [ top, newest, oldest ]
       responses:
         '200':
           description: 'Show'
@@ -733,6 +733,15 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error401'
+        '422':
+          description: 'Error: Unprocessable'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422comment'
       security:
         - API-KEY: [ ]
 
@@ -856,11 +865,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You've liked this comment."
+                $ref: '#/components/schemas/Comment'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -879,6 +884,15 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+        '409':
+          description: 'Error: Already liked'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error409likecomment'
       security:
         - API-KEY: [ ]
     delete:
@@ -950,11 +964,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You've disiked this comment."
+                $ref: '#/components/schemas/Comment'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -973,6 +983,15 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+        '409':
+          description: 'Error: Already disliked'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error409dislikecomment'
       security:
         - API-KEY: [ ]
     delete:
@@ -1065,12 +1084,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
         '422':
           description: 'Error: Unprocessable'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422magazine'
+
       security:
         - API-KEY: [ ]
 
@@ -1100,6 +1126,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
     put:
       tags:
         - Magazines
@@ -1122,18 +1151,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
         '403':
           description: 'Error: Unauthorised'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
         '404':
           description: 'Error: Not Found'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
+              examples:
+                  errorExample:
+                    $ref: '#/components/examples/error404'
       security:
         - API-KEY: [ ]
 
@@ -1163,6 +1201,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
       security:
         - API-KEY: [ ]
 
@@ -1193,13 +1234,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MagazineActionMessage'
+                $ref: '#/components/schemas/Magazine'
         '422':
           description: Unprocessable Entity
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422subscribeMagazine'
       security:
         - API-KEY: [ ]
 
@@ -1230,13 +1274,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MagazineActionMessage'
+                $ref: '#/components/schemas/Magazine'
         '422':
           description: Unprocessable Entity
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422unsubscribeMagazine'
       security:
         - API-KEY: [ ]
 
@@ -1518,6 +1565,12 @@ components:
       value:
         title: ["can't be blank"]
         magazine: ["must exist"]
+    error422magazine:
+      value:
+        title: ["can't be blank"]
+    error422comment:
+      value:
+        error: "There was an error creating the comment."
     error422like:
       value:
         error: "Unable to unlike this post."
@@ -1533,6 +1586,12 @@ components:
     error422dislikeComment:
       value:
         error: "Unable to undislike this comment."
+    error422subscribeMagazine:
+      value:
+        error: "You are already subscribed to this magazine."
+    error422unsubscribeMagazine:
+      value:
+        error: "You are not subscribed to this magazine."
     error409like:
       value:
         error: "You've already liked this post."
@@ -1542,4 +1601,10 @@ components:
     error409boost:
       value:
         error: "You've already boosted this post."
+    error409likecomment:
+      value:
+        error: "You've already liked this comment."
+    error409dislikecomment:
+      value:
+        error: "You've already disliked this Comment."
     
