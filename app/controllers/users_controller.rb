@@ -85,7 +85,6 @@ class UsersController < ApplicationController
       format.json { render json: @user_hash }
     end
   end
-  
 
   # GET /users/new
   def new
