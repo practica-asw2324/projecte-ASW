@@ -85,7 +85,6 @@ class UsersController < ApplicationController
       format.json { render json: @user_hash }
     end
   end
-  
 
   # GET /users/new
   def new
@@ -96,15 +95,27 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    if params[:avatar]
-      @user.save_image_to_s3(params[:avatar], 'avatar')
+    user_params = params[:user].present? ? params[:user] : params
+
+    if user_params[:avatar].present?
+      avatar = user_params[:avatar].is_a?(String) ? parse_image_data(user_params[:avatar]) : user_params[:avatar]
+      @user.avatar.attach(avatar)
+      @user.save_image_to_s3(avatar, 'avatar')
     end
-    if params[:cover]
-      @user.save_image_to_s3(params[:cover], 'cover')
+    if user_params[:cover].present?
+      cover = user_params[:cover].is_a?(String) ? parse_image_data(user_params[:cover]) : user_params[:cover]
+      @user.cover.attach(cover)
+      @user.save_image_to_s3(cover, 'cover')
+    end
+    if user_params[:username].present?
+      @user.username = user_params[:username]
+    end
+    if user_params[:description].present?
+      @user.description = user_params[:description]
     end
 
     respond_to do |format|
-      if @user.update(user_params)
+      if @user.save
         user_hash = @user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid').merge({
                                                                                                                                                                                            posts_count: @user.posts.count,
                                                                                                                                                                                            comments_count: @user.comments.count,
@@ -120,6 +131,32 @@ class UsersController < ApplicationController
         format.json { render json: { error: "There was an error updating the user.", errors: @user.errors }, status: :unprocessable_entity }
       end
     end
+  end
+
+  private
+
+  def parse_image_data(base64_image)
+    filename = "upload-image"
+    in_content_type, encoding, string = base64_image.split(/[:;,]/)[1..3]
+
+    @tempfile = Tempfile.new(filename)
+    @tempfile.binmode
+    @tempfile.write Base64.decode64(string)
+    @tempfile.rewind
+
+    # for security we want the actual content type, not just what was passed in
+    content_type = MIME::Types[in_content_type].first.content_type
+
+    # we will also add the extension ourselves based on the above
+    # if it's not gif/jpeg/png, it will fail the validation in the upload model
+    extension = MIME::Types[content_type].first.extensions.first
+    filename += ".#{extension}" if extension
+
+    ActionDispatch::Http::UploadedFile.new({
+                                             tempfile: @tempfile,
+                                             content_type: content_type,
+                                             filename: filename
+                                           })
   end
 
   # DELETE /users/1 or /users/1.json
