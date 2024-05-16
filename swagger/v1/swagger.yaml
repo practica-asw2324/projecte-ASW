@@ -1227,15 +1227,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Magazine'
-        '422':
-          description: Unprocessable Entity
+        '409':
+          description: 'Error: Already subscribed'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error422Result'
+                $ref: '#/components/schemas/ErrorResult'
               examples:
                 errorExample:
-                  $ref: '#/components/examples/error422subscribeMagazine'
+                  $ref: '#/components/examples/error409subscribeMagazine'
       security:
         - API-KEY: [ ]
 
@@ -1267,15 +1267,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Magazine'
-        '422':
+        '409':
           description: Unprocessable Entity
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error422Result'
+                $ref: '#/components/schemas/ErrorResult'
               examples:
                 errorExample:
-                  $ref: '#/components/examples/error422unsubscribeMagazine'
+                  $ref: '#/components/examples/error409unsubscribeMagazine'
       security:
         - API-KEY: [ ]
 
@@ -1561,6 +1561,7 @@ components:
     error422magazine:
       value:
         title: ["can't be blank"]
+        name: ["can't be blank"]
     error422comment:
       value:
         error: "There was an error creating the comment."
@@ -1579,10 +1580,10 @@ components:
     error422dislikeComment:
       value:
         error: "Unable to undislike this comment."
-    error422subscribeMagazine:
+    error409subscribeMagazine:
       value:
         error: "You are already subscribed to this magazine."
-    error422unsubscribeMagazine:
+    error409unsubscribeMagazine:
       value:
         error: "You are not subscribed to this magazine."
     error409like:
