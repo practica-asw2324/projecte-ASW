@@ -34,7 +34,7 @@ class Comment < ApplicationRecord
 
   def all_replies
     replies.map do |reply|
-      reply.as_json(except: [:user_id, :updated_at, :post_id, :comment_id],
+      reply.as_json(except: [:updated_at],
                     methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
                               :post_title, :all_replies])
     end

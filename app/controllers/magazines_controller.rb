@@ -6,32 +6,31 @@ class MagazinesController < ApplicationController
 
 
   # GET /magazines or /magazines.json
-  def index
-    case params[:sort]
-    when 'posts'
-      @magazines = Magazine.all.sort_by { |magazine| magazine.posts.count }
-    when 'comments'
-      @magazines = Magazine.all.sort_by { |magazine| magazine.posts.sum { |post| post.comments.count } }
-    when 'subscriptions'
-      @magazines = Magazine.all.sort_by { |magazine| magazine.users.count }
-    else
-      @magazines = Magazine.all
-    end
-    @magazines = @magazines.to_a.reverse!
-    @magazines = @magazines.map do |magazine|
-      {
-        magazine: magazine,
-        posts_count: magazine.posts.count,
-        comments_count: magazine.posts.sum { |post| post.comments.count },
-        subscribers_count: magazine.users.count
-      }
-    end
-
-    respond_to do |format|
-      format.html
-      format.json { render json: @magazines.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
-    end
+def index
+  case params[:sort]
+  when 'posts'
+    @magazines = Magazine.all.sort_by { |magazine| magazine.posts.count }
+  when 'comments'
+    @magazines = Magazine.all.sort_by { |magazine| magazine.posts.sum { |post| post.comments.count } }
+  when 'subscriptions'
+    @magazines = Magazine.all.sort_by { |magazine| magazine.users.count }
+  else
+    @magazines = Magazine.all
   end
+  @magazines = @magazines.to_a.reverse!
+  @magazines = @magazines.map do |magazine|
+    magazine.as_json(except: [:user_id, :updated_at]).merge(
+      posts_count: magazine.posts.count,
+      comments_count: magazine.posts.sum { |post| post.comments.count },
+      subscribers_count: magazine.users.count
+    )
+  end
+
+  respond_to do |format|
+    format.html
+    format.json { render json: @magazines }
+  end
+end
 
   def subscribe
     @magazine = Magazine.find(params[:id])

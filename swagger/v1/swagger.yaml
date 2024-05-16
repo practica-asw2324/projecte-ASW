@@ -1395,6 +1395,20 @@ components:
         body:
           type: string
           example: 'This is a comment'
+        post_id:
+          type: integer
+          format: int64
+          example: 1
+        comment_id:
+          type: integer
+          format: int64
+          example: 1
+          description: ID del comentario al que este comentario está respondiendo. 
+                        Si este campo es nulo, entonces el comentario no es una respuesta a otro comentario.
+        user_id:
+          type: integer
+          format: int64
+          example: 1
         createdAt:
           type: string
           format: date-time
