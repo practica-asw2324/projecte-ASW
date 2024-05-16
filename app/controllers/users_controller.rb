@@ -16,7 +16,7 @@ class UsersController < ApplicationController
   # GET /users or /users.json
   def index
     @users = User.all.map do |user|
-      user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid').merge({
+      user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid', 'api_key').merge({
                                                                                                                                                                             posts_count: user.posts.count,
                                                                                                                                                                             comments_count: user.comments.count,
                                                                                                                                                                             boosts_count: user.boosts.count,
@@ -37,7 +37,7 @@ class UsersController < ApplicationController
     comments_count = user.comments.count
     boosts_count = user.boosts.count
 
-    @user_hash = user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid').merge({
+    @user_hash = user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid', 'api_key' ).merge({
                                                                                                                                                                                        posts_count: posts_count,
                                                                                                                                                                                        comments_count: comments_count,
                                                                                                                                                                                        boosts_count: boosts_count,
@@ -89,74 +89,6 @@ class UsersController < ApplicationController
   # GET /users/new
   def new
     @user = User.new
-  end
-
-  # PATCH/PUT /users/1 or /users/1.json
-  def update
-    @user = User.find(params[:id])
-
-    user_params = params[:user].present? ? params[:user] : params
-
-    if user_params[:avatar].present?
-      avatar = user_params[:avatar].is_a?(String) ? parse_image_data(user_params[:avatar]) : user_params[:avatar]
-      @user.avatar.attach(avatar)
-      @user.save_image_to_s3(avatar, 'avatar')
-    end
-    if user_params[:cover].present?
-      cover = user_params[:cover].is_a?(String) ? parse_image_data(user_params[:cover]) : user_params[:cover]
-      @user.cover.attach(cover)
-      @user.save_image_to_s3(cover, 'cover')
-    end
-    if user_params[:username].present?
-      @user.username = user_params[:username]
-    end
-    if user_params[:description].present?
-      @user.description = user_params[:description]
-    end
-
-    respond_to do |format|
-      if @user.save
-        user_hash = @user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid').merge({
-                                                                                                                                                                                           posts_count: @user.posts.count,
-                                                                                                                                                                                           comments_count: @user.comments.count,
-                                                                                                                                                                                           boosts_count: @user.boosts.count,
-                                                                                                                                                                                           avatar: @user.avatar.attached? ? url_for(@user.avatar) : nil,
-                                                                                                                                                                                           cover: @user.cover.attached? ? url_for(@user.cover) : nil
-                                                                                                                                                                                         })
-
-        format.html { redirect_to @user, notice: "User was successfully updated." }
-        format.json { render json: user_hash }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: { error: "There was an error updating the user.", errors: @user.errors }, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  private
-
-  def parse_image_data(base64_image)
-    filename = "upload-image"
-    in_content_type, encoding, string = base64_image.split(/[:;,]/)[1..3]
-
-    @tempfile = Tempfile.new(filename)
-    @tempfile.binmode
-    @tempfile.write Base64.decode64(string)
-    @tempfile.rewind
-
-    # for security we want the actual content type, not just what was passed in
-    content_type = MIME::Types[in_content_type].first.content_type
-
-    # we will also add the extension ourselves based on the above
-    # if it's not gif/jpeg/png, it will fail the validation in the upload model
-    extension = MIME::Types[content_type].first.extensions.first
-    filename += ".#{extension}" if extension
-
-    ActionDispatch::Http::UploadedFile.new({
-                                             tempfile: @tempfile,
-                                             content_type: content_type,
-                                             filename: filename
-                                           })
   end
 
   # DELETE /users/1 or /users/1.json
@@ -259,7 +191,7 @@ class UsersController < ApplicationController
       posts
     end
   end
-  
+
   def sort_comments(comments)
     case @sort
     when 'top'
@@ -271,3 +203,73 @@ class UsersController < ApplicationController
     end
   end
 end
+
+  # PATCH/PUT /users/1 or /users/1.json
+  def update
+    @user = User.find(params[:id])
+
+    user_params = params[:user].present? ? params[:user] : params
+
+    if user_params[:avatar].present?
+      avatar = user_params[:avatar].is_a?(String) ? parse_image_data(user_params[:avatar]) : user_params[:avatar]
+      @user.avatar.attach(avatar)
+      @user.save_image_to_s3(avatar, 'avatar')
+    end
+    if user_params[:cover].present?
+      cover = user_params[:cover].is_a?(String) ? parse_image_data(user_params[:cover]) : user_params[:cover]
+      @user.cover.attach(cover)
+      @user.save_image_to_s3(cover, 'cover')
+    end
+    if user_params[:username].present?
+      @user.username = user_params[:username]
+    end
+    if user_params[:description].present?
+      @user.description = user_params[:description]
+    end
+
+    respond_to do |format|
+      if @user.save
+        user_hash = @user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid').merge({
+                                                                                                                                                                                           posts_count: @user.posts.count,
+                                                                                                                                                                                           comments_count: @user.comments.count,
+                                                                                                                                                                                           boosts_count: @user.boosts.count,
+                                                                                                                                                                                           avatar: @user.avatar.attached? ? url_for(@user.avatar) : nil,
+                                                                                                                                                                                           cover: @user.cover.attached? ? url_for(@user.cover) : nil
+                                                                                                                                                                                         })
+
+        format.html { redirect_to @user, notice: "User was successfully updated." }
+        format.json { render json: user_hash }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: { error: "There was an error updating the user.", errors: @user.errors }, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  private
+
+  def parse_image_data(base64_image)
+    filename = "upload-image"
+    in_content_type, encoding, string = base64_image.split(/[:;,]/)[1..3]
+
+    @tempfile = Tempfile.new(filename)
+    @tempfile.binmode
+    @tempfile.write Base64.decode64(string)
+    @tempfile.rewind
+
+    # for security we want the actual content type, not just what was passed in
+    content_type = MIME::Types[in_content_type].first.content_type
+
+    # we will also add the extension ourselves based on the above
+    # if it's not gif/jpeg/png, it will fail the validation in the upload model
+    extension = MIME::Types[content_type].first.extensions.first
+    filename += ".#{extension}" if extension
+
+    ActionDispatch::Http::UploadedFile.new({
+                                             tempfile: @tempfile,
+                                             content_type: content_type,
+                                             filename: filename
+                                           })
+  end
+
+
