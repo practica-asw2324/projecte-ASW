@@ -6,18 +6,18 @@ class User < ApplicationRecord
   has_many :posts, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :boosts, dependent: :destroy
-  has_many :likes
-  has_many :liked_posts, through: :likes, source: :post
-  has_many :dislikes
-  has_many :disliked_posts, through: :dislikes, source: :post
-  has_many :subscriptions
-  has_many :subscribed_magazines, through: :subscriptions, source: :magazine
-  has_many :boosted_posts, through: :boosts, source: :post
-  has_many :likes_comments
-  has_many :liked_comments, through: :likes_comments, source: :comment
-  has_many :dislikes_comments
-  has_many :disliked_comments, through: :dislikes_comments, source: :comment
-  has_many :created_magazines, class_name: 'Magazine', foreign_key: 'user_id'
+  has_many :likes, dependent: :destroy
+  has_many :liked_posts, through: :likes, source: :post, dependent: :destroy
+  has_many :dislikes, dependent: :destroy
+  has_many :disliked_posts, through: :dislikes, source: :post, dependent: :destroy
+  has_many :subscriptions, dependent: :destroy
+  has_many :subscribed_magazines, through: :subscriptions, source: :magazine, dependent: :destroy
+  has_many :boosted_posts, through: :boosts, source: :post, dependent: :destroy
+  has_many :likes_comments, dependent: :destroy
+  has_many :liked_comments, through: :likes_comments, source: :comment, dependent: :destroy
+  has_many :dislikes_comments, dependent: :destroy
+  has_many :disliked_comments, through: :dislikes_comments, source: :comment, dependent: :destroy
+  has_many :created_magazines, class_name: 'Magazine', foreign_key: 'user_id', dependent: :destroy
   devise :omniauthable, omniauth_providers: [:google_oauth2]
 
   after_create :generate_api_key
