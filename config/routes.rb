@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   resources :magazines do
       post 'subscribe', on: :member
       delete 'unsubscribe', on: :member
+      get 'posts', on: :member
   end
   
   resources :posts do

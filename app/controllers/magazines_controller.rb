@@ -29,7 +29,7 @@ class MagazinesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @magazinesJson.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
+      format.json { render json: @magazinesJson.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
     end
   end
 
@@ -44,7 +44,7 @@ class MagazinesController < ApplicationController
       current_user.subscribed_magazines << @magazine
       respond_to do |format|
         format.html { redirect_to request.referrer || root_path, notice: "Successfully subscribed to the magazine." }
-        format.json { render json: @magazine.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
+        format.json { render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
       end
     end
   end
@@ -56,7 +56,7 @@ class MagazinesController < ApplicationController
       subscription.delete
       respond_to do |format|
         format.html { redirect_to request.referrer || root_path, notice: "Successfully unsubscribed from the magazine." }
-        format.json { render json: @magazine.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
+        format.json { render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
       end
     else
       respond_to do |format|
@@ -96,7 +96,7 @@ class MagazinesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @magazine.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
+      format.json { render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
     end
   end
 
@@ -119,7 +119,7 @@ class MagazinesController < ApplicationController
     respond_to do |format|
       if @magazine.save
         format.html { redirect_to magazine_url(@magazine), notice: "Magazine was successfully created." }
-        format.json { render json: @magazine.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]), status: :created }
+        format.json { render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]), status: :created }
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @magazine.errors, status: :unprocessable_entity }
@@ -132,7 +132,7 @@ class MagazinesController < ApplicationController
     respond_to do |format|
       if @magazine.update(magazine_params)
         format.html { redirect_to magazine_url(@magazine), notice: "Magazine was successfully updated." }
-        format.json { render json: @magazine.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
+        format.json { render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: { error: "There was an error updating the magazine.", errors: @magazine.errors }, status: :unprocessable_entity }
@@ -156,6 +156,17 @@ class MagazinesController < ApplicationController
       end
     end
   end
+
+  def posts
+    @magazine = Magazine.find(params[:id])
+    @posts = @magazine.posts
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @posts.as_json(except: [:magazine_id, :user_id, :updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
+    end
+  end
+
 
   private
     def check_user
