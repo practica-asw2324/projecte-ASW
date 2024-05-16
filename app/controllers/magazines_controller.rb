@@ -44,7 +44,7 @@ class MagazinesController < ApplicationController
       current_user.subscribed_magazines << @magazine
       respond_to do |format|
         format.html { redirect_to request.referrer || root_path, notice: "Successfully subscribed to the magazine." }
-        format.json { render json: { message: "Successfully subscribed to the magazine." }, status: :ok }
+        format.json { render json: @magazine.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
       end
     end
   end
@@ -56,7 +56,7 @@ class MagazinesController < ApplicationController
       subscription.delete
       respond_to do |format|
         format.html { redirect_to request.referrer || root_path, notice: "Successfully unsubscribed from the magazine." }
-        format.json { render json: { message: "Successfully unsubscribed from the magazine." }, status: :ok }
+        format.json { render json: @magazine.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
       end
     else
       respond_to do |format|

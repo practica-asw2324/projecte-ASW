@@ -585,7 +585,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ top, newest, old ]
+            enum: [ top, newest, oldest ]
       responses:
         '200':
           description: 'Show'
@@ -691,7 +691,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ top, newest, old ]
+            enum: [ top, newest, ol ]
       responses:
         '200':
           description: 'Show'
