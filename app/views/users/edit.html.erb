@@ -1,7 +1,7 @@
 <%= render @user %>
 
 <div class="postitem">
-  <%= form_for @user, html: { class: 'post-form', multipart: true }, remote: true do |f| %>
+  <%= form_for @user, html: { class: 'post-form', multipart: true } do |f| %>
     <div>
       <%= f.label :username %>
       <%= f.text_field :username %>
