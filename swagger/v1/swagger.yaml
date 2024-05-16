@@ -1023,6 +1023,8 @@ paths:
         - API-KEY: [ ]
   "/magazines":
     get:
+      tags:
+        - Magazines
       summary: List all magazines
       operationId: getAllMagazines
       parameters:
@@ -1073,103 +1075,6 @@ paths:
       security:
         - API-KEY: [ ]
 
-  "/magazines/{magazineId}":
-    parameters:
-      - name: magazineId
-        in: path
-        description: id
-        required: true
-        schema:
-          type: string
-    get:
-      tags:
-        - Magazines
-      summary: Show magazine
-      operationId: getMagazine
-      responses:
-        '200':
-          description: 'Show'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Magazine'
-        '404':
-          description: 'Error: Not Found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-    put:
-      tags:
-        - Magazines
-      summary: Update magazine
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewMagazine'
-      responses:
-        '200':
-          description: 'Updated'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Magazine'
-        '401':
-          description: 'Error: Forbidden'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-        '403':
-          description: 'Error: Unauthorised'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-        '404':
-          description: 'Error: Not Found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-      security:
-        - API-KEY: [ ]
-    delete:
-      tags:
-        - Magazines
-      summary: Delete magazine
-      responses:
-        '200':
-          description: 'Deleted'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Magazine was successfully destroyed.'
-        '401':
-          description: 'Error: Forbidden'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-        '403':
-          description: 'Error: Unauthorised'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-        '404':
-          description: 'Error: Not Found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-      security:
-        - API-KEY: [ ]
   /magazines/{id}/subscribe:
     parameters:
       - name: id
@@ -1242,6 +1147,34 @@ paths:
                 $ref: '#/components/schemas/Error422Result'
       security:
         - API-KEY: [ ]
+
+  "/magazines/{magazineId}/posts":
+    get:
+      tags:
+        - Magazines
+      summary: Show magazine
+      operationId: getMagazine
+      parameters:
+        - name: magazineId
+          in: path
+          description: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Show'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Magazine'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+
 
 components:
   securitySchemes:
@@ -1401,8 +1334,8 @@ components:
           type: integer
           format: int64
           example: 1
-          description: ID del comentario al que este comentario está respondiendo. 
-                        Si este campo es nulo, entonces el comentario no es una respuesta a otro comentario.
+          description: ID del comentario al que este comentario está respondiendo.
+            Si este campo es nulo, entonces el comentario no es una respuesta a otro comentario.
         user_id:
           type: integer
           format: int64
@@ -1542,4 +1475,3 @@ components:
     error409boost:
       value:
         error: "You've already boosted this post."
-    
