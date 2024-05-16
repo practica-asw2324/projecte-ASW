@@ -17,8 +17,8 @@ class MagazinesController < ApplicationController
     else
       @magazines = Magazine.all
     end
-    @magazines = @magazines.to_a.reverse!
-    @magazines = @magazines.map do |magazine|
+    @magazinesJson = @magazines.to_a.reverse!
+    @magazines = @magazinesJson.map do |magazine|
       {
         magazine: magazine,
         posts_count: magazine.posts.count,
@@ -29,7 +29,7 @@ class MagazinesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @magazines.as_json(except: [:user_id, :updated_at, :posts_count, :comments_count, :subscribers_count]) }
+      format.json { render json: @magazinesJson.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
     end
   end
 
@@ -44,7 +44,7 @@ class MagazinesController < ApplicationController
       current_user.subscribed_magazines << @magazine
       respond_to do |format|
         format.html { redirect_to request.referrer || root_path, notice: "Successfully subscribed to the magazine." }
-        format.json { render json: { message: "Successfully subscribed to the magazine." }, status: :ok }
+        format.json { render json: @magazine.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
       end
     end
   end
@@ -56,7 +56,7 @@ class MagazinesController < ApplicationController
       subscription.delete
       respond_to do |format|
         format.html { redirect_to request.referrer || root_path, notice: "Successfully unsubscribed from the magazine." }
-        format.json { render json: { message: "Successfully unsubscribed from the magazine." }, status: :ok }
+        format.json { render json: @magazine.as_json(except: [:user_id, :updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
       end
     else
       respond_to do |format|
@@ -147,7 +147,7 @@ class MagazinesController < ApplicationController
     if @magazine.destroy
       respond_to do |format|
         format.html { redirect_to magazines_url, notice: "Magazine was successfully destroyed." }
-        format.json { render json: { message: "Magazine was successfully destroyed." }, status: :ok }
+        format.json { head :no_content }
       end
     else
       respond_to do |format|

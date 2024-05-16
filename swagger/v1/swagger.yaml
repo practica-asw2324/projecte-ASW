@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   version: 1.0.0
   title: Tuiter
-  description: ""
+  description: "API for a Tuiter social network."
 
 servers:
   - url: https://tuiter.fly.dev/
@@ -78,10 +78,9 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error422post'
-
-
       security:
         - API-KEY: []
+
   "/posts/{postId}":
     parameters:
       - name: postId
@@ -161,16 +160,10 @@ paths:
         - Posts
       summary: Delete post
       responses:
-        '200':
-          description: 'Deleted'
+        '204':
+          description: No Content
           content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Post was successfully destroyed.'
+            application/json: {}
         '401':
           description: 'Error: Forbidden'
           content:
@@ -198,8 +191,11 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+        '422':
+          description: 'Error: Not Found'
       security:
         - API-KEY: []
+
   "/posts/{postId}/like":
     parameters:
       - name: postId
@@ -288,6 +284,7 @@ paths:
                   $ref: '#/components/examples/error422like'
       security:
         - API-KEY: []
+
   "/posts/{postId}/dislike":
     parameters:
       - name: postId
@@ -376,6 +373,7 @@ paths:
                   $ref: '#/components/examples/error422dislike'
       security:
         - API-KEY: []
+
   "/posts/{postId}/boost":
     parameters:
       - name: postId
@@ -464,6 +462,7 @@ paths:
                   $ref: '#/components/examples/error422boost'
       security:
         - API-KEY: []
+
   "/users":
     get:
       tags:
@@ -479,6 +478,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+
   "/users/{userId}":
     parameters:
       - name: userId
@@ -511,9 +511,22 @@ paths:
       summary: Update user
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              $ref: '#/components/schemas/UpdateUser'
+              type: object
+              properties:
+                username:
+                  type: string
+                  format: text
+                description:
+                  type: string
+                  format: text
+                avatar:
+                  type: string
+                  format: binary
+                cover:
+                  type: string
+                  format: binary
       responses:
         '200':
           description: 'Updated'
@@ -540,42 +553,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
       security:
-        - API-KEY: [ ]
-    delete:
-      tags:
-        - Users
-      summary: Delete user
-      responses:
-        '200':
-          description: 'Deleted'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'User was successfully destroyed.'
-        '401':
-          description: 'Error: Forbidden'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-        '403':
-          description: 'Error: Unauthorised'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-        '404':
-          description: 'Error: Not Found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-      security:
-        - API-KEY: [ ]
+        - API-KEY: []
+
   "/users/{userId}/comments":
     parameters:
       - name: userId
@@ -589,6 +568,14 @@ paths:
         - Users
       summary: List comments for a user
       operationId: getUserComments
+      parameters:
+        - name: sort
+          in: query
+          description: Sorting criteria
+          required: false
+          schema:
+            type: string
+            enum: [ top, newest, oldest ]
       responses:
         '200':
           description: 'Show'
@@ -605,6 +592,7 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+
   "/users/{userId}/posts":
     parameters:
       - name: userId
@@ -618,6 +606,14 @@ paths:
         - Users
       summary: List posts for a user
       operationId: getUserPosts
+      parameters:
+        - name: sort
+          in: query
+          description: Sorting criteria
+          required: false
+          schema:
+            type: string
+            enum: [ top, newest, commented ]
       responses:
         '200':
           description: 'Show'
@@ -634,6 +630,7 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+
   "/users/{userId}/boosts":
     parameters:
       - name: userId
@@ -684,7 +681,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ top, newest, old ]
+            enum: [ top, newest, oldest ]
       responses:
         '200':
           description: 'Show'
@@ -726,6 +723,15 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error401'
+        '422':
+          description: 'Error: Unprocessable'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422comment'
       security:
         - API-KEY: [ ]
 
@@ -748,16 +754,10 @@ paths:
         - Comments
       summary: Delete a comment from a post
       responses:
-        '200':
+        '204':
           description: 'Deleted'
           content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Comment was successfully destroyed.'
+            application/json: {}
         '401':
           description: 'Error: Forbidden'
           content:
@@ -857,11 +857,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You've liked this comment."
+                $ref: '#/components/schemas/Comment'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -880,6 +876,15 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+        '409':
+          description: 'Error: Already liked'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error409likecomment'
       security:
         - API-KEY: [ ]
     delete:
@@ -951,11 +956,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "You've disiked this comment."
+                $ref: '#/components/schemas/Comment'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -974,9 +975,17 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+        '409':
+          description: 'Error: Already disliked'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error409dislikecomment'
       security:
         - API-KEY: [ ]
-
     delete:
       tags:
         - Comments
@@ -1021,6 +1030,7 @@ paths:
                   $ref: '#/components/examples/error422dislikeComment'
       security:
         - API-KEY: [ ]
+
   "/magazines":
     get:
       tags:
@@ -1066,16 +1076,130 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
         '422':
           description: 'Error: Unprocessable'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422magazine'
+
       security:
         - API-KEY: [ ]
 
-  /magazines/{id}/subscribe:
+  "/magazines/{magazineId}":
+    parameters:
+      - name: magazineId
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Magazines
+      summary: Show magazine
+      operationId: getMagazine
+      responses:
+        '200':
+          description: 'Show'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Magazine'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+    put:
+      tags:
+        - Magazines
+      summary: Update magazine
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewMagazine'
+      responses:
+        '200':
+          description: 'Updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Magazine'
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+        '403':
+          description: 'Error: Unauthorised'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                  errorExample:
+                    $ref: '#/components/examples/error404'
+      security:
+        - API-KEY: [ ]
+
+  "/magazines/{magazineId}/posts":
+    parameters:
+      - name: magazineId
+        in: path
+        description: id
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Magazines
+      summary: Show magazine posts
+      operationId: getMagazinePosts
+      responses:
+        '200':
+          description: 'Show'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
+      security:
+        - API-KEY: [ ]
+
+  "/magazines/{id}/subscribe":
     parameters:
       - name: id
         in: path
@@ -1102,16 +1226,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MagazineActionMessage'
+                $ref: '#/components/schemas/Magazine'
         '422':
           description: Unprocessable Entity
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422subscribeMagazine'
       security:
         - API-KEY: [ ]
-  /magazines/{id}/unsubscribe:
+
+  "/magazines/{id}/unsubscribe":
     parameters:
       - name: id
         in: path
@@ -1138,13 +1266,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MagazineActionMessage'
+                $ref: '#/components/schemas/Magazine'
         '422':
           description: Unprocessable Entity
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422unsubscribeMagazine'
       security:
         - API-KEY: [ ]
 
@@ -1254,6 +1385,7 @@ components:
           type: integer
           format: int64
           example: 1
+
     User:
       type: object
       properties:
@@ -1286,6 +1418,7 @@ components:
           type: integer
           format: int64
           example: 0
+
     UpdateUser:
       type: object
       properties:
@@ -1298,11 +1431,11 @@ components:
         avatar:
           type: string
           format: url
-          description: 'URL for the avatar image. This field expects a URL, not a file upload.'
+          description: 'Image file'
         cover:
           type: string
           format: url
-          description: 'URL for the cover image. This field expects a URL, not a file upload.'
+          description: 'Image file'
 
     NewComment:
       type: object
@@ -1377,6 +1510,7 @@ components:
         rules:
           type: string
           example: 'Magazine rules'
+
     Magazine:
       type: object
       properties:
@@ -1410,7 +1544,7 @@ components:
         subscribers_count:
           type: integer
           format: int64
-          example: 0
+          example: 1
 
     MagazineActionMessage:
       type: object
@@ -1451,6 +1585,12 @@ components:
       value:
         title: ["can't be blank"]
         magazine: ["must exist"]
+    error422magazine:
+      value:
+        title: ["can't be blank"]
+    error422comment:
+      value:
+        error: "There was an error creating the comment."
     error422like:
       value:
         error: "Unable to unlike this post."
@@ -1466,6 +1606,12 @@ components:
     error422dislikeComment:
       value:
         error: "Unable to undislike this comment."
+    error422subscribeMagazine:
+      value:
+        error: "You are already subscribed to this magazine."
+    error422unsubscribeMagazine:
+      value:
+        error: "You are not subscribed to this magazine."
     error409like:
       value:
         error: "You've already liked this post."
@@ -1475,3 +1621,10 @@ components:
     error409boost:
       value:
         error: "You've already boosted this post."
+    error409likecomment:
+      value:
+        error: "You've already liked this comment."
+    error409dislikecomment:
+      value:
+        error: "You've already disliked this Comment."
+    
