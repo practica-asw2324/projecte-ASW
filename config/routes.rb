@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     get 'boosts', on: :member
   end
 
-  resources :magazines, except: [:show] do
+  resources :magazines do
       post 'subscribe', on: :member
       delete 'unsubscribe', on: :member
   end
@@ -40,7 +40,6 @@ Rails.application.routes.draw do
 
   get 'new_link', to: 'posts#new', type: 'link', as: :new_link
   get 'new_thread', to: 'posts#new', type: 'thread', as: :new_thread
-  get '/magazines/:id/posts', to: 'magazines#show', as: 'magazine_posts'
 
   root 'posts#index'
 end
