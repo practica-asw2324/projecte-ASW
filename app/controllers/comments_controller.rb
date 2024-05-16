@@ -54,12 +54,10 @@ class CommentsController < ApplicationController
         format.html { redirect_to post_url(@comment.post_id), notice: "Comment was successfully created." }
         format.json { render json: @comment.as_json(except: [:updated_at],
                                                      methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
-                                                               :post_title]) }
+                                                               :post_title]), status: :created}
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @comment.as_json(except: [:updated_at],
-                                                     methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
-                                                               :post_title]) }
+        format.json { render json: { error: "There was an error creating the comment.", errors: @post.errors }, status: :unprocessable_entity }
       end
     end
   end
@@ -77,8 +75,8 @@ class CommentsController < ApplicationController
       end
     else
       respond_to do |format|
-        format.html { redirect_to post_url(@comment.post_id), alert: "There was an error updating the post." }
-        format.json { render json: { error: "There was an error updating the post.", errors: @post.errors }, status: :unprocessable_entity }
+        format.html { redirect_to post_url(@comment.post_id), alert: "There was an error updating the comment." }
+        format.json { render json: { error: "There was an error updating the comment.", errors: @post.errors }, status: :unprocessable_entity }
       end
     end
   end
@@ -91,7 +89,7 @@ class CommentsController < ApplicationController
     if @comment.destroy
       respond_to do |format|
         format.html { redirect_to post_url(@comment.post_id), notice: "Comment was successfully destroyed." }
-        format.json { render json: { message: "Post was successfully destroyed." }, status: :ok }
+                format.json { head :no_content }
       end
     else
       respond_to do |format|
@@ -105,6 +103,7 @@ class CommentsController < ApplicationController
   def like
     @comment = Comment.find(params[:id])
     @like = @comment.likes_comments.find_or_initialize_by(user: current_user)
+    already_liked = !@like.new_record?
 
     respond_to do |format|
       # If the user has disliked the comment, remove the dislike
@@ -114,9 +113,15 @@ class CommentsController < ApplicationController
 
       if @like.save
         format.html { redirect_back(fallback_location: root_path, notice: "You've liked this comment.") }
-        format.json { render json: @comment.as_json(except: [:updated_at],
+                                                              format.json do
+                                                                if already_liked
+                                                                  render json: { error: "You've already liked this comment." }, status: :conflict
+                                                                else
+                                                                  render json: @comment.as_json(except: [:updated_at],
                                                     methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
-                                                              :post_title]), status: :ok }
+                                                              :post_title]), status: :ok
+                                                                end
+                                                              end
       else
         format.html { redirect_back(fallback_location: root_path, notice: "Unable to like this comment.") }
         format.json { render json: { error: "Unable to like this comment." }, status: :unprocessable_entity }
@@ -156,6 +161,7 @@ class CommentsController < ApplicationController
   def dislike
     @comment = Comment.find(params[:id])
     @dislike = @comment.dislikes_comments.find_or_initialize_by(user: current_user)
+    already_disliked = !@dislike.new_record?
 
     respond_to do |format|
       # If the user has liked the post, remove the like
@@ -165,9 +171,15 @@ class CommentsController < ApplicationController
 
       if @dislike.save
         format.html { redirect_back(fallback_location: root_path, notice: "You've disliked this comment.") }
-        format.json { render json: @comment.as_json(except: [:updated_at],
+                                                              format.json do
+                                                                if already_disliked
+                                                                  render json: { error: "You've already disliked this comment." }, status: :conflict
+                                                                else
+                                                                  render json: @comment.as_json(except: [:updated_at],
                                                     methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
-                                                              :post_title]), status: :ok }
+                                                              :post_title]), status: :ok
+                                                                end
+                                                              end
       else
         format.html { redirect_back(fallback_location: root_path, alert: "There was an error disliking this comment.") }
         format.json { render json: { error: "There was an error disliking this comment." }, status: :unprocessable_entity }

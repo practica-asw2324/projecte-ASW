@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   version: 1.0.0
   title: Tuiter
-  description: ""
+  description: "API for a Tuiter social network."
 
 servers:
   - url: https://tuiter.fly.dev/
@@ -160,16 +160,8 @@ paths:
         - Posts
       summary: Delete post
       responses:
-        '200':
+        '402':
           description: 'Deleted'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Post was successfully destroyed.'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -550,16 +542,8 @@ paths:
         - Users
       summary: Delete user
       responses:
-        '200':
+        '402':
           description: 'Deleted'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'User was successfully destroyed.'
         '401':
           description: 'Error: Forbidden'
           content:
@@ -601,7 +585,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ top, newest, old ]
+            enum: [ top, newest, oldest ]
       responses:
         '200':
           description: 'Show'
@@ -707,7 +691,7 @@ paths:
           required: false
           schema:
             type: string
-            enum: [ top, newest, old ]
+            enum: [ top, newest, ol ]
       responses:
         '200':
           description: 'Show'
@@ -771,16 +755,8 @@ paths:
         - Comments
       summary: Delete a comment from a post
       responses:
-        '200':
+        '402':
           description: 'Deleted'
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: 'Comment was successfully destroyed.'
         '401':
           description: 'Error: Forbidden'
           content:
