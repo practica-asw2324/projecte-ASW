@@ -1432,11 +1432,11 @@ components:
         avatar:
           type: string
           format: url
-          description: 'URL for the avatar image. This field expects a URL, not a file upload.'
+          description: 'Image file'
         cover:
           type: string
           format: url
-          description: 'URL for the cover image. This field expects a URL, not a file upload.'
+          description: 'Image file'
 
     NewComment:
       type: object
@@ -1628,3 +1628,4 @@ components:
     error409dislikecomment:
       value:
         error: "You've already disliked this Comment."
+    
