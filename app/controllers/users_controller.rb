@@ -91,6 +91,47 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
+  def update
+    @user = User.find(params[:id])
+
+    user_params = params[:user].present? ? params[:user] : params
+
+    if user_params[:avatar].present?
+      avatar = user_params[:avatar].is_a?(String) ? parse_image_data(user_params[:avatar]) : user_params[:avatar]
+      @user.avatar.attach(avatar)
+      @user.save_image_to_s3(avatar, 'avatar')
+    end
+    if user_params[:cover].present?
+      cover = user_params[:cover].is_a?(String) ? parse_image_data(user_params[:cover]) : user_params[:cover]
+      @user.cover.attach(cover)
+      @user.save_image_to_s3(cover, 'cover')
+    end
+    if user_params[:username].present?
+      @user.username = user_params[:username]
+    end
+    if user_params[:description].present?
+      @user.description = user_params[:description]
+    end
+
+    respond_to do |format|
+      if @user.save
+        user_hash = @user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid').merge({
+                                                                                                                                                                                           posts_count: @user.posts.count,
+                                                                                                                                                                                           comments_count: @user.comments.count,
+                                                                                                                                                                                           boosts_count: @user.boosts.count,
+                                                                                                                                                                                           avatar: @user.avatar.attached? ? url_for(@user.avatar) : nil,
+                                                                                                                                                                                           cover: @user.cover.attached? ? url_for(@user.cover) : nil
+                                                                                                                                                                                         })
+
+        format.html { redirect_to @user, notice: "User was successfully updated." }
+        format.json { render json: user_hash }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: { error: "There was an error updating the user.", errors: @user.errors }, status: :unprocessable_entity }
+      end
+    end
+  end
+
   # DELETE /users/1 or /users/1.json
   def destroy
     if @user.destroy
@@ -202,50 +243,8 @@ class UsersController < ApplicationController
       comments.order(created_at: :desc)
     end
   end
-end
 
   # PATCH/PUT /users/1 or /users/1.json
-  def update
-    @user = User.find(params[:id])
-
-    user_params = params[:user].present? ? params[:user] : params
-
-    if user_params[:avatar].present?
-      avatar = user_params[:avatar].is_a?(String) ? parse_image_data(user_params[:avatar]) : user_params[:avatar]
-      @user.avatar.attach(avatar)
-      @user.save_image_to_s3(avatar, 'avatar')
-    end
-    if user_params[:cover].present?
-      cover = user_params[:cover].is_a?(String) ? parse_image_data(user_params[:cover]) : user_params[:cover]
-      @user.cover.attach(cover)
-      @user.save_image_to_s3(cover, 'cover')
-    end
-    if user_params[:username].present?
-      @user.username = user_params[:username]
-    end
-    if user_params[:description].present?
-      @user.description = user_params[:description]
-    end
-
-    respond_to do |format|
-      if @user.save
-        user_hash = @user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid').merge({
-                                                                                                                                                                                           posts_count: @user.posts.count,
-                                                                                                                                                                                           comments_count: @user.comments.count,
-                                                                                                                                                                                           boosts_count: @user.boosts.count,
-                                                                                                                                                                                           avatar: @user.avatar.attached? ? url_for(@user.avatar) : nil,
-                                                                                                                                                                                           cover: @user.cover.attached? ? url_for(@user.cover) : nil
-                                                                                                                                                                                         })
-
-        format.html { redirect_to @user, notice: "User was successfully updated." }
-        format.json { render json: user_hash }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: { error: "There was an error updating the user.", errors: @user.errors }, status: :unprocessable_entity }
-      end
-    end
-  end
-
   private
 
   def parse_image_data(base64_image)
@@ -270,6 +269,8 @@ end
                                              content_type: content_type,
                                              filename: filename
                                            })
+
   end
+end
 
 
