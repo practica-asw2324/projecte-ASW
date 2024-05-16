@@ -240,7 +240,7 @@ end
     if @post.destroy
       respond_to do |format|
         format.html { redirect_to posts_url, notice: "Post was successfully destroyed." }
-        format.json { render json: { message: "Post was successfully destroyed." }, status: :ok }
+        format.json { head :no_content }
       end
     else
       respond_to do |format|

@@ -147,7 +147,7 @@ class MagazinesController < ApplicationController
     if @magazine.destroy
       respond_to do |format|
         format.html { redirect_to magazines_url, notice: "Magazine was successfully destroyed." }
-        format.json { render json: { message: "Magazine was successfully destroyed." }, status: :ok }
+        format.json { head :no_content }
       end
     else
       respond_to do |format|

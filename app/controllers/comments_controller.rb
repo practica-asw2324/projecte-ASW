@@ -91,7 +91,7 @@ class CommentsController < ApplicationController
     if @comment.destroy
       respond_to do |format|
         format.html { redirect_to post_url(@comment.post_id), notice: "Comment was successfully destroyed." }
-        format.json { render json: { message: "Post was successfully destroyed." }, status: :ok }
+        format.json { head :no_content }
       end
     else
       respond_to do |format|
