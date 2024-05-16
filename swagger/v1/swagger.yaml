@@ -1279,33 +1279,6 @@ paths:
       security:
         - API-KEY: [ ]
 
-  "/magazines/{magazineId}/posts":
-    get:
-      tags:
-        - Magazines
-      summary: Show magazine
-      operationId: getMagazine
-      parameters:
-        - name: magazineId
-          in: path
-          description: id
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: 'Show'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Magazine'
-        '404':
-          description: 'Error: Not Found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-
 
 components:
   securitySchemes:
