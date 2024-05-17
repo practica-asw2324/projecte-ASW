@@ -478,6 +478,17 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
+      security:
+        - API-KEY: [ ]
 
   "/users/{userId}":
     parameters:
@@ -499,12 +510,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error401'
         '404':
           description: 'Error: Not Found'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
+      security:
+        - API-KEY: [ ]
     put:
       tags:
         - Users
@@ -1191,8 +1213,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
               examples:
-                  errorExample:
-                    $ref: '#/components/examples/error404'
+                errorExample:
+                  $ref: '#/components/examples/error404'
       security:
         - API-KEY: [ ]
 
