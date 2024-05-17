@@ -19,10 +19,11 @@ class UsersController < ApplicationController
       user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid', 'api_key').merge({
                                                                                                                                                                             posts_count: user.posts.count,
                                                                                                                                                                             comments_count: user.comments.count,
-                                                                                                                                                                            boosts_count: user.boosts.count,
                                                                                                                                                                             avatar: user.avatar.attached? ? url_for(user.avatar) : nil,
                                                                                                                                                                             cover: user.cover.attached? ? url_for(user.cover) : nil
                                                                                                                                                                           })
+      user[:boosts_count] = user.boosts.count if current_user == user
+      user
     end
     respond_to do |format|
       format.html
@@ -38,12 +39,14 @@ class UsersController < ApplicationController
     boosts_count = user.boosts.count
 
     @user_hash = user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid', 'api_key' ).merge({
-                                                                                                                                                                                       posts_count: posts_count,
-                                                                                                                                                                                       comments_count: comments_count,
-                                                                                                                                                                                       boosts_count: boosts_count,
-                                                                                                                                                                                       avatar: user.avatar.attached? ? url_for(user.avatar) : nil,
-                                                                                                                                                                                       cover: user.cover.attached? ? url_for(user.cover) : nil
-                                                                                                                                                                                     })
+      posts_count: posts_count,
+      comments_count: comments_count,
+      avatar: user.avatar.attached? ? url_for(user.avatar) : nil,
+      cover: user.cover.attached? ? url_for(user.cover) : nil
+    })
+
+    # Add boosts_count only if the current user is the same as the user whose data is being requested
+    @user_hash[:boosts_count] = boosts_count if current_user == user
 
     @user = user
     @from_user_view = true
