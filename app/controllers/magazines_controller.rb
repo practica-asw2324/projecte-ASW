@@ -1,6 +1,6 @@
 class MagazinesController < ApplicationController
   before_action :authenticate_user, only: [:new, :create, :subscribe, :unsubscribe]
-  before_action :set_magazine, only: %i[ show edit update destroy ]
+  before_action :set_magazine, only: %i[ show edit update destroy subscribe unsubscribe]
   before_action :check_user, only: [:edit, :update, :destroy]
   protect_from_forgery unless: -> { request.format.json? }
 
@@ -34,35 +34,47 @@ class MagazinesController < ApplicationController
   end
 
   def subscribe
-    @magazine = Magazine.find(params[:id])
-    if current_user.subscribed_magazines.include?(@magazine)
-      respond_to do |format|
+    @subscription = @magazine.subscriptions.find_or_initialize_by(user_id: current_user.id)
+    already_subscribed = !@subscription.new_record?
+
+    respond_to do |format|
+      if @subscription.save
         format.html { redirect_to request.referrer || root_path, alert: "You are already subscribed to this magazine." }
-        format.json { render json: { error: "You are already subscribed to this magazine." }, status: :unprocessable_entity }
+        format.json do
+          if already_subscribed
+            render json: { error: "You are already subscribed to this magazine." }, status: :conflict
+          else
+            render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count])
+          end
+        end
+      else
+        format.html { redirect_back(fallback_location: root_path, notice: "Unable to subscribe to this magazine.") }
+        format.json { render json: { error: "Unable to subscribe to this magazine." }, status: :unprocessable_entity }
       end
-    else
-      current_user.subscribed_magazines << @magazine
-      respond_to do |format|
-        format.html { redirect_to request.referrer || root_path, notice: "Successfully subscribed to the magazine." }
-        format.json { render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
-      end
+    end
+  rescue => e
+    respond_to do |format|
+      format.html { redirect_to request.referrer || root_path, alert: "An error occurred: #{e.message}" }
+      format.json { render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error }
     end
   end
 
   def unsubscribe
-    @magazine = Magazine.find(params[:id])
-    subscription = Subscription.find_by(user_id: current_user.id, magazine_id: @magazine.id)
-    if subscription
-      subscription.delete
-      respond_to do |format|
+    @subscription = @magazine.subscriptions.find_by(user_id: current_user.id)
+
+    respond_to do |format|
+      if @subscription&.destroy
         format.html { redirect_to request.referrer || root_path, notice: "Successfully unsubscribed from the magazine." }
         format.json { render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
-      end
-    else
-      respond_to do |format|
+      else
         format.html { redirect_to request.referrer || root_path, alert: "You are not subscribed to this magazine." }
         format.json { render json: { error: "You are not subscribed to this magazine." }, status: :unprocessable_entity }
       end
+    end
+  rescue => e
+    respond_to do |format|
+      format.html { redirect_to request.referrer || root_path, alert: "An error occurred: #{e.message}" }
+      format.json { render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error }
     end
   end
 
