@@ -651,6 +651,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Post'
+        '403':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error403'
         '404':
           description: 'Error: Not Found'
           content:
@@ -1227,6 +1236,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Magazine'
+        '404':
+          description: 'Error: Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error404'
         '409':
           description: 'Error: Already subscribed'
           content:
@@ -1236,6 +1254,15 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error409subscribeMagazine'
+        '422':
+          description: 'Error: Unprocessable'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422subscribeMagazine'
       security:
         - API-KEY: [ ]
 
@@ -1267,15 +1294,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Magazine'
-        '409':
-          description: Unprocessable Entity
+        '404':
+          description: 'Error: Not Found'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResult'
               examples:
                 errorExample:
-                  $ref: '#/components/examples/error409unsubscribeMagazine'
+                  $ref: '#/components/examples/error404'
+        '422':
+          description: 'Error: Unprocessable'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error422Result'
+              examples:
+                errorExample:
+                  $ref: '#/components/examples/error422unsubscribeMagazine'
       security:
         - API-KEY: [ ]
 
@@ -1583,7 +1619,10 @@ components:
     error409subscribeMagazine:
       value:
         error: "You are already subscribed to this magazine."
-    error409unsubscribeMagazine:
+    error422subscribeMagazine:
+      value:
+        error: "Unable to subscribe to this magazine."
+    error422unsubscribeMagazine:
       value:
         error: "You are not subscribed to this magazine."
     error409like:
