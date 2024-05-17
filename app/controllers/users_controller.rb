@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :set_user, only: %i[ show edit update destroy ]
   protect_from_forgery unless: -> { request.format.json? }
-  before_action :check_user, only: [:edit, :update, :destroy]
+  before_action :check_user, only: [:edit, :update, :destroy, :boosts]
 
   def check_user
     @user = User.find(params[:id])
