@@ -1,6 +1,9 @@
 class MagazinesController < ApplicationController
   before_action :authenticate_user, only: [:new, :create, :subscribe, :unsubscribe]
-  before_action :set_magazine, only: %i[ show edit update destroy ]
+  before_action :set_magazine, only: %i[ show edit update destroy subscribe unsubscribe]
+  before_action :check_user, only: [:edit, :update, :destroy]
+  protect_from_forgery unless: -> { request.format.json? }
+
 
   # GET /magazines or /magazines.json
   def index
@@ -14,8 +17,8 @@ class MagazinesController < ApplicationController
     else
       @magazines = Magazine.all
     end
-    @magazines = @magazines.to_a.reverse!
-    @magazines = @magazines.map do |magazine|
+    @magazinesJson = @magazines.to_a.reverse!
+    @magazines = @magazinesJson.map do |magazine|
       {
         magazine: magazine,
         posts_count: magazine.posts.count,
@@ -23,20 +26,58 @@ class MagazinesController < ApplicationController
         subscribers_count: magazine.users.count
       }
     end
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @magazinesJson.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
+    end
   end
 
   def subscribe
-    @magazine = Magazine.find(params[:id])
-    current_user.subscribed_magazines << @magazine unless current_user.subscribed_magazines.include?(@magazine)
-    redirect_to request.referrer || root_path
+    @subscription = @magazine.subscriptions.find_or_initialize_by(user_id: current_user.id)
+    already_subscribed = !@subscription.new_record?
+
+    respond_to do |format|
+      if @subscription.save
+        format.html { redirect_to request.referrer || root_path, alert: "You are already subscribed to this magazine." }
+        format.json do
+          if already_subscribed
+            render json: { error: "You are already subscribed to this magazine." }, status: :conflict
+          else
+            render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count])
+          end
+        end
+      else
+        format.html { redirect_back(fallback_location: root_path, notice: "Unable to subscribe to this magazine.") }
+        format.json { render json: { error: "Unable to subscribe to this magazine." }, status: :unprocessable_entity }
+      end
+    end
+  rescue => e
+    respond_to do |format|
+      format.html { redirect_to request.referrer || root_path, alert: "An error occurred: #{e.message}" }
+      format.json { render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error }
+    end
   end
 
   def unsubscribe
-    @magazine = Magazine.find(params[:id])
-    subscription = Subscription.find_by(user_id: current_user.id, magazine_id: @magazine.id)
-    subscription.delete if subscription
-    redirect_to request.referrer || root_path
+    @subscription = @magazine.subscriptions.find_by(user_id: current_user.id)
+
+    respond_to do |format|
+      if @subscription&.destroy
+        format.html { redirect_to request.referrer || root_path, notice: "Successfully unsubscribed from the magazine." }
+        format.json { render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
+      else
+        format.html { redirect_to request.referrer || root_path, alert: "You are not subscribed to this magazine." }
+        format.json { render json: { error: "You are not subscribed to this magazine." }, status: :unprocessable_entity }
+      end
+    end
+  rescue => e
+    respond_to do |format|
+      format.html { redirect_to request.referrer || root_path, alert: "An error occurred: #{e.message}" }
+      format.json { render json: { error: "An error occurred: #{e.message}" }, status: :internal_server_error }
+    end
   end
+
 
   # GET /magazines/1 or /magazines/1.json
   def show
@@ -64,6 +105,11 @@ class MagazinesController < ApplicationController
     when 'threads'
       @posts = @posts.where(url: [nil, ''])
     end
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
+    end
   end
 
   # GET /magazines/new
@@ -77,13 +123,15 @@ class MagazinesController < ApplicationController
 
   # POST /magazines or /magazines.json
   def create
+    user = current_user
+
     @magazine = Magazine.new(magazine_params)
-    @magazine.user_id = current_user.id
+    @magazine.user_id = user.id
 
     respond_to do |format|
       if @magazine.save
         format.html { redirect_to magazine_url(@magazine), notice: "Magazine was successfully created." }
-        format.json { render :show, status: :created, location: @magazine }
+        format.json { render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]), status: :created }
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @magazine.errors, status: :unprocessable_entity }
@@ -96,10 +144,10 @@ class MagazinesController < ApplicationController
     respond_to do |format|
       if @magazine.update(magazine_params)
         format.html { redirect_to magazine_url(@magazine), notice: "Magazine was successfully updated." }
-        format.json { render :show, status: :ok, location: @magazine }
+        format.json { render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
       else
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @magazine.errors, status: :unprocessable_entity }
+        format.json { render json: { error: "There was an error updating the magazine.", errors: @magazine.errors }, status: :unprocessable_entity }
       end
     end
   end
@@ -108,13 +156,42 @@ class MagazinesController < ApplicationController
   def destroy
     @magazine.destroy
 
-    respond_to do |format|
-      format.html { redirect_to magazines_url, notice: "Magazine was successfully destroyed." }
-      format.json { head :no_content }
+    if @magazine.destroy
+      respond_to do |format|
+        format.html { redirect_to magazines_url, notice: "Magazine was successfully destroyed." }
+        format.json { head :no_content }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to magazines_url, alert: "There was an error destroying the magazine." }
+        format.json { render json: { error: "There was an error destroying the magazine." }, status: :unprocessable_entity }
+      end
     end
   end
 
+  def posts
+    @magazine = Magazine.find(params[:id])
+    @posts = @magazine.posts
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @posts.as_json(except: [:magazine_id, :user_id, :updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
+    end
+  end
+
+
   private
+    def check_user
+      @magazine = Magazine.find(params[:id])
+      unless current_user == @magazine.user
+        respond_to do |format|
+          format.html { redirect_to @magazine, alert: "You are not authorized to perform this action." }
+          format.json { render json: { error: "You are not authorized to perform this action." }, status: :forbidden }
+        end
+      end
+    end
+
+
     # Use callbacks to share common setup or constraints between actions.
     def set_magazine
       @magazine = Magazine.find(params[:id])

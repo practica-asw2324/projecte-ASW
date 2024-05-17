@@ -19,4 +19,28 @@ class Post < ApplicationRecord
     url.present?
   end
 
+  def likes_count
+    self.likes.count
+  end
+
+  def dislikes_count
+    self.dislikes.count
+  end
+
+  def boosts_count
+    self.boosts.count
+  end
+
+  def user_name
+    self.user.name
+  end
+
+  def magazine_name
+    self.magazine.name
+  end
+
+  def comments_count
+    self.comments.count
+  end
+
 end

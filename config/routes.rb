@@ -6,33 +6,41 @@ Rails.application.routes.draw do
     get 'login', to: 'users#new', as: 'new_user'
   end
 
-  resources :comments do
-    put 'like', on: :member
-    put 'dislike', on: :member
+  resources :users do
+    get 'comments', on: :member
+    get 'posts', on: :member
+    get 'boosts', on: :member
   end
-
-  resources :magazines
-  resources :users
-
 
   resources :magazines do
-    member do
-      post 'subscribe'
-      post 'unsubscribe'
-    end
+      post 'subscribe', on: :member
+      delete 'unsubscribe', on: :member
+      get 'posts', on: :member
   end
-
+  
   resources :posts do
     post 'react', on: :member
     get 'sort_comments', on: :member
-    put 'like', on: :member
-    put 'dislike', on: :member
-    put 'boost', on: :member
-
+    member do
+      post 'like'
+      delete 'like', action: :unlike
+      post 'dislike'
+      delete 'dislike', action: :undislike
+      post 'boost'
+      delete 'boost', action: :unboost
+    end
+    resources :comments, only: [:create, :index, :destroy, :update] do
+      member do
+        post 'like'
+        delete 'like', action: :unlike
+        post 'dislike'
+        delete 'dislike', action: :undislike
+      end
+    end
   end
 
-    get 'new_link', to: 'posts#new', type: 'link', as: :new_link
-    get 'new_thread', to: 'posts#new', type: 'thread', as: :new_thread
+  get 'new_link', to: 'posts#new', type: 'link', as: :new_link
+  get 'new_thread', to: 'posts#new', type: 'thread', as: :new_thread
 
   root 'posts#index'
 end

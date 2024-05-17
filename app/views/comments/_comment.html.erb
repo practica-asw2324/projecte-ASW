@@ -1,4 +1,4 @@
-<div id="<%= dom_id comment %>" style="<%= comment_margin_style(comment, escalate) %>">
+<div id="comment_<%= comment.id %>" style="<%= comment_margin_style(comment, escalate) %>">
   <div class="commentitem <%= 'user-post-or-comment' if defined?(user_view) && user_view && comment.user == current_user %> <%= 'white-background' if defined?(@from_user_view) && @from_user_view %>">
     <div class="commentHeader">
       <div class="commentInfo">
@@ -11,12 +11,24 @@
         <% end %>
       </div>
       <div class="commentActions">
-        <%= button_to like_comment_path(comment), method: :put, class: "comment-likeButton #{'voted' if user_signed_in? && current_user.liked_comment?(comment)}" do %>
-          <span class="#{'voted' if current_user.liked_comment?(comment)}"><i class="fas fa-arrow-up"></i><span> </span><%= comment.likes_comments.count %></span>
+        <% if user_signed_in? && current_user.liked_comment?(comment) %>
+          <%= button_to like_post_comment_path(@post, comment), method: :delete, remote: true, class: "comment-likeButton voted" do %>
+            <i class="fas fa-arrow-up"></i><span class="voted"> </span><span class="voted"><%= comment.likes_comments.count %></span>
+          <% end %>
+        <% else %>
+          <%= button_to like_post_comment_path(@post, comment), method: :post, remote: true, class: "comment-likeButton" do %>
+            <i class="fas fa-arrow-up"></i><span> </span><%= comment.likes_comments.count %>
+          <% end %>
         <% end %>
 
-        <%= button_to dislike_comment_path(comment), method: :put, class: "comment-dislikeButton #{'voted' if user_signed_in? && current_user.disliked_comment?(comment)}" do %>
-          <span class="#{'voted' if current_user.disliked_comment?(comment)}"><i class="fas fa-arrow-down"></i><span> </span><%= comment.dislikes_comments.count %></span>
+        <% if user_signed_in? && current_user.disliked_comment?(comment) %>
+          <%= button_to dislike_post_comment_path(@post, comment), method: :delete, remote: true, class: "comment-dislikeButton voted" do %>
+            <i class="fas fa-arrow-down"></i><span class="voted"> </span><span class="voted"><%= comment.dislikes_comments.count %></span>
+          <% end %>
+        <% else %>
+          <%= button_to dislike_post_comment_path(@post, comment), method: :post, remote: true, class: "comment-dislikeButton" do %>
+            <i class="fas fa-arrow-down"></i><span> </span><%= comment.dislikes_comments.count %>
+          <% end %>
         <% end %>
       </div>
     </div>
@@ -30,7 +42,7 @@
           <div class="dropdown-content">
             <%= link_to 'edit', '#', class: 'edit-link', data: { comment_id: comment.id } %>
             <a>
-              <%= button_to 'delete', comment, method: :delete, data: { confirm: 'Are you sure?' }, class: 'delete-button' %>
+              <%= button_to 'delete', post_comment_path(@post, comment), method: :delete, data: { confirm: 'Are you sure?' }, class: 'delete-button' %>
             </a>
           </div>
         </div>

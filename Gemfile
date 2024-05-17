@@ -18,6 +18,7 @@ gem 'omniauth-google-oauth2'
 gem "omniauth-rails_csrf_protection"
 gem 'aws-sdk-s3'
 gem 'dotenv-rails', groups: [:development, :test]
+gem 'rack-cors'
 
 group :development, :test do
   gem "sqlite3", "1.4.2"
@@ -42,3 +43,4 @@ end
 # Uncomment the following line if you're running Rails
 # on a native Windows system:
 # gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+#gem "dockerfile-rails", ">= 1.6", :group => :development

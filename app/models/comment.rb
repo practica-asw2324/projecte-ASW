@@ -12,4 +12,48 @@ class Comment < ApplicationRecord
     parent ? parent.depth + 1 : 0
   end
 
+  def likes_count
+    self.likes_comments.count
+  end
+
+  def dislikes_count
+    self.dislikes_comments.count
+  end
+
+  def user_name
+    self.user.name
+  end
+
+  def post_title
+    self.post.title
+  end
+
+  def replies_count
+    self.replies.count
+  end
+
+  def all_replies
+    replies.map do |reply|
+      reply.as_json(except: [:updated_at],
+                    methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
+                              :post_title, :all_replies])
+    end
+  end
+
+  def self.sort_comments(sort_order)
+    case sort_order
+    when 'top'
+      left_joins(:likes_comments)
+        .group('comments.id')
+        .order('COUNT(likes_comments.id) DESC')
+    when 'newest'
+      order(created_at: :desc)
+    when 'old'
+      order(created_at: :asc)
+    else
+      order(created_at: :desc)
+    end
+  end
+
+
 end
