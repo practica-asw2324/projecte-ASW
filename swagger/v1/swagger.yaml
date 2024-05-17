@@ -583,6 +583,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Comment'
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
         '404':
           description: 'Error: Not Found'
           content:
@@ -621,6 +627,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Post'
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
         '404':
           description: 'Error: Not Found'
           content:
@@ -651,6 +663,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Post'
+        '401':
+          description: 'Error: Forbidden'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
         '403':
           description: 'Error: Forbidden'
           content:
@@ -669,6 +687,8 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
+      security:
+        - API-KEY: []
 
   "/posts/{postId}/comments":
     parameters:
@@ -1640,4 +1660,3 @@ components:
     error409dislikecomment:
       value:
         error: "You've already disliked this Comment."
-    
