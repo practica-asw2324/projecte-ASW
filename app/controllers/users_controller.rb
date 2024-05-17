@@ -15,15 +15,9 @@ class UsersController < ApplicationController
 
   # GET /users or /users.json
   def index
-    @users = User.all.map do |user|
-      user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid', 'api_key').merge({
-                                                                                                                                                                            posts_count: user.posts.count,
-                                                                                                                                                                            comments_count: user.comments.count,
-                                                                                                                                                                            avatar: user.avatar.attached? ? url_for(user.avatar) : nil,
-                                                                                                                                                                            cover: user.cover.attached? ? url_for(user.cover) : nil
-                                                                                                                                                                          })
-      user[:boosts_count] = user.boosts.count if current_user == user
-      user
+    @users = []
+    User.find_each do |user|
+      @users << user_attributes(user)
     end
     respond_to do |format|
       format.html
@@ -247,8 +241,20 @@ class UsersController < ApplicationController
     end
   end
 
-  # PATCH/PUT /users/1 or /users/1.json
+
   private
+
+  def user_attributes(user)
+    attributes = user.attributes.except('updated_at', 'url', 'encrypted_password', 'reset_password_token', 'reset_password_sent_at', 'remember_created_at', 'provider', 'uid', 'api_key')
+    attributes.merge!({
+                        posts_count: user.posts.count,
+                        comments_count: user.comments.count,
+                        avatar: user.avatar.attached? ? url_for(user.avatar) : nil,
+                        cover: user.cover.attached? ? url_for(user.cover) : nil
+                      })
+    attributes[:boosts_count] = user.boosts.count if current_user == user
+    attributes
+  end
 
   def parse_image_data(base64_image)
     filename = "upload-image"
