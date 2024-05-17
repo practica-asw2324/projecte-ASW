@@ -1172,49 +1172,6 @@ paths:
               examples:
                 errorExample:
                   $ref: '#/components/examples/error404'
-    put:
-      tags:
-        - Magazines
-      summary: Update magazine
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/NewMagazine'
-      responses:
-        '200':
-          description: 'Updated'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Magazine'
-        '401':
-          description: 'Error: Forbidden'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-              examples:
-                errorExample:
-                  $ref: '#/components/examples/error401'
-        '403':
-          description: 'Error: Unauthorised'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-              examples:
-                errorExample:
-                  $ref: '#/components/examples/error403'
-        '404':
-          description: 'Error: Not Found'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResult'
-              examples:
-                errorExample:
-                  $ref: '#/components/examples/error404'
       security:
         - API-KEY: [ ]
 
