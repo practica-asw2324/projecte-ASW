@@ -32,21 +32,29 @@ class PostsController < ApplicationController
         @posts = @posts.where(url: [nil, ''])
       end
 
+      @posts.each do |post|
+        post.current_user_likes = current_user
+        post.current_user_dislikes = current_user
+        post.current_user_boosts = current_user
+      end
+
       respond_to do |format|
         format.html
-        format.json { render json: @posts.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
-      end
+        format.json { render json: @posts.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name, :current_user_likes, :current_user_dislikes, :current_user_boosts]) }      end
   end
 
   # GET /posts/1 or /posts/1.json
   def show
     @post = Post.find(params[:id])
+    @post.current_user_likes = current_user
+    @post.current_user_dislikes = current_user
+    @post.current_user_boosts = current_user
     @comments = @post.comments.where(comment_id: nil)
     @selected_filter = params[:sort] || 'top'
     @comments = @comments.sort_comments(@selected_filter)
     respond_to do |format|
       format.html
-      format.json { render json: @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
+      format.json { render json: @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name, :current_user_likes, :current_user_dislikes, :current_user_boosts]) }
     end
   end
 
