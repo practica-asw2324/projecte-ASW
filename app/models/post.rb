@@ -1,4 +1,5 @@
 class Post < ApplicationRecord
+  attr_accessor :current_user_likes, :current_user_dislikes, :current_user_boosts
 
   validates :title, presence: true
   validates :magazine, presence: true, if: :is_link?
@@ -13,6 +14,30 @@ class Post < ApplicationRecord
   has_many :dislikers, through: :dislikes, source: :user, dependent: :destroy
   has_many :boosts, dependent: :destroy
   has_many :boosters, through: :boosts, source: :user, dependent: :destroy
+  
+    def liked_by?(user)
+      likers.include?(user)
+    end
+  
+    def disliked_by?(user)
+      dislikers.include?(user)
+    end
+  
+    def boosted_by?(user)
+      boosters.include?(user)
+    end
+  
+    def current_user_likes=(user)
+      @current_user_likes = liked_by?(user)
+    end
+  
+    def current_user_dislikes=(user)
+      @current_user_dislikes = disliked_by?(user)
+    end
+  
+    def current_user_boosts=(user)
+      @current_user_boosts = boosted_by?(user)
+    end
 
   private
   def is_link?
