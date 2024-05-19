@@ -26,18 +26,18 @@
     <tbody>
       <% @magazines.each do |magazine_data| %>
         <tr>
-          <td><%= render magazine_data[:magazine] %></td>
+          <td><%= link_to magazine_data["name"], magazine_path(magazine_data["id"]), :class=>"linkMagazine"%></td>
           <td><%= magazine_data[:posts_count] %></td>
           <td><%= magazine_data[:comments_count] %></td>
           <td>
             <div style="display: flex; align-items: center; justify-content: space-between;">
               <span class="subsCount"><i class="fa-solid fa-users"></i><span class="subsCountNum"><%= magazine_data[:subscribers_count] %></span></span>
               <% if user_signed_in? && current_user.subscribed_magazines.include?(magazine_data[:magazine]) %>
-                <%= button_to unsubscribe_magazine_path(magazine_data[:magazine]),:class=>"subsButton", method: :delete do %>
+                <%= button_to unsubscribe_magazine_path(magazine_data['id']),:class=>"subsButton", method: :delete do %>
                   <i class="fa-solid fa-folder-minus"></i> Unsubscribe
                 <% end %>
               <% else %>
-                <%= button_to subscribe_magazine_path(magazine_data[:magazine]),:class=>"subsButton", method: :post do %>
+                <%= button_to subscribe_magazine_path(magazine_data['id']),:class=>"subsButton", method: :post do %>
                   <i class="fa-solid fa-folder-plus"></i> Subscribe
                 <% end %>
               <% end %>
