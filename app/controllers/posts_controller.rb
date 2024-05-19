@@ -106,6 +106,7 @@ end
     respond_to do |format|
       if @boost&.destroy
         format.html { redirect_back(fallback_location: root_path, notice: "You've unboosted this post.") }
+        format.json do
         @post = @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]).merge(
           current_user_likes: @post.liked_by?(current_user),
           current_user_dislikes: @post.disliked_by?(current_user),
@@ -113,6 +114,7 @@ end
           current_user_owns: @post.user == current_user
         )
         render json: @post
+        end
       else
         format.html { redirect_back(fallback_location: root_path, alert: "Unable to unboost this post.") }
         format.json { render json: { error: "Unable to unboost this post." }, status: :unprocessable_entity }
@@ -269,6 +271,7 @@ end
     respond_to do |format|
       if @post.save
         format.html { redirect_to root_path, notice: 'Post was successfully created.' }
+        format.json do
         @post = @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]).merge(
           current_user_likes: @post.liked_by?(current_user),
           current_user_dislikes: @post.disliked_by?(current_user),
@@ -276,6 +279,7 @@ end
           current_user_owns: @post.user == current_user
         )
         render json: @post
+        end
       else
         format.html { render :new }
         format.json { render json: @post.errors, status: :unprocessable_entity }
@@ -288,6 +292,7 @@ end
     respond_to do |format|
       if @post.update(post_params)
         format.html { redirect_to post_url(@post), notice: "Post was successfully updated." }
+        format.json do
         @post = @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]).merge(
           current_user_likes: @post.liked_by?(current_user),
           current_user_dislikes: @post.disliked_by?(current_user),
@@ -295,6 +300,7 @@ end
           current_user_owns: @post.user == current_user
         )
         render json: @post
+        end
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: { error: "There was an error updating the post.", errors: @post.errors }, status: :unprocessable_entity }
