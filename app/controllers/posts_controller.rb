@@ -170,6 +170,7 @@ end
     respond_to do |format|
       if @like&.destroy
         format.html { redirect_back(fallback_location: root_path, notice: "You've unliked this post.") }
+        format.json do
         @post = @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]).merge(
           current_user_likes: @post.liked_by?(current_user),
           current_user_dislikes: @post.disliked_by?(current_user),
@@ -177,6 +178,7 @@ end
           current_user_owns: @post.user == current_user
         )
         render json: @post
+        end
       else
         format.html { redirect_back(fallback_location: root_path, notice: "Unable to unlike this post.") }
         format.json { render json: { error: "Unable to unlike this post." }, status: :unprocessable_entity }
@@ -235,6 +237,7 @@ end
     respond_to do |format|
       if @dislike&.destroy
         format.html { redirect_back(fallback_location: root_path, notice: "You've removed your dislike for this post.") }
+        format.json do
         @post = @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]).merge(
           current_user_likes: @post.liked_by?(current_user),
           current_user_dislikes: @post.disliked_by?(current_user),
@@ -242,6 +245,7 @@ end
           current_user_owns: @post.user == current_user
         )
         render json: @post
+        end
       else
         format.html { redirect_back(fallback_location: root_path, alert: "Unable to remove your dislike for this post.") }
         format.json { render json: { error: "Unable to remove your dislike for this post." }, status: :unprocessable_entity }
