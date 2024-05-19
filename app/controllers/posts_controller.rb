@@ -32,7 +32,7 @@ class PostsController < ApplicationController
         @posts = @posts.where(url: [nil, ''])
       end
 
-      @posts = @posts.map do |post|
+      @postsJson = @posts.map do |post|
         post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]).merge(
           current_user_likes: post.liked_by?(current_user),
           current_user_dislikes: post.disliked_by?(current_user),
@@ -43,7 +43,7 @@ class PostsController < ApplicationController
 
       respond_to do |format|
         format.html
-        format.json { render json: @posts }
+        format.json { render json: @postsJson }
       end
     end
 
@@ -53,7 +53,7 @@ class PostsController < ApplicationController
     @comments = @post.comments.where(comment_id: nil)
     @selected_filter = params[:sort] || 'top'
     @comments = @comments.sort_comments(@selected_filter)
-    @post = @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]).merge(
+    @postJson = @post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]).merge(
     current_user_likes: @post.liked_by?(current_user),
     current_user_dislikes: @post.disliked_by?(current_user),
     current_user_boosts: @post.boosted_by?(current_user),
@@ -62,7 +62,7 @@ class PostsController < ApplicationController
     
     respond_to do |format|
       format.html
-      format.json { render json: @post }    end
+      format.json { render json: @postJson }    end
   end
 
   # POST /posts/:id/boost

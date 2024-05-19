@@ -84,33 +84,10 @@ class MagazinesController < ApplicationController
 
   # GET /magazines/1 or /magazines/1.json
   def show
-    params[:sort] ||= 'newest'
-    params[:type] ||= 'all'
-    
-    @posts = @magazine.posts.includes(:user, :comments)
-
-    @posts_count = @posts.count
-    @comments_count = @posts.sum { |post| post.comments.count }
     @subscribers_count = @magazine.users.count
     @current_user_subscribed = current_user ? @magazine.users.include?(current_user) : false
     @owner = @magazine.user.name
   
-    case params[:sort]
-    when 'top'
-      @posts = @posts.left_joins(:likes).group(:id).order('COUNT(likes.id) DESC')
-    when 'commented'
-      @posts = @posts.left_joins(:comments).group(:id).order('COUNT(comments.id) DESC')
-    when 'newest'
-      @posts = @posts.order(created_at: :desc)
-    end
-  
-    case params[:type]
-    when 'links'
-      @posts = @posts.where.not(url: [nil, ''])
-    when 'threads'
-      @posts = @posts.where(url: [nil, ''])
-    end
-
     respond_to do |format|
       format.html
       format.json { render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]).merge(current_user_subscribed: @current_user_subscribed).merge(owner: @owner) }
@@ -178,9 +155,39 @@ class MagazinesController < ApplicationController
     @magazine = Magazine.find(params[:id])
     @posts = @magazine.posts
 
+    params[:sort] ||= 'newest'
+    params[:type] ||= 'all'
+    
+    @posts = @magazine.posts.includes(:user, :comments)
+  
+    case params[:sort]
+    when 'top'
+      @posts = @posts.left_joins(:likes).group(:id).order('COUNT(likes.id) DESC')
+    when 'commented'
+      @posts = @posts.left_joins(:comments).group(:id).order('COUNT(comments.id) DESC')
+    when 'newest'
+      @posts = @posts.order(created_at: :desc)
+    end
+  
+    case params[:type]
+    when 'links'
+      @posts = @posts.where.not(url: [nil, ''])
+    when 'threads'
+      @posts = @posts.where(url: [nil, ''])
+    end
+
+    @postsJson = @posts.map do |post|
+      post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]).merge(
+        current_user_likes: post.liked_by?(current_user),
+        current_user_dislikes: post.disliked_by?(current_user),
+        current_user_boosts: post.boosted_by?(current_user),
+        current_user_owns: post.user == current_user
+      )
+    end
+
     respond_to do |format|
       format.html
-      format.json { render json: @posts.as_json(except: [:magazine_id, :user_id, :updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
+      format.json { render json: @postsJson }
     end
   end
 
