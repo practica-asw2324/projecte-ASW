@@ -17,19 +17,18 @@ class MagazinesController < ApplicationController
     else
       @magazines = Magazine.all
     end
-    @magazinesJson = @magazines.to_a.reverse!
-    @magazines = @magazinesJson.map do |magazine|
-      {
-        magazine: magazine,
+    @magazines = @magazines.reverse.map do |magazine|
+      magazine.attributes.merge(
         posts_count: magazine.posts.count,
         comments_count: magazine.posts.sum { |post| post.comments.count },
-        subscribers_count: magazine.users.count
-      }
+        subscribers_count: magazine.users.count,
+        current_user_subscribed: current_user ? magazine.users.include?(current_user) : false
+      )
     end
 
     respond_to do |format|
       format.html
-      format.json { render json: @magazinesJson.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
+      format.json { render json: @magazines.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count, :current_user_subscribed]) }
     end
   end
 
@@ -44,7 +43,8 @@ class MagazinesController < ApplicationController
           if already_subscribed
             render json: { error: "You are already subscribed to this magazine." }, status: :conflict
           else
-            render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count])
+            
+            render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]).merge(current_user_subscribed: true)
           end
         end
       else
@@ -65,7 +65,7 @@ class MagazinesController < ApplicationController
     respond_to do |format|
       if @subscription&.destroy
         format.html { redirect_to request.referrer || root_path, notice: "Successfully unsubscribed from the magazine." }
-        format.json { render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
+        format.json { render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]).merge(current_user_subscribed: false) }
       else
         format.html { redirect_to request.referrer || root_path, alert: "You are not subscribed to this magazine." }
         format.json { render json: { error: "You are not subscribed to this magazine." }, status: :unprocessable_entity }
@@ -89,6 +89,7 @@ class MagazinesController < ApplicationController
     @posts_count = @posts.count
     @comments_count = @posts.sum { |post| post.comments.count }
     @subscribers_count = @magazine.users.count
+    @current_user_subscribed = current_user ? @magazine.users.include?(current_user) : false
   
     case params[:sort]
     when 'top'
@@ -108,7 +109,7 @@ class MagazinesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]) }
+      format.json { render json: @magazine.as_json(except: [:updated_at], methods: [:posts_count, :comments_count, :subscribers_count]).merge(current_user_subscribed: @current_user_subscribed) }
     end
   end
 
