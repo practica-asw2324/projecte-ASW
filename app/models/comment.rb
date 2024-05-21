@@ -44,11 +44,16 @@ class Comment < ApplicationRecord
     self.replies.count
   end
 
-  def all_replies
+  def all_replies(current_user)
     replies.map do |reply|
       reply.as_json(except: [:updated_at],
                     methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
-                              :post_title, :all_replies])
+                              :post_title]).merge(
+        current_user_likes: reply.liked_by?(current_user),
+        current_user_dislikes: reply.disliked_by?(current_user),
+        current_user_owns: reply.user == current_user,
+        all_replies: reply.all_replies(current_user) # Pass current_user as a parameter here
+      )
     end
   end
 
