@@ -19,11 +19,20 @@ class CommentsController < ApplicationController
       @comments = @comments.order(created_at: :asc)
     end
 
+    @commentsJson = @comments.map do |comment|
+      comment.as_json(except: [:updated_at],
+                      methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
+                                :post_title]).merge(
+        current_user_likes: comment.liked_by?(current_user),
+        current_user_dislikes: comment.disliked_by?(current_user),
+        current_user_owns: comment.user == current_user,
+        all_replies: comment.all_replies(current_user)
+      )
+    end
+
     respond_to do |format|
       format.html { redirect_to post_path(params[:post_id], sort: @selected_filter) }
-      format.json { render json: @comments.as_json(except: [:updated_at],
-                                                   methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
-                                                             :post_title, :all_replies]) }
+      format.json { render json: @commentsJson }
     end
   end
 
