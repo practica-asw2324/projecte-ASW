@@ -52,12 +52,19 @@ class CommentsController < ApplicationController
     respond_to do |format|
       if @comment.save
         format.html { redirect_to post_url(@comment.post_id), notice: "Comment was successfully created." }
-        format.json { render json: @comment.as_json(except: [:updated_at],
-                                                     methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
-                                                               :post_title]), status: :created}
+        format.json do
+          @comment = @comment.as_json(except: [:updated_at],
+                                      methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
+                                                :post_title]).merge(
+            current_user_likes: @comment.liked_by?(current_user),
+            current_user_dislikes: @comment.disliked_by?(current_user),
+            current_user_owns: @comment.user == current_user
+          )
+          render json: @comment, status: :created
+        end
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: { error: "There was an error creating the comment.", errors: @post.errors }, status: :unprocessable_entity }
+        format.json { render json: { error: "There was an error creating the comment.", errors: @comment.errors }, status: :unprocessable_entity }
       end
     end
   end
@@ -69,14 +76,21 @@ class CommentsController < ApplicationController
     if @comment.update(comment_params)
       respond_to do |format|
         format.html { redirect_to post_path(@post), notice: 'Comment was successfully updated.' }
-        format.json { render json: @comment.as_json(except: [:updated_at],
-                                                     methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
-                                                               :post_title]), status: :ok }
+        format.json do
+          @comment = @comment.as_json(except: [:updated_at],
+                                      methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
+                                                :post_title]).merge(
+            current_user_likes: @comment.liked_by?(current_user),
+            current_user_dislikes: @comment.disliked_by?(current_user),
+            current_user_owns: @comment.user == current_user
+          )
+          render json: @comment, status: :ok
+        end
       end
     else
       respond_to do |format|
         format.html { redirect_to post_url(@comment.post_id), alert: "There was an error updating the comment." }
-        format.json { render json: { error: "There was an error updating the comment.", errors: @post.errors }, status: :unprocessable_entity }
+        format.json { render json: { error: "There was an error updating the comment.", errors: @comment.errors }, status: :unprocessable_entity }
       end
     end
   end
@@ -113,15 +127,20 @@ class CommentsController < ApplicationController
 
       if @like.save
         format.html { redirect_back(fallback_location: root_path, notice: "You've liked this comment.") }
-                                                              format.json do
-                                                                if already_liked
-                                                                  render json: { error: "You've already liked this comment." }, status: :conflict
-                                                                else
-                                                                  render json: @comment.as_json(except: [:updated_at],
-                                                    methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
-                                                              :post_title]), status: :ok
-                                                                end
-                                                              end
+        format.json do
+          if already_liked
+            render json: { error: "You've already liked this comment." }, status: :conflict
+          else
+            @comment = @comment.as_json(except: [:updated_at],
+                                        methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
+                                                  :post_title]).merge(
+              current_user_likes: @comment.liked_by?(current_user),
+              current_user_dislikes: @comment.disliked_by?(current_user),
+              current_user_owns: @comment.user == current_user
+            )
+            render json: @comment, status: :ok
+          end
+        end
       else
         format.html { redirect_back(fallback_location: root_path, notice: "Unable to like this comment.") }
         format.json { render json: { error: "Unable to like this comment." }, status: :unprocessable_entity }
@@ -142,9 +161,16 @@ class CommentsController < ApplicationController
     respond_to do |format|
       if @like&.destroy
         format.html { redirect_back(fallback_location: root_path, notice: "You've unliked this comment.") }
-        format.json { render json: @comment.as_json(except: [:updated_at],
-                                                    methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
-                                                              :post_title]), status: :ok }
+        format.json do
+          @comment = @comment.as_json(except: [:updated_at],
+                                      methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
+                                                :post_title]).merge(
+            current_user_likes: @comment.liked_by?(current_user),
+            current_user_dislikes: @comment.disliked_by?(current_user),
+            current_user_owns: @comment.user == current_user
+          )
+          render json: @comment, status: :ok
+        end
       else
         format.html { redirect_back(fallback_location: root_path, notice: "Unable to unlike this comment.") }
         format.json { render json: { error: "Unable to unlike this comment." }, status: :unprocessable_entity }
@@ -164,22 +190,27 @@ class CommentsController < ApplicationController
     already_disliked = !@dislike.new_record?
 
     respond_to do |format|
-      # If the user has liked the post, remove the like
+      # If the user has liked the comment, remove the like
       if current_user.liked_comment?(@comment)
         @comment.likes_comments.find_by(user: current_user).destroy
       end
 
       if @dislike.save
         format.html { redirect_back(fallback_location: root_path, notice: "You've disliked this comment.") }
-                                                              format.json do
-                                                                if already_disliked
-                                                                  render json: { error: "You've already disliked this comment." }, status: :conflict
-                                                                else
-                                                                  render json: @comment.as_json(except: [:updated_at],
-                                                    methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
-                                                              :post_title]), status: :ok
-                                                                end
-                                                              end
+        format.json do
+          if already_disliked
+            render json: { error: "You've already disliked this comment." }, status: :conflict
+          else
+            @comment = @comment.as_json(except: [:updated_at],
+                                        methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
+                                                  :post_title]).merge(
+              current_user_likes: @comment.liked_by?(current_user),
+              current_user_dislikes: @comment.disliked_by?(current_user),
+              current_user_owns: @comment.user == current_user
+            )
+            render json: @comment, status: :ok
+          end
+        end
       else
         format.html { redirect_back(fallback_location: root_path, alert: "There was an error disliking this comment.") }
         format.json { render json: { error: "There was an error disliking this comment." }, status: :unprocessable_entity }
@@ -200,9 +231,16 @@ class CommentsController < ApplicationController
     respond_to do |format|
       if @dislike&.destroy
         format.html { redirect_back(fallback_location: root_path, notice: "You've removed your dislike for this comment.") }
-        format.json { render json: @comment.as_json(except: [:updated_at],
-                                                    methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
-                                                              :post_title]), status: :ok }
+        format.json do
+          @comment = @comment.as_json(except: [:updated_at],
+                                      methods: [:replies_count, :likes_count, :dislikes_count, :user_name,
+                                                :post_title]).merge(
+            current_user_likes: @comment.liked_by?(current_user),
+            current_user_dislikes: @comment.disliked_by?(current_user),
+            current_user_owns: @comment.user == current_user
+          )
+          render json: @comment, status: :ok
+        end
       else
         format.html { redirect_back(fallback_location: root_path, alert: "Unable to remove your dislike for this comment.") }
         format.json { render json: { error: "Unable to remove your dislike for this comment." }, status: :unprocessable_entity }

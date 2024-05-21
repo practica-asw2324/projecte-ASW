@@ -8,6 +8,18 @@ class Comment < ApplicationRecord
   belongs_to :parent, class_name: 'Comment', foreign_key: 'comment_id', optional: true
   has_many :replies, class_name: 'Comment', foreign_key: 'comment_id', dependent: :destroy
 
+  def liked_by?(user)
+    likers_comments.include?(user)
+  end
+
+  def disliked_by?(user)
+    dislikers_comments.include?(user)
+  end
+
+  def owned_by?(user)
+    user == self.user
+  end
+
   def depth
     parent ? parent.depth + 1 : 0
   end
