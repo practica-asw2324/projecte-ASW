@@ -187,8 +187,17 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @posts.as_json(except: [:magazine_id, :user_id, :updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) }
-    end
+      format.json do
+        render json: @posts.map { |post| 
+          post.as_json(except: [:magazine_id, :user_id, :updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]).merge(
+            current_user_likes: post.liked_by?(current_user),
+            current_user_dislikes: post.disliked_by?(current_user),
+            current_user_boosts: post.boosted_by?(current_user),
+            current_user_owns: post.user == current_user
+          )
+        }
+      end
+      end   
   end
 
   def boosts
@@ -197,7 +206,17 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @boosted_posts.map { |boost| boost.post.as_json(except: [:magazine_id, :user_id, :updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]) } }
+      format.json do
+        render json: @boosted_posts.map { |boost| 
+          post = boost.post
+          post.as_json(except: [:updated_at], methods: [:comments_count, :likes_count, :dislikes_count, :boosts_count, :user_name, :magazine_name]).merge(
+            current_user_likes: post.liked_by?(current_user),
+            current_user_dislikes: post.disliked_by?(current_user),
+            current_user_boosts: post.boosted_by?(current_user),
+            current_user_owns: post.user == current_user
+          )
+        }
+      end
     end
   end
 
