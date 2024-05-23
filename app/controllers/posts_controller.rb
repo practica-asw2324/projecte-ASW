@@ -278,7 +278,7 @@ end
           current_user_boosts: @post.boosted_by?(current_user),
           current_user_owns: @post.user == current_user
         )
-        render json: @post
+        render json: @post, status: :created
         end
       else
         format.html { render :new }
