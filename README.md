@@ -8,7 +8,7 @@ Students:
   
 * López Ruiz, Alba
 
-* Tena Domingo, Julia
+* Tena Domingo, Júlia
 
 
 Webapp deployed: <https://tuiter.fly.dev>
